@@ -26,7 +26,7 @@ const App = () => {
             path="/signup"
             element={
               <Loader>
-                <SignUp />
+                <SignUp forceRedirectUrl={"/dashboard"} />
               </Loader>
             }
           />
