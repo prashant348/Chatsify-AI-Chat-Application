@@ -16,7 +16,7 @@ const Loader = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <>{children}</>
+        <div className='h-screen flex justify-center items-center'>{children}</div>
     )
 }
 
