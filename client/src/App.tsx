@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { SignIn, SignUp } from "@clerk/clerk-react";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./Routes/ProtectedRoute";
 import Loader from "./components/Loader";
 import SidebarMainContent from "./components/SidebarMainContent/index";
 
