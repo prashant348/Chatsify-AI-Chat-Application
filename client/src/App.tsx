@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Loader from "./components/Loader";
-
+import SidebarMainContent from "./components/SidebarMainContent/index";
 
 
 const App = () => {
@@ -36,7 +36,7 @@ const App = () => {
             element={
               <Loader>
                 <ProtectedRoute >
-                  <Dashboard />
+                  <Dashboard children={<SidebarMainContent />}/>
                 </ProtectedRoute>
               </Loader>
             }
