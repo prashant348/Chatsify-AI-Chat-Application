@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
+import { useSidebarStore } from "../zustand/store/SidebarStore"
+import Sidebar from "../components/Sidebar"
 
 interface ResizableSidebarProps {
   defaultWidth?: number,
@@ -14,6 +16,9 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
   const minWidth: number = 251;
   const maxWidth: number = window.innerWidth - 384 // 384 is the width of the main content which is 24% of 1600
   const resizerRef = useRef<HTMLDivElement>(null)
+
+  const setShowSidebar = useSidebarStore(state => state.setShowSidebar)
+  const showSidebar = useSidebarStore(state => state.showSidebar)
 
   // Update widths on window resize
   useEffect(() => {
@@ -31,11 +36,8 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
     window.addEventListener('resize', handleResize)
 
-    console.log("mounted!")
-
     return () => {
       window.removeEventListener('resize', handleResize);
-      console.log("unmounted!")
     }
   }, [])
 
@@ -56,12 +58,11 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
     resizerRef.current?.addEventListener("mousedown", handleMouseDown)
     window.addEventListener("mouseup", handleMouseUp)
 
-    console.log("mount 2 !")
 
     return () => {
       resizerRef.current?.removeEventListener("mousedown", handleMouseDown)
       window.removeEventListener("mouseup", handleMouseUp)
-      console.log("unmount 2 !")
+
     }
 
   }, [])
@@ -78,7 +79,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
 
     const doResize = (e: MouseEvent) => {
-      
+
       // vese toh iski jarurat nahi lekin safety ke liye
       if (window.innerWidth <= 640) {
         setSidebarWidth(window.innerWidth)
@@ -104,51 +105,76 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
 
   return (
-    <div>
-      <div className="dashboard-container h-screen flex bg-black ">
-        {/* sidebar */}
-        <div
-          ref={sidebarRef}
-          className="sidebar"
-          style={{
-            width: window.innerWidth <= 640 ? "100%" : sidebarWidth,
-            minWidth: window.innerWidth <= 640 ? "100%" : minWidth,
-            maxWidth: window.innerWidth <= 640 ? "100%" : maxWidth,
-            backgroundColor: "#0f0f0f",
-            position: "relative",
-            overflow: "auto"
-          }}
-        >
-          {children}
+    <>
+      <div
+        className={showSidebar ? "brightness-50 transition duration-300 ease-in" : ""}
+        onClick={() => {
+          if (showSidebar) {
+            setShowSidebar(false)
+          }
+        }}
+        style={{
+          pointerEvents: "auto"
+        }}
+      >
+        <div className="dashboard-container h-screen flex bg-black" style={{ pointerEvents: showSidebar ? "none" : "auto" }} >
+          {/* sidebar */}
+          <div
+            ref={sidebarRef}
+            className="sidebar"
+            style={{
+              width: window.innerWidth <= 640 ? "100%" : sidebarWidth,
+              minWidth: window.innerWidth <= 640 ? "100%" : minWidth,
+              maxWidth: window.innerWidth <= 640 ? "100%" : maxWidth,
+              backgroundColor: "#0f0f0f",
+              position: "relative",
+              overflow: "auto"
+            }}
+          >
+            {children}
+          </div>
+
+          {/* resizer */}
+          {window.innerWidth > 640 && (
+            <div
+              ref={resizerRef}
+              className="resizer hover:bg-blue-500 bg-[#0f0f0f]"
+              onMouseDown={startResizing}
+              style={{
+                width: 5,
+                cursor: "e-resize",
+                flexShrink: 0
+              }}
+            />
+          )}
+
+          {/* rightside chat window  */}
+          {window.innerWidth > 640 && (
+
+            <div
+              className="chat-window text-white min-w-[384px] flex justify-center items-center"
+              style={{ flexGrow: 1 }}
+            >
+              <p className=" text-center ">Select a chat to start messaging</p>
+            </div>
+          )}
         </div>
 
-        {/* resizer */}
-        {window.innerWidth > 640 && (
-          <div
-            ref={resizerRef}
-            className="resizer hover:bg-blue-500 bg-[#0f0f0f]"
-            onMouseDown={startResizing}
-            style={{
-              width: 5,
-              cursor: "e-resize",
-              flexShrink: 0
-            }}
-          />
-        )}
-
-        {/* rightside chat window  */}
-        {window.innerWidth > 640 && (
-
-          <div
-            className="chat-window text-white min-w-[384px] flex justify-center items-center"
-            style={{ flexGrow: 1 }}
-          >
-            <p className=" text-center ">Select a chat to start messaging</p>
-          </div>
-        )}
       </div>
 
-    </div>
+      {/* ye bhi ek tarika hai */}
+      {/* Overlay to block all interaction when sidebar is open */}
+      {/* {showSidebar && (
+        <div
+          className="fixed inset-0 z-40"
+          style={{ pointerEvents: "auto" }}
+          onClick={() => setShowSidebar(false)}
+        />
+      )} */}
+
+      {showSidebar && <Sidebar />}
+
+    </>
   )
 }
 
