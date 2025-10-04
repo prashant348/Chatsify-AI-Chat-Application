@@ -138,7 +138,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
           {window.innerWidth > 640 && (
             <div
               ref={resizerRef}
-              className="resizer hover:bg-blue-500 bg-[#0f0f0f]"
+              className="resizer hover:bg-blue-500 bg-black"
               onMouseDown={startResizing}
               style={{
                 width: 5,
