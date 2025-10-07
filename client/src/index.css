@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@plugin "tailwind-scrollbar";
+
+html, body, #root {
+  overflow-y: hidden;
+  overscroll-behavior-y: contain;
+  background: #000; /* optional: white flash avoid */
+}
 
 @keyframes fade-in {
     from {

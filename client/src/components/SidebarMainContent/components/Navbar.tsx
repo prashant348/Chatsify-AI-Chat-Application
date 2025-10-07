@@ -1,8 +1,5 @@
-// import React from 'react'
-// import { UserButton } from '@clerk/clerk-react'
 import { MenuIcon } from 'lucide-react'
 import { useSidebarStore } from '../../../zustand/store/SidebarStore.ts'
-
 
 const Navbar = () => {
   const setShowSidebar = useSidebarStore((state) => state.setShowSidebar)
@@ -12,7 +9,6 @@ const Navbar = () => {
   }
 
   return (
-
     <div className='h-[60px] flex shrink-0'>
       <div className='w-[60px] shrink-0 flex justify-center items-center'>
         <button
@@ -24,10 +20,14 @@ const Navbar = () => {
       </div>
 
       <div className='w-full pr-2 py-3 '>
-        <input type="text" className='bg-[#212121] outline-none text-white rounded-r-full rounded-l-full w-full h-full px-4 ' placeholder='Search' />
+        <input
+          type="text"
+          className='bg-[#212121] outline-none hover:border hover:px-[15px] hover:border-[#363636] text-white rounded-r-full rounded-l-full w-full h-full px-4 '
+          placeholder='Search people'
+        />
+
       </div>
     </div>
-
   )
 }
 

@@ -9,7 +9,7 @@ const Sidebar = () => {
     const [isUserProfileOpen, setIsUserProfileOpen] = useState<boolean>(false)
     const { user } = useUser()
 
-   
+
 
     return (
         <div className="overflow-y-auto">
@@ -25,11 +25,11 @@ const Sidebar = () => {
                     <UserButton appearance={{
                         elements: {
                             avatarBox: {
-                                width: "48px", 
+                                width: "48px",
                                 height: "48px"
                             },
                             popoverBox: {
-                                width: window.innerWidth <= 640? "274px": ""
+                                width: window.innerWidth <= 640 ? "274px" : ""
                             }
                         }
                     }} />
@@ -49,8 +49,10 @@ const Sidebar = () => {
                         <span className="">My Profile</span>
                     </button>
                 </div>
-                    
-                <SidebarButtons />
+
+                <div>
+                    <SidebarButtons />
+                </div>
 
             </div>
 

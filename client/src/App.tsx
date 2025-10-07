@@ -6,9 +6,36 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import Loader from "./components/Loader";
 import SidebarMainContent from "./components/SidebarMainContent/index";
+import { useActiveScreenStore } from "./zustand/store/ActiveScreenStore";
+import ChatWindowTemplate from "./components/ChatWindow/ChatWindowTemplate";
+import { useEffect, useState } from "react";
+import "./App.css"
 
 
 const App = () => {
+
+  const { activeScreen } = useActiveScreenStore();
+
+  const [ windowInnerWidth, setWindowInnerWidth ] = useState<number>(window.innerWidth)
+
+  useEffect(() => {
+    const returnWindowInnerWidth = () => {
+      setWindowInnerWidth(window.innerWidth)
+      console.log(window.visualViewport)
+    }
+    
+    window.addEventListener("resize", returnWindowInnerWidth)
+    
+    return () =>{
+      window.removeEventListener("resize", returnWindowInnerWidth)
+    }
+
+  }, [])
+
+
+  
+
+
   return (
     <>
       <Router>
@@ -36,8 +63,28 @@ const App = () => {
             element={
               <Loader>
                 <ProtectedRoute >
-                  <Dashboard children={<SidebarMainContent />}/>
-                </ProtectedRoute>
+                  {/* <Dashboard children={<SidebarMainContent />}/> */}
+
+
+                  {windowInnerWidth > 640 && (activeScreen === "MainScreen" || activeScreen === "ChatWindow") && (
+                    <Dashboard children={<SidebarMainContent />} />
+                  )}
+
+
+                  {windowInnerWidth <= 640 && activeScreen === "MainScreen" && (
+                    <Dashboard children={<SidebarMainContent />} />
+                  )}
+
+                  {windowInnerWidth <= 640 && activeScreen === "ChatWindow" && (
+                    <div 
+                    className="fixed top-0 left-0 h-full w-full text-white "  
+                    >
+                      <ChatWindowTemplate />
+                    </div>
+                  )}
+
+
+                </ProtectedRoute >
               </Loader>
             }
           />

@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useSidebarStore } from "../zustand/store/SidebarStore"
 import Sidebar from "../components/Sidebar"
+import ChatWindowTemplate from "../components/ChatWindow/ChatWindowTemplate"
+import { useActiveScreenStore } from "../zustand/store/ActiveScreenStore"
 
 interface ResizableSidebarProps {
   defaultWidth?: number,
@@ -19,6 +21,8 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
   const setShowSidebar = useSidebarStore(state => state.setShowSidebar)
   const showSidebar = useSidebarStore(state => state.showSidebar)
+
+  const { activeScreen } = useActiveScreenStore()
 
   // Update widths on window resize
   useEffect(() => {
@@ -114,7 +118,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
           }
         }}
         style={{
-          pointerEvents: "auto"
+          pointerEvents: "auto",
         }}
       >
         <div className="dashboard-container h-screen flex bg-black" style={{ pointerEvents: showSidebar ? "none" : "auto" }} >
@@ -138,24 +142,24 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
           {window.innerWidth > 640 && (
             <div
               ref={resizerRef}
-              className="resizer hover:bg-blue-500 bg-black"
+              className="resizer hover:bg-blue-500 bg-[#0f0f0f] "
               onMouseDown={startResizing}
               style={{
                 width: 5,
                 cursor: "e-resize",
                 flexShrink: 0
+
               }}
             />
           )}
 
           {/* rightside chat window  */}
           {window.innerWidth > 640 && (
-
             <div
-              className="chat-window text-white min-w-[384px] flex justify-center items-center"
+              className="chat-window text-white flex justify-center items-center min-w-[384px]"
               style={{ flexGrow: 1 }}
             >
-              <p className=" text-center ">Select a chat to start messaging</p>
+              {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : <p>Select a Chat to start messaging</p>}
             </div>
           )}
         </div>
