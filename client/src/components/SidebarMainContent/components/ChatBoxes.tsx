@@ -2,9 +2,14 @@ import ChatBoxTemplate from "./ChatBoxTemplate"
 import { useEffect, useState } from "react"
 import GeneralLoader from "../../GeneralLoader"
 
+type User = {
+  id: string,
+  username: string,
+  imageUrl: string
+}
 
 const ChatBoxes = () => {
-  const [usersArray, setUsersArray] = useState<object[]>([])
+  const [usersArray, setUsersArray] = useState<User[]>([])
   const [isLoading, setisLoading] = useState<boolean>(true)
 
   // dummy data for testing 
@@ -38,7 +43,7 @@ const ChatBoxes = () => {
     const getUsers = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users`)
-        const users = await res.json()
+        const users: User[] = await res.json()
         setUsersArray(users)
       } catch (err) {
         console.error("error in fetching users: ", err)
@@ -61,9 +66,10 @@ const ChatBoxes = () => {
       ))} */}
 
       {isLoading && <GeneralLoader />}
-      {!isLoading && usersArray.map((user: object) => (
+      {!isLoading && usersArray.map((user) => (
         <ChatBoxTemplate username={user.username} latestMsg={`${user.username} joined Chatsify!`} imgUrl={user.imageUrl} key={user.id} />
       ))}
+
     </div>
   )
 }

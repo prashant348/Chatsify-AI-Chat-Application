@@ -9,6 +9,7 @@ interface ChatBoxTemplatePropsType {
 }
 
 
+
 export default function ChatBoxTemplate({ username, latestMsg, imgUrl }: ChatBoxTemplatePropsType) {
 
   const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)

@@ -50,7 +50,7 @@ const Sidebar = () => {
                     </button>
                 </div>
 
-                <div>
+                <div className="sidebar-buttons">
                     <SidebarButtons />
                 </div>
 

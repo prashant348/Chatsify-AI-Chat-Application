@@ -1,4 +1,4 @@
-import { Users, Bookmark, ShipWheel, Settings, Moon } from "lucide-react"
+import { Users, Bookmark, ShipWheel, Settings, Moon, UserPlus } from "lucide-react"
 
 export default function SidebarButtons() {
     return (
@@ -16,6 +16,13 @@ export default function SidebarButtons() {
                 >
                     <Bookmark height={"20px"} />
                     <span className="">Saved Messages</span>
+                </button>
+
+                <button
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121]"
+                >
+                    <UserPlus height={"20px"} />
+                    <span className="">Friend Requests</span>
                 </button>
 
                 <button
