@@ -91,8 +91,12 @@ const Navbar = () => {
     <div className='h-[60px] flex shrink-0'>
       <div className='w-[60px] shrink-0 flex justify-center items-center'>
         <button
-          className='hambtn hover:bg-[#212121] rounded-full p-2'
+          className='hambtn hover:bg-[#212121] rounded-full p-2 cursor-pointer'
           onClick={handleHambtnClick}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
         >
           <MenuIcon />
         </button>
@@ -114,6 +118,7 @@ const Navbar = () => {
             setSearchResultWindowResponse("Search people by their usernames!")
           }}
           onBlur={(e) => {
+            console.log("onblur")
             setShowSearchResultWindow(false)
             e.target.value = ""
             setFilteredUsers([])

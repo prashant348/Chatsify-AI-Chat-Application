@@ -120,6 +120,12 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
         style={{
           pointerEvents: "auto",
         }}
+        onMouseDown={(e) => {
+          if (showSidebar) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
       >
         <div className="dashboard-container h-screen flex bg-black" style={{ pointerEvents: showSidebar ? "none" : "auto" }} >
           {/* sidebar */}

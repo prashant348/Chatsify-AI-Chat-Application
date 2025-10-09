@@ -12,9 +12,12 @@ const Sidebar = () => {
 
 
     return (
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto" onMouseDown={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+        }}>
             <div
-                className="fixed top-0 left-0 z-50 h-screen w-[274px] bg-[#0f0f0f] border-r border-r-[#212121] text-white"
+                className="fixed top-0 left-0 z-50 bg-[#0f0f0f] h-screen w-[274px] border-r border-r-[#212121] text-white"
                 style={{
                     animation: "slide-in 0.3s ease-in-out forwards",
                 }}
@@ -42,7 +45,7 @@ const Sidebar = () => {
 
                 <div className="my-profile-box h-[50px] w-full py-[5px] border-b border-b-[#212121]">
                     <button
-                        className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121]"
+                        className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
                         onClick={() => setIsUserProfileOpen(true)}
                     >
                         <UserIcon height={"20px"} />

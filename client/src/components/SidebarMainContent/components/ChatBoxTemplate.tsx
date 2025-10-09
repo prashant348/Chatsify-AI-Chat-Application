@@ -17,7 +17,7 @@ export default function ChatBoxTemplate({ username, latestMsg, imgUrl }: ChatBox
   const setChatWindowAvatar = useChatWindowAvatarStore((state) => state.setChatWindowAvatar)
   return (
     <div
-      className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-start items-center gap-[10px]"
+      className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-start items-center gap-[10px] cursor-pointer"
       onClick={() => {
         setChatWindowAvatar(imgUrl)
         setChatWindowUsername(username)

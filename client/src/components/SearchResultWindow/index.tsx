@@ -24,6 +24,11 @@ const SearchResultWindow = ({ users }: SearchResultWindowPropsType) => {
     style={{
       alignItems: users.length === 0? 'center' : 'flex-start'
     }}
+    // onMouseDown={(e) => {
+    //   console.log("mousedown")
+    //   e.preventDefault()
+    //   e.stopPropagation()
+    // }}
     >
       { isLoading && <GeneralLoader /> }
       { !isLoading && users.length === 0 && <p>{searchResultWindowResponse}</p> }
