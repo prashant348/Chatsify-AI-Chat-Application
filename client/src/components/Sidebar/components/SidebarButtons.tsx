@@ -1,10 +1,13 @@
-import { Users, Bookmark, ShipWheel, Settings, Moon, UserPlus, Sun } from "lucide-react"
+import { Users, Bookmark, ShipWheel, Settings, Moon, UserPlus, Sun, Inbox } from "lucide-react"
 import { useAppThemeStore } from "../../../zustand/store/AppTheme"
+import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 
 export default function SidebarButtons() {
 
     // const [theme, setTheme] = useState<string>("dark")
     const { appTheme, setAppTheme } = useAppThemeStore((state) => state)
+    const { setActiveScreen } = useActiveScreenStore((state) => state)
+
     return (
         <div>
             <div className="my-profile-box w-full py-[5px] border-b border-b-[#212121]">
@@ -24,6 +27,7 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    onClick={() => setActiveScreen("FriendRequestsWindow")}
                 >
                     <UserPlus height={"20px"} />
                     <span className="">Friend Requests</span>
@@ -36,6 +40,13 @@ export default function SidebarButtons() {
                     <span className="">Chatsify AI</span>
                 </button>
 
+                <button
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                >
+                    <Inbox height={"20px"} />
+                    <span className="">Inbox</span>
+                </button>
+
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
@@ -46,7 +57,7 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => setAppTheme(appTheme === "dark"? "light": "dark")}
+                    onClick={() => setAppTheme(appTheme === "dark" ? "light" : "dark")}
                 >
                     {appTheme === "dark" && (
                         <div className="flex items-center gap-4">

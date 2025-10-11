@@ -10,7 +10,7 @@ import { useActiveScreenStore } from "./zustand/store/ActiveScreenStore";
 import ChatWindowTemplate from "./components/ChatWindow/ChatWindowTemplate";
 import { useEffect, useState } from "react";
 import "./App.css"
-
+import FriendRequestsWindow from "./components/FriendRequestsWindow/FriendRequestsWindow";
 
 const App = () => {
 
@@ -66,7 +66,7 @@ const App = () => {
                   {/* <Dashboard children={<SidebarMainContent />}/> */}
 
 
-                  {windowInnerWidth > 640 && (activeScreen === "MainScreen" || activeScreen === "ChatWindow") && (
+                  {windowInnerWidth > 640 && (activeScreen === "MainScreen" || activeScreen === "ChatWindow" || activeScreen === "FriendRequestsWindow") && (
                     <Dashboard children={<SidebarMainContent />} />
                   )}
 
@@ -80,6 +80,14 @@ const App = () => {
                     className="fixed top-0 left-0 h-full w-full text-white "  
                     >
                       <ChatWindowTemplate />
+                    </div>
+                  )}
+
+                  {windowInnerWidth <= 640 && activeScreen === "FriendRequestsWindow" && (
+                    <div 
+                    className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
+                    >
+                      <FriendRequestsWindow />
                     </div>
                   )}
 

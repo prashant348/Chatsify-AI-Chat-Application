@@ -1,16 +1,21 @@
 import ChatBoxTemplate from "./ChatBoxTemplate"
 import { useEffect, useState } from "react"
 import GeneralLoader from "../../GeneralLoader"
+import { useAuth } from "@clerk/clerk-react"
+import { useUser } from "@clerk/clerk-react"
 
-type User = {
-  id: string,
-  username: string,
-  imageUrl: string
+type friend = {
+  id?: string,
+  friendUsername: string,
+  friendAvatar: string
 }
 
 const ChatBoxes = () => {
-  const [usersArray, setUsersArray] = useState<User[]>([])
-  const [isLoading, setisLoading] = useState<boolean>(true)
+  const [ friendsArray, setFriendsArray ] = useState<friend[]>([])
+  const [ isLoading, setisLoading ] = useState<boolean>(true)
+  const { getToken } = useAuth()
+  const { user } = useUser()
+
 
   // dummy data for testing 
 
@@ -38,15 +43,22 @@ const ChatBoxes = () => {
   // ]
 
 
-
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users`)
-        const users: User[] = await res.json()
-        setUsersArray(users)
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}/friends`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${await getToken()}`
+          }
+        })
+        const data = await res.json()
+        console.log(data)
+        const friends: friend[] = data.userFriends
+        setFriendsArray(friends)
       } catch (err) {
-        console.error("error in fetching users: ", err)
+        console.error("error in fetching friends: ", err)
       } finally {
         setisLoading(false)
       }
@@ -66,8 +78,9 @@ const ChatBoxes = () => {
       ))} */}
 
       {isLoading && <GeneralLoader />}
-      {!isLoading && usersArray.map((user) => (
-        <ChatBoxTemplate username={user.username} latestMsg={`${user.username} joined Chatsify!`} imgUrl={user.imageUrl} key={user.id} />
+      {!isLoading && friendsArray.length === 0 && <p className="h-full w-full flex justify-center items-center">No friends</p>}
+      {!isLoading && friendsArray.map((friend) => (
+        <ChatBoxTemplate username={friend.friendUsername} latestMsg={`${friend.friendUsername} joined Chatsify!`} imgUrl={friend.friendAvatar} key={friend.friendUsername} />
       ))}
 
     </div>

@@ -7,6 +7,7 @@ type User = {
   id: string
   username: string
   imageUrl: string
+  
 }
 
 interface SearchResultWindowPropsType {
@@ -38,6 +39,7 @@ const SearchResultWindow = ({ users }: SearchResultWindowPropsType) => {
             key={user.id}
             username={user.username}
             imgUrl={user.imageUrl}
+            id={user.id}
           />
         ))
       )}

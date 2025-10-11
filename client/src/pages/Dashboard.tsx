@@ -3,6 +3,9 @@ import { useSidebarStore } from "../zustand/store/SidebarStore"
 import Sidebar from "../components/Sidebar"
 import ChatWindowTemplate from "../components/ChatWindow/ChatWindowTemplate"
 import { useActiveScreenStore } from "../zustand/store/ActiveScreenStore"
+import FriendRequestsWindow from "../components/FriendRequestsWindow/FriendRequestsWindow"
+import { useUser } from "@clerk/clerk-react"
+
 
 interface ResizableSidebarProps {
   defaultWidth?: number,
@@ -23,6 +26,50 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
   const showSidebar = useSidebarStore(state => state.showSidebar)
 
   const { activeScreen } = useActiveScreenStore()
+  const { user } = useUser()
+
+  const controller = new AbortController()
+  const { signal } = controller
+
+  useEffect(() => {
+    console.log({
+      clerkUserId: user?.id,
+      username: user?.username,
+      email: user?.emailAddresses[0].emailAddress,
+      avatar: user?.imageUrl
+    })
+    const sendYourData = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            clerkUserId: user?.id,
+            username: user?.username,
+            email: user?.emailAddresses[0].emailAddress,
+            avatar: user?.imageUrl
+          }),
+          signal
+        })
+        const data = await res.json()
+        console.log(data)
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          console.log("request aborted")
+          return
+        }
+        console.error("error in sending your data: ", err)
+      }
+    }
+    sendYourData()
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
 
   // Update widths on window resize
   useEffect(() => {
@@ -111,7 +158,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
   return (
     <>
       <div
-        className={showSidebar ? "brightness-50 transition duration-300 ease-in" : ""}
+        className={showSidebar? "brightness-50 transition duration-300 ease-in" : ""}
         onClick={() => {
           if (showSidebar) {
             setShowSidebar(false)
@@ -183,6 +230,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
       )} */}
 
       {showSidebar && <Sidebar />}
+      {activeScreen === "FriendRequestsWindow" ? <FriendRequestsWindow /> : ""}
 
     </>
   )
