@@ -9,7 +9,7 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
     const chatWindowAvatar = useChatWindowAvatarStore((state) => state.chatWindowAvatar)
 
     return (
-        <div className="h-[60px] w-full bg-[#0f0f0f] px-3 flex justify-between items-center border-b border-b-[#212121] shrink-0">
+        <div className="h-[60px] w-full bg-[#0f0f0f] px-3 flex justify-between items-center shrink-0">
 
             <div className="left-side-of-navbar flex gap-3 items-center">
 

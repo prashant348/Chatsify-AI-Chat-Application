@@ -111,7 +111,7 @@ router.post("/api/send-request", async (req, res) => {
 })
 
 router.get("/api/receive-request", async (req, res) => {
-    try { 
+    try {
 
         // get the userid of receiver
         const { userId } = getAuth(req)
@@ -145,8 +145,9 @@ router.post("/api/accept-request", async (req, res) => {
         const { senderUsername, senderAvatar, senderId } = req.body
         // get receiver's clerk id using getAuth() and clerkMiddleware()
         const { userId } = getAuth(req)
-        // for debugging
+        // for debugging 
         console.log({ senderUsername, senderAvatar, senderId })
+
         console.log(userId)
 
         // check if sender and receiver exist
@@ -190,7 +191,9 @@ router.post("/api/accept-request", async (req, res) => {
             return
         }
 
-        // if not, then make them friend! by adding each others detail in their friends[] field
+        console.log("receiver: ", { username: receiver.username, avatar: receiver.avatar })
+        console.log("yaha tak ho gaya")
+        // if not, then make them friend! by adding each others detail in their friends[] field...
         sender.friends.push({
             friendClerkId: userId,
             friendUsername: receiver.username,
@@ -201,6 +204,15 @@ router.post("/api/accept-request", async (req, res) => {
             friendClerkId: senderId,
             friendUsername: senderUsername,
             friendAvatar: senderAvatar
+        })
+
+        console.log("idhar talak bhi ho gaya")
+        // ...and add a msg in sender's inbox about receiver (you) accepted the friend request 
+        sender.inbox.push({
+            userId: userId,
+            username: receiver.username,
+            msg: "Accepted your friend request!",
+            userAvatar: receiver.avatar
         })
 
         // save changes
@@ -249,9 +261,9 @@ router.delete("/api/reject-request", async (req, res) => {
             // if there is no req, means dont exists, means already deleted
             if (reqAlreadyDeleted) {
                 console.log("req already rejected!")
-                res.status(409).json({ message: "req already rejected!"})
+                res.status(409).json({ message: "req already rejected!" })
                 return
-            } 
+            }
 
             // if there is req, delete the pending req from sender's friendRequestsSentTo[] field
             await User.updateOne(
@@ -273,6 +285,16 @@ router.delete("/api/reject-request", async (req, res) => {
                 }
             )
 
+            // ...and add a msg in sender's inbox about receiver (you) rejected the friend request 
+            sender.inbox.push({
+                userId: receiver.clerkUserId,
+                username: receiver.username,
+                msg: "Rejected your friend request!",
+                userAvatar: receiver.avatar
+            })
+
+            await sender.save()
+
             // give success response of deleting pending friend request
             res.status(200).json({ message: "req rejected!" })
             console.log("req rejected!")
@@ -287,6 +309,56 @@ router.delete("/api/reject-request", async (req, res) => {
         res.status(500).json({ message: err })
     }
 })
+
+router.get("/api/:userid/inbox", async (req, res) => {
+    try {
+        const { userid } = req.params
+        console.log(userid)
+        const user = await User.findOne({ clerkUserId: userid })
+        if (!user) {
+            res.status(404).json({ message: "user(you) not found!" })
+            return
+        }
+        res.status(200).json({ inbox: user.inbox })
+        console.log("inbox fetched!")
+    } catch (err) {
+        console.error("error in fetching inbox msgs: ", err)
+        res.status(500).json({ message: err })
+    }
+})
+
+router.delete("/api/:userid/inbox", async (req, res) => {
+    try {
+        const { userid } = req.params
+        const { userId, receivedAt } = req.body
+
+        const userToDeleteId = userId
+
+        console.log(userid)
+        const user = await User.findOne({ clerkUserId: userid })
+        if (!user) {
+            res.status(404).json({ message: "user(you) not found!" })
+            return
+        }
+
+        await User.updateOne(
+            { clerkUserId: userid },
+            {
+                $pull: {
+                    inbox: { userId: userToDeleteId, receivedAt: receivedAt }
+                }
+            }
+        )
+
+        res.status(200).json({ inbox: user.inbox })
+        console.log("inbox msg deleted!")
+
+    } catch (err) {
+        console.error("error in deleting inbox msgs: ", err)
+        res.status(500).json({ message: err })
+    }
+})
+
 
 
 export default router

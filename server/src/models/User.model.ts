@@ -19,6 +19,14 @@ const FriendsSchema = new mongoose.Schema({
     friendAvatar: { type: String, required: true }
 })
 
+const InboxSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    username: { type: String, required: true },
+    userAvatar: { type: String, required: true },
+    msg: {type: String, required: true },
+    receivedAt: { type: Date, default: Date.now }
+})
+
 const UserSchema = new mongoose.Schema({
     clerkUserId: { type: String, unique: true, required: true, sparse: true },
     username: { type: String, unique: true, required: true },
@@ -26,7 +34,8 @@ const UserSchema = new mongoose.Schema({
     avatar: { type: String }, 
     friends: { type: [FriendsSchema] },
     friendRequestsSentTo: { type: [ReceiverFriendSchema] },
-    friendRequestsReceivedFrom: { type: [SenderFriendSchema] }
+    friendRequestsReceivedFrom: { type: [SenderFriendSchema] },
+    inbox: { type: [InboxSchema] }
 })
 
 // const UserSchema = new mongoose.Schema({

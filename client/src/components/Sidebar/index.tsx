@@ -17,7 +17,7 @@ const Sidebar = () => {
             e.stopPropagation()
         }}>
             <div
-                className="fixed top-0 left-0 z-50 bg-[#0f0f0f] h-screen w-[274px] border-r border-r-[#212121] text-white"
+                className="fixed top-0 left-0 z-50 bg-[#0f0f0f] h-screen w-[254px] sm:w-[274px] border-r border-r-[#212121] text-white"
                 style={{
                     animation: "slide-in 0.3s ease-in-out forwards",
                 }}

@@ -21,7 +21,7 @@ const ChatWindowBottomNavbar = () => {
     }
 
     return (
-    <div className="h-[60px] w-full bg-[#0f0f0f] border-t border-t-[#212121] flex justify-between items-center px-3 shrink-0">
+    <div className="h-[60px] w-full flex justify-between items-center px-3 shrink-0 ">
 
             <div className="upload-file-media flex">
                 <button className="opacity-60 hover:opacity-100">
@@ -40,13 +40,14 @@ const ChatWindowBottomNavbar = () => {
 
                 <button 
                 className="opacity-60 hover:opacity-100"
-                onClick={(e) => {
+                onClick={() => {
                     handleSendBtnClick()
                 }}
                 >
                     <SHI />
                 </button>
             </div>
+            
         </div>
     )
 }

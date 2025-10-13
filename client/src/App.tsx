@@ -11,6 +11,7 @@ import ChatWindowTemplate from "./components/ChatWindow/ChatWindowTemplate";
 import { useEffect, useState } from "react";
 import "./App.css"
 import FriendRequestsWindow from "./components/FriendRequestsWindow/FriendRequestsWindow";
+import InboxWindow from "./components/InboxWindow/InboxWindow";
 
 const App = () => {
 
@@ -66,7 +67,7 @@ const App = () => {
                   {/* <Dashboard children={<SidebarMainContent />}/> */}
 
 
-                  {windowInnerWidth > 640 && (activeScreen === "MainScreen" || activeScreen === "ChatWindow" || activeScreen === "FriendRequestsWindow") && (
+                  {windowInnerWidth > 640 && (activeScreen === "MainScreen" || activeScreen === "ChatWindow" || activeScreen === "FriendRequestsWindow" || activeScreen === "InboxWindow") && (
                     <Dashboard children={<SidebarMainContent />} />
                   )}
 
@@ -88,6 +89,14 @@ const App = () => {
                     className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
                     >
                       <FriendRequestsWindow />
+                    </div>
+                  )}
+
+                  {windowInnerWidth <= 640 && activeScreen === "InboxWindow" && (
+                    <div 
+                    className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
+                    >
+                      <InboxWindow />
                     </div>
                   )}
 

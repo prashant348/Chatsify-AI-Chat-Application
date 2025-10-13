@@ -5,6 +5,8 @@ import ChatWindowTemplate from "../components/ChatWindow/ChatWindowTemplate"
 import { useActiveScreenStore } from "../zustand/store/ActiveScreenStore"
 import FriendRequestsWindow from "../components/FriendRequestsWindow/FriendRequestsWindow"
 import { useUser } from "@clerk/clerk-react"
+import InboxWindow from "../components/InboxWindow/InboxWindow"
+
 
 
 interface ResizableSidebarProps {
@@ -213,6 +215,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
               style={{ flexGrow: 1 }}
             >
               {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : <p>Select a Chat to start messaging</p>}
+              {}
             </div>
           )}
         </div>
@@ -231,7 +234,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
       {showSidebar && <Sidebar />}
       {activeScreen === "FriendRequestsWindow" ? <FriendRequestsWindow /> : ""}
-
+      {activeScreen === "InboxWindow" ? <InboxWindow /> : ""}
     </>
   )
 }

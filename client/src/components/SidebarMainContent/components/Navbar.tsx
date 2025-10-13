@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useGeneralLoaderStore } from '../../../zustand/store/GeneralLoader.ts'
 import { useFilteredUsersStore } from '../../../zustand/store/FilteredUsers.ts'
 import { useSearchResultWindowResponseStore } from '../../../zustand/store/SearchResultWindowResponse.ts'
-
+import { useReqSentStore } from '../../../zustand/store/ReqSentStore.ts'
 
 
 type User = {
@@ -26,7 +26,7 @@ const Navbar = () => {
   const setSearchResultWindowResponse = useSearchResultWindowResponseStore(state => state.setSearchResultWindowResponse)
   const controller = new AbortController();
   const { signal } = controller
-
+  const { setIsReqSent } = useReqSentStore()
   const handleHambtnClick = () => {
     setShowSidebar(true)
   }
@@ -107,7 +107,7 @@ const Navbar = () => {
           ref={searchInputRef}
           type="text"
           className='bg-[#212121] outline-none hover:border hover:px-[15px] hover:border-[#363636] text-white rounded-r-full rounded-l-full w-full h-full px-4 '
-          placeholder='Search people'
+          placeholder='Search people globaly'
           onFocus={() => {
             console.log("focus")
             setShowSearchResultWindow(true)
@@ -116,12 +116,16 @@ const Navbar = () => {
             // jiski vajah msg "Search people by their username!" ki jagah "No users found!" msg dikh raha tha, jo ki ek logical bug tha!
             setFilteredUsers([])
             setSearchResultWindowResponse("Search people by their usernames!")
+            setIsReqSent(false)
           }}
           onBlur={(e) => {
             console.log("onblur")
             setShowSearchResultWindow(false)
             e.target.value = ""
             setFilteredUsers([])
+            // becoz last seacrh get saved in query state and when you search that again
+            // then query state get same value -> means no change -> means code inside useEffect will not get executed! 
+            setQuery("")
           }}
 
           style={{

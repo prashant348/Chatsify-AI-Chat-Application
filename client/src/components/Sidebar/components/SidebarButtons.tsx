@@ -35,13 +35,15 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+
                 >
                     <ShipWheel height={"20px"} />
-                    <span className="">Chatsify AI</span>
+                    <span>Chatsify AI</span>
                 </button>
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    onClick={() => setActiveScreen("InboxWindow")}
                 >
                     <Inbox height={"20px"} />
                     <span className="">Inbox</span>
