@@ -13,10 +13,17 @@ const SenderFriendSchema = new mongoose.Schema({
     receivedAt: { type: Date, default: Date.now }
 })
 
+const MessageSchema = new mongoose.Schema({
+    msg: { type: String, required: true },
+    sentAt: { type: Date, default: Date.now },
+    type: { type: String, required: true }
+})
+
 const FriendsSchema = new mongoose.Schema({
     friendClerkId: { type: String, required: true },
     friendUsername: { type: String, required: true },
-    friendAvatar: { type: String, required: true }
+    friendAvatar: { type: String, required: true },
+    messages:  { type: [MessageSchema] }
 })
 
 const InboxSchema = new mongoose.Schema({

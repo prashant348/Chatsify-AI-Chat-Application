@@ -54,6 +54,22 @@ router.post("/api/:userid", async (req, res) => {
     }
 })
 
+router.get("/api/user/:username", async (req, res) => {
+    try {
+        const { username } = req.params
+
+        const user = await User.findOne({ username: username })
+
+        if (!user) return res.status(404).json({ message: "user not found" })
+
+        const userId = user.clerkUserId
+        res.status(200).json({ userId })
+
+    } catch (err) {
+        console.error("err in fetching user clerk id", err)
+        res.status(500).json(err)
+    }
+})
 
 
 export default router
