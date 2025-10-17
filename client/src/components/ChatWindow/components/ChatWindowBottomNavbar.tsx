@@ -1,7 +1,6 @@
 import { PaperclipIcon } from "lucide-react"
 import { SmileIcon, SendHorizonalIcon as SHI } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { connectSocket, disconnectSocket, socket } from "../../../lib/socket"
 import { useUser } from "@clerk/clerk-react"
 import { useSocket } from "../../../hooks/useSocket"
 import { useChatWindowUsernameStore } from "../../../zustand/store/ChatWindowUsername"

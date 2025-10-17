@@ -8,6 +8,10 @@ type friend = {
   id?: string,
   friendUsername: string,
   friendAvatar: string
+  messages: {
+    msg: string,
+    type: "sent" | "received"
+  }[],
 }
 
 const ChatBoxes = () => {
@@ -80,7 +84,11 @@ const ChatBoxes = () => {
       {isLoading && <GeneralLoader />}
       {!isLoading && friendsArray.length === 0 && <p className="h-full w-full flex justify-center items-center">No friends</p>}
       {!isLoading && friendsArray.map((friend) => (
-        <ChatBoxTemplate username={friend.friendUsername} latestMsg={`${friend.friendUsername} joined Chatsify!`} imgUrl={friend.friendAvatar} key={friend.friendUsername} />
+        <ChatBoxTemplate 
+        username={friend.friendUsername} 
+        lastMsg={`${friend.messages[friend.messages.length - 1]?.msg === undefined? "": friend.messages[friend.messages.length - 1].msg}`} 
+        lastMsgType={friend.messages[friend.messages.length - 1]?.type}
+        imgUrl={friend.friendAvatar} key={friend.friendUsername} />
       ))}
 
     </div>

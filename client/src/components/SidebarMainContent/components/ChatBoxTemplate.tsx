@@ -4,13 +4,14 @@ import { useChatWindowAvatarStore } from "../../../zustand/store/ChatWindowAvata
 
 interface ChatBoxTemplatePropsType {
   username: string,
-  latestMsg?: string,
+  lastMsg?: string,
   imgUrl: string
+  lastMsgType: "sent" | "received"
 }
 
 
 
-export default function ChatBoxTemplate({ username, latestMsg, imgUrl }: ChatBoxTemplatePropsType) {
+export default function ChatBoxTemplate({ username, lastMsg, lastMsgType,  imgUrl }: ChatBoxTemplatePropsType) {
 
   const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
   const setChatWindowUsername = useChatWindowUsernameStore((state) => state.setChatWindowUsername)
@@ -30,7 +31,15 @@ export default function ChatBoxTemplate({ username, latestMsg, imgUrl }: ChatBox
 
       <div className="user-username latest-msg flex flex-col">
         <p className="text-[16px] font-bold">{username}</p>
-        <p className="last-seen-msg text-sm opacity-60">{latestMsg}</p>
+        <p 
+        className="last-seen-msg text-sm"
+        style={{
+          opacity: lastMsgType === "sent" ? 1 : 0.6,
+          color: lastMsgType === "sent" ? "#1a73e8" : ""
+        }}
+        >
+          {lastMsg}
+        </p>
       </div>
 
     </div>
