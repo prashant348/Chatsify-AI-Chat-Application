@@ -11,6 +11,8 @@ import { Server as ioServer } from "socket.io";
 import { Socket } from "socket.io";
 import { User } from "./models/User.model";
 import chatMessageRouter from "./routes/chatMessage.route";
+import chatbotRouter from "./routes/chatbot.route"
+
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -22,6 +24,7 @@ app.use(cors({
     credentials: true
 }))
 app.use(express.json())
+app.use("/", chatbotRouter)
 app.use("/", chatMessageRouter)
 app.use("/", friendRequestRouter)
 app.use("/", userRouter)
@@ -32,7 +35,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // creating a socket.io server
 const io = new ioServer(server, {
-    cors: { 
+    cors: {
         origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
         methods: ["GET", "POST"],
         credentials: true
@@ -40,13 +43,50 @@ const io = new ioServer(server, {
 })
 
 io.on("connection", (socket: Socket) => {
-    console.log("user connected: ", socket.id)
-    const userId = socket.handshake.query.userId as string
-    console.log(userId)
+    // console.log("user connected: ", socket.id)
+    const userId = socket.handshake.query.userId as string 
     socket.join(userId)
 
+    socket.on("send-msg-chatbot", async (msg) => {
+        console.log("from client: ", msg)
+
+        
+        // generate response from AI on the basis of user input: msg
+        const flaskRes = await fetch("http://127.0.0.1:5001/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+            },
+            body: JSON.stringify({ prompt: msg }), // JSON format mai bhejna zaruri hai
+        })
+        
+        const flaskData = await flaskRes.json()      
+        console.log(flaskData)    
+ 
+        if (!flaskData.reply) return 
+
+        // after getting response from AI, send it to the client
+        io.to(userId).emit("receive-msg-chatbot", flaskData.reply)
+
+        // save you and bot msg in db
+        const user = await User.findOne({ clerkUserId: userId })
+
+        if (!user) {
+            console.log("user not found!")
+            return
+        } 
+
+        user.chatbotChats.push({
+            you: msg,
+            bot: flaskData.reply
+        })
+
+        await user.save()
+        console.log("you and bot msg saved in db")
+    })
+
     socket.on("private-message", async ({ to, message, from }) => {
-        console.log(`📩 Message from ${from} to ${to}: ${message}`);
+        // console.log(`📩 Message from ${from} to ${to}: ${message}`);
         io.to(to).emit("receive-message", { message, from })
 
         const sender = await User.findOne({ clerkUserId: from })
@@ -67,7 +107,7 @@ io.on("connection", (socket: Socket) => {
         })
 
         receiver.friends.find(friend => {
-            if (friend.friendClerkId === from) { 
+            if (friend.friendClerkId === from) {
                 friend.messages.push({
                     msg: message,
                     type: "received"
@@ -77,12 +117,13 @@ io.on("connection", (socket: Socket) => {
 
         await sender.save()
         await receiver.save()
+        console.log("sent")
         console.log("chat saved in sender and receiver db")
 
     })
 
     socket.on("disconnect", () => {
-        console.log("user disconnected: ", socket.id) 
+        console.log("user disconnected: ", socket.id)
     })
 
 })
@@ -90,5 +131,5 @@ io.on("connection", (socket: Socket) => {
 
 server.listen(PORT, async () => {
     await connectDB()
-    console.log(`Server is running at http://localhost:${PORT}`) 
+    console.log(`Server is running at http://localhost:${PORT}`)
 })

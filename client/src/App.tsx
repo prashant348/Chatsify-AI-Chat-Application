@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import "./App.css"
 import FriendRequestsWindow from "./components/FriendRequestsWindow/FriendRequestsWindow";
 import InboxWindow from "./components/InboxWindow/InboxWindow";
+import ChatbotWindow from "./components/ChatbotWindow/ChatbotWindow";
+
 
 const App = () => {
 
@@ -22,7 +24,7 @@ const App = () => {
   useEffect(() => {
     const returnWindowInnerWidth = () => {
       setWindowInnerWidth(window.innerWidth)
-      console.log(window.visualViewport)
+      // console.log(window.visualViewport)
     }
     
     window.addEventListener("resize", returnWindowInnerWidth)
@@ -33,7 +35,7 @@ const App = () => {
 
   }, [])
 
-
+ 
   
 
 
@@ -67,7 +69,13 @@ const App = () => {
                   {/* <Dashboard children={<SidebarMainContent />}/> */}
 
 
-                  {windowInnerWidth > 640 && (activeScreen === "MainScreen" || activeScreen === "ChatWindow" || activeScreen === "FriendRequestsWindow" || activeScreen === "InboxWindow") && (
+                  {windowInnerWidth > 640 && (
+                    activeScreen === "MainScreen" 
+                    || activeScreen === "ChatWindow" 
+                    || activeScreen === "FriendRequestsWindow" 
+                    || activeScreen === "InboxWindow"
+                    || activeScreen === "ChatbotWindow"
+                  ) && (
                     <Dashboard children={<SidebarMainContent />} />
                   )}
 
@@ -97,6 +105,14 @@ const App = () => {
                     className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
                     >
                       <InboxWindow />
+                    </div>
+                  )}
+
+                  {windowInnerWidth <= 640 && activeScreen === "ChatbotWindow" && (
+                    <div 
+                    className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
+                    >
+                      <ChatbotWindow />
                     </div>
                   )}
 

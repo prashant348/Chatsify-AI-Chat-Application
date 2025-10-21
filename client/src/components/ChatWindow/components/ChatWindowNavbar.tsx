@@ -2,11 +2,11 @@ import { SidebarIcon, MoreVerticalIcon, ArrowLeft } from "lucide-react"
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useChatWindowAvatarStore } from '../../../zustand/store/ChatWindowAvatar.ts'
 
-
-const ChatWindowNavbar = ({ username }: { username: string }) => {
+const ChatWindowNavbar = ({ username }: { username: string}) => {
 
     const setActiveScreen = useActiveScreenStore(state => state.setActiveScreen)
     const chatWindowAvatar = useChatWindowAvatarStore((state) => state.chatWindowAvatar)
+  
 
     return (
         <div className="h-[60px] w-full bg-[#0f0f0f] px-3 flex justify-between items-center shrink-0">
@@ -28,7 +28,7 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
 
                 <div className="user-username status flex flex-col">
                     <p className="text-[16px] font-bold">{username}</p>
-                    <p className="last-seen-msg text-sm text-green-500">online</p>
+                    <p className="last-seen-msg text-sm text-green-500"></p>
                 </div>
             </div>
 

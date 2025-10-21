@@ -16,7 +16,6 @@ interface ChatBoxTemplatePropsType {
 function Modal({ msg }: { msg: string }) {
 
   const { setIsReqSent } = useReqSentStore()
-
   return (
     <div 
     className="h-screen w-full fixed left-0 top-0 z-100 flex justify-center items-center bg-black/50"
@@ -25,6 +24,7 @@ function Modal({ msg }: { msg: string }) {
       e.preventDefault()
       e.stopPropagation()
       setIsReqSent(false)
+      
     }}
     >
       <div 
@@ -52,6 +52,7 @@ export default function ChatBoxTemplate({ username, latestMsg, imgUrl, id }: Cha
   const { user } = useUser()
   const [ resMsg, setResMsg ] = useState<string>("")
   const { isReqSent, setIsReqSent } = useReqSentStore()
+
   const handleSendReqClick = async () => {
 
     try {
@@ -91,7 +92,9 @@ export default function ChatBoxTemplate({ username, latestMsg, imgUrl, id }: Cha
         console.log("mousedown")
         e.preventDefault()
         e.stopPropagation()
+        console.log("chatbox clicked: ", id)
       }}
+
     >
       
       <div className="flex items-center gap-[10px]">

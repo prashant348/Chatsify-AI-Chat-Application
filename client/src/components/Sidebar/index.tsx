@@ -10,7 +10,6 @@ const Sidebar = () => {
     const { user } = useUser()
 
 
-
     return (
         <div className="overflow-y-auto" onMouseDown={(e) => {
             e.preventDefault()

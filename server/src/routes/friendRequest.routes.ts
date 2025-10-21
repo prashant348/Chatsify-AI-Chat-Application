@@ -14,12 +14,8 @@ router.use(clerkMiddleware())
 router.get("/api/:userid/friends", async (req, res) => {
     try {
         const { userid } = req.params
-        console.log(userid)
-
         // get clerk user id of currently signed in user
         const { userId } = getAuth(req)
-        console.log(userId)
-
         // check if user exists
         const user = await User.findOne({ clerkUserId: userId })
 
@@ -37,7 +33,6 @@ router.get("/api/:userid/friends", async (req, res) => {
         // success reponse - showing all friends of the user at this end point for rendering them on frontend!
         res.status(200).json({ userFriends: userFriends })
         // for debugging    
-        console.log("friends fetched!")
     } catch (err) {
         console.error("error in fetching friends: ", err)
         res.status(500).json({ message: err })
@@ -48,16 +43,9 @@ router.post("/api/send-request", async (req, res) => {
     try {
         // data received from frontend
         const { senderId, senderUsername, senderEmail, senderAvatar, receiverId, receiverUsername } = req.body
-
-        // for debugging
-        console.log({
-            senderId, senderUsername, senderEmail, senderAvatar, receiverId, receiverUsername
-        })
-
         // check if sender and receiver exist 
         const sender = await User.findOne({ clerkUserId: senderId })
         const receiver = await User.findOne({ clerkUserId: receiverId })
-
         // if sender and receiver both exist then...
         if (sender && receiver) {
 
@@ -96,13 +84,11 @@ router.post("/api/send-request", async (req, res) => {
 
             // success response
             res.status(201).json({ message: "req sent!" })
-            console.log("req sent!") // for debugging
             return
         }
 
         // if one of them or both dont exists
         res.status(404).json({ message: "sender or receiver not found!" })
-        console.log("sender or receiver not found!")
 
     } catch (err) {
         console.error("error in sending friend req: ", err)
@@ -112,25 +98,17 @@ router.post("/api/send-request", async (req, res) => {
 
 router.get("/api/receive-request", async (req, res) => {
     try {
-
         // get the userid of receiver
         const { userId } = getAuth(req)
-
-        // for debugging
-        console.log(userId)
-
         // check if receiver exists
         const receiver = await User.findOne({ clerkUserId: userId })
-
         // no need but still for safety!
         if (!receiver) {
             res.status(404).json({ message: "user not found!" })
             return
         }
-
         // fetch all received friend requests
         const friendRequests = receiver.friendRequestsReceivedFrom
-        console.log("friendRequests: ", friendRequests)
         // success response 
         res.status(200).json({ receiverId: userId, friendRequestsReceivedFrom_List: friendRequests })
     } catch (err) {
@@ -146,10 +124,6 @@ router.post("/api/accept-request", async (req, res) => {
         // get receiver's clerk id using getAuth() and clerkMiddleware()
         const { userId } = getAuth(req)
         // for debugging 
-        console.log({ senderUsername, senderAvatar, senderId })
-
-        console.log(userId)
-
         // check if sender and receiver exist
         const sender = await User.findOne({ clerkUserId: senderId })
         const receiver = await User.findOne({ clerkUserId: userId })
@@ -190,9 +164,6 @@ router.post("/api/accept-request", async (req, res) => {
             res.status(409).json({ message: "friend already exists in receiver friends list!" })
             return
         }
-
-        console.log("receiver: ", { username: receiver.username, avatar: receiver.avatar })
-        console.log("yaha tak ho gaya")
         // if not, then make them friend! by adding each others detail in their friends[] field...
         sender.friends.push({
             friendClerkId: userId,
@@ -205,8 +176,6 @@ router.post("/api/accept-request", async (req, res) => {
             friendUsername: senderUsername,
             friendAvatar: senderAvatar
         })
-
-        console.log("idhar talak bhi ho gaya")
         // ...and add a msg in sender's inbox about receiver (you) accepted the friend request 
         sender.inbox.push({
             userId: userId,
@@ -222,7 +191,6 @@ router.post("/api/accept-request", async (req, res) => {
         await User.updateOne({ clerkUserId: senderId }, { $pull: { friendRequestsSentTo: { receiverId: userId } } })
         await User.updateOne({ clerkUserId: userId }, { $pull: { friendRequestsReceivedFrom: { senderId: sender.clerkUserId } } })
         res.status(201).json({ message: "req accepted!" })
-        console.log("req accepted!")
     } catch (err) {
         console.error("err in accepting req: ", err)
         res.status(500).json({ message: err })
@@ -236,10 +204,6 @@ router.delete("/api/reject-request", async (req, res) => {
 
         // receiving data from frontend!
         const { senderId, receiverId } = req.body
-
-        // for debugging
-        console.log({ senderId, receiverId })
-
         // check if sender and receiver both exist!
         const sender = await User.findOne({ clerkUserId: senderId })
         const receiver = await User.findOne({ clerkUserId: receiverId })
@@ -297,12 +261,11 @@ router.delete("/api/reject-request", async (req, res) => {
 
             // give success response of deleting pending friend request
             res.status(200).json({ message: "req rejected!" })
-            console.log("req rejected!")
             return
         }
 
         // if one of them not exist
-        console.log("sender or receiver does not exists!")
+        res.status(404).json({ message: "sender or receiver not found!" })
 
     } catch (err) {
         console.error("error in rejecting request: ", err)
@@ -313,14 +276,12 @@ router.delete("/api/reject-request", async (req, res) => {
 router.get("/api/:userid/inbox", async (req, res) => {
     try {
         const { userid } = req.params
-        console.log(userid)
         const user = await User.findOne({ clerkUserId: userid })
         if (!user) {
             res.status(404).json({ message: "user(you) not found!" })
             return
         }
         res.status(200).json({ inbox: user.inbox })
-        console.log("inbox fetched!")
     } catch (err) {
         console.error("error in fetching inbox msgs: ", err)
         res.status(500).json({ message: err })
@@ -331,10 +292,7 @@ router.delete("/api/:userid/inbox", async (req, res) => {
     try {
         const { userid } = req.params
         const { userId, receivedAt } = req.body
-
         const userToDeleteId = userId
-
-        console.log(userid)
         const user = await User.findOne({ clerkUserId: userid })
         if (!user) {
             res.status(404).json({ message: "user(you) not found!" })
@@ -351,14 +309,48 @@ router.delete("/api/:userid/inbox", async (req, res) => {
         )
 
         res.status(200).json({ inbox: user.inbox })
-        console.log("inbox msg deleted!")
-
     } catch (err) {
         console.error("error in deleting inbox msgs: ", err)
         res.status(500).json({ message: err })
     }
 })
 
+router.delete("/api/:userid/remove-friend", async (req, res) => {
+    try {
+        const { friendId } = req.body
+        const { userid } = req.params
+        const user = await User.findOne({ clerkUserId: userid })
+        const friend = await User.findOne({ clerkUserId: friendId })
+        console.log("you: ", userid, " friend: ", friendId)
+        if (!user || !friend) {
+            res.status(404).json({ message: "user(you) or friend not found!" })
+            return
+        }
+
+        await User.updateOne(
+            { clerkUserId: userid },
+            {
+                $pull: {
+                    friends: { friendClerkId: friendId }
+                }
+            }
+        )
+
+        await User.updateOne(
+            { clerkUserId: friendId },
+            {
+                $pull: {
+                    friends: { friendClerkId: userid }
+                }
+            }
+        )
+        res.status(200).json({ friends: user.friends })
+        console.log("friend removed!")
+    } catch(err) {
+        console.log("error in removing friend: ", err)
+        res.status(500).json({ message: err })
+    }
+})
 
 
 export default router

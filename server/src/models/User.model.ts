@@ -34,6 +34,12 @@ const InboxSchema = new mongoose.Schema({
     receivedAt: { type: Date, default: Date.now }
 })
 
+const ChatbotSchema = new mongoose.Schema({
+    you: { type: String, required: true },
+    bot: { type: String, required: true },
+    receivedAt: { type: Date, default: Date.now }
+})
+
 const UserSchema = new mongoose.Schema({
     clerkUserId: { type: String, unique: true, required: true, sparse: true },
     username: { type: String, unique: true, required: true },
@@ -42,7 +48,8 @@ const UserSchema = new mongoose.Schema({
     friends: { type: [FriendsSchema] },
     friendRequestsSentTo: { type: [ReceiverFriendSchema] },
     friendRequestsReceivedFrom: { type: [SenderFriendSchema] },
-    inbox: { type: [InboxSchema] }
+    inbox: { type: [InboxSchema] },
+    chatbotChats: { type: [ChatbotSchema]}
 })
 
 // const UserSchema = new mongoose.Schema({

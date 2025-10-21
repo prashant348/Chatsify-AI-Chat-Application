@@ -36,6 +36,7 @@ const ChatWindowBottomNavbar = () => {
         fetchReceiverId(chatWindowUsername)
     }, [])
 
+
     useEffect(() => {
         socket.connect()
 
@@ -55,7 +56,7 @@ const ChatWindowBottomNavbar = () => {
             socket.off("receive-message")
             socket.disconnect()
         }
-    }, [])
+    }, [receiverUserId])
 
     const sendMessage = (msg: string | undefined) => {
 
@@ -66,7 +67,7 @@ const ChatWindowBottomNavbar = () => {
             from: user?.id
         })
 
-        // setSentMessage()
+       
         addSent(msg)
         msgInputRef.current!.value = ""
     }

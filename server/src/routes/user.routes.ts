@@ -23,13 +23,7 @@ router.get("/api/users", async (req, res) => {
 router.post("/api/:userid", async (req, res) => {
     try {
         const userid = req.params.userid
-        console.log(userid)
         const { clerkUserId, username, email, avatar } = req.body
-
-        console.log({ 
-            clerkUserId, username, email, avatar
-        })
-        
         const userExists = await User.findOne({ clerkUserId: userid })
         
         if (userExists) { 
@@ -47,7 +41,7 @@ router.post("/api/:userid", async (req, res) => {
         })
         
         res.status(201).json({ userInfo: { clerkUserId, username, email, avatar } })
-        console.log("you created in db!")
+
     } catch(err) {
         console.error("Error in fetching you: ", err)
         res.status(500).send(err)
@@ -64,7 +58,7 @@ router.get("/api/user/:username", async (req, res) => {
 
         const userId = user.clerkUserId
         res.status(200).json({ userId })
-
+        
     } catch (err) {
         console.error("err in fetching user clerk id", err)
         res.status(500).json(err)

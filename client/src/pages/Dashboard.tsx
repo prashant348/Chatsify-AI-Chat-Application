@@ -6,8 +6,9 @@ import { useActiveScreenStore } from "../zustand/store/ActiveScreenStore"
 import FriendRequestsWindow from "../components/FriendRequestsWindow/FriendRequestsWindow"
 import { useUser } from "@clerk/clerk-react"
 import InboxWindow from "../components/InboxWindow/InboxWindow"
-
-
+import ChatbotWindow from "../components/ChatbotWindow/ChatbotWindow"
+import { useSidebarWidthStore } from "../zustand/store/SidebarWidth"
+// import { useChatBoxContextMenuStore } from "../zustand/store/ChatBoxContextMenuStore"
 
 interface ResizableSidebarProps {
   defaultWidth?: number,
@@ -32,6 +33,11 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
   const controller = new AbortController()
   const { signal } = controller
+
+  const setSidebarWidthGlobally = useSidebarWidthStore(state => state.setSidebarWidth)
+  // const sidebarWidthGlobally = useSidebarWidthStore(state => state.sidebarWidth)
+
+  // const { showContextMenu, setShowContextMenu } = useChatBoxContextMenuStore()
 
   useEffect(() => {
     console.log({
@@ -70,6 +76,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
     return () => {
       controller.abort()
     }
+
   }, [])
 
 
@@ -143,7 +150,8 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
       // const newWidth = Math.min(Math.max(initialSidebarWidth + dx, minWidth), maxWidth);
       const newWidth: number = initialSidebarWidth + dx
       setSidebarWidth(newWidth);
-
+      setSidebarWidthGlobally(newWidth)
+      setSidebarWidthGlobally(sidebarRef.current?.offsetWidth || defaultWidth)
     }
 
 
@@ -157,10 +165,22 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
   }
 
 
+  // console.log(sidebarRef.current?.offsetWidth)
+  // console.log(showContextMenu)
+  // useEffect(() => {
+
+  //   if (sidebarRef.current?.offsetWidth && !showContextMenu) {
+  //     // console.log(sidebarWidthGlobally)
+  //     setSidebarWidthGlobally(sidebarRef.current?.offsetWidth || defaultWidth)
+  //   }
+
+  // }, [sidebarRef.current?.offsetWidth, showContextMenu, window.innerWidth])
+
+
   return (
     <>
       <div
-        className={showSidebar? "brightness-50 transition duration-300 ease-in" : ""}
+        className={showSidebar ? "brightness-50 transition duration-300 ease-in" : ""}
         onClick={() => {
           if (showSidebar) {
             setShowSidebar(false)
@@ -189,6 +209,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
               position: "relative",
               overflow: "auto"
             }}
+            
           >
             {children}
           </div>
@@ -214,8 +235,9 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
               className="chat-window text-white flex justify-center items-center min-w-[384px]"
               style={{ flexGrow: 1 }}
             >
-              {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : <p>Select a Chat to start messaging</p>}
-              {}
+              {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : ""}
+              {activeScreen === "MainScreen" ? <p>Select a chat to start messaging</p> : ""}
+              {activeScreen === "ChatbotWindow" ? <ChatbotWindow /> : ""}
             </div>
           )}
         </div>
@@ -235,6 +257,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
       {showSidebar && <Sidebar />}
       {activeScreen === "FriendRequestsWindow" ? <FriendRequestsWindow /> : ""}
       {activeScreen === "InboxWindow" ? <InboxWindow /> : ""}
+
     </>
   )
 }

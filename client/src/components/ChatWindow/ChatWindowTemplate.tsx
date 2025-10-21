@@ -8,6 +8,7 @@ const ChatWindowTemplate = () => {
 
   const chatWindowUsername = useChatWindowUsernameStore(state => state.chatWindowUsername)
 
+
   useEffect(() => {
     const setVh = () => {
       const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01;

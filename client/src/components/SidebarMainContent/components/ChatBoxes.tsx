@@ -3,9 +3,9 @@ import { useEffect, useState } from "react"
 import GeneralLoader from "../../GeneralLoader"
 import { useAuth } from "@clerk/clerk-react"
 import { useUser } from "@clerk/clerk-react"
-
+import { ContextMenu } from "./ChatBoxTemplate"
 type friend = {
-  id?: string,
+  friendClerkId: string,
   friendUsername: string,
   friendAvatar: string
   messages: {
@@ -48,7 +48,7 @@ const ChatBoxes = () => {
 
 
   useEffect(() => {
-    const getUsers = async () => {
+    const getFriends = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}/friends`, {
           method: "GET",
@@ -61,13 +61,14 @@ const ChatBoxes = () => {
         console.log(data)
         const friends: friend[] = data.userFriends
         setFriendsArray(friends)
+        console.log(friends)
       } catch (err) {
         console.error("error in fetching friends: ", err)
       } finally {
         setisLoading(false)
       }
     }
-    getUsers()
+    getFriends()
   }, [])
 
   return (
@@ -88,7 +89,10 @@ const ChatBoxes = () => {
         username={friend.friendUsername} 
         lastMsg={`${friend.messages[friend.messages.length - 1]?.msg === undefined? "": friend.messages[friend.messages.length - 1].msg}`} 
         lastMsgType={friend.messages[friend.messages.length - 1]?.type}
-        imgUrl={friend.friendAvatar} key={friend.friendUsername} />
+        imgUrl={friend.friendAvatar} key={friend.friendUsername} 
+        userId={friend.friendClerkId}
+        />
+        
       ))}
 
     </div>

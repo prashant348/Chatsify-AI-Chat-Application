@@ -70,7 +70,7 @@ const ChatWindowChatsArea = () => {
 
 
   return (
-    <div className="h-full w-full bg-[#0f0f0f] flex flex-col overflow-y-auto scrollbar-thin scrollbar-track-[#0f0f0f] scrollbar-thumb-[#212121]">
+    <div className="h-full w-full  flex flex-col overflow-y-auto scrollbar-thin scrollbar-track-[#0f0f0f] scrollbar-thumb-[#212121]">
       <div className="flex flex-col gap-2 p-3">
         {allMessages.map((msg, index) => (
           <p

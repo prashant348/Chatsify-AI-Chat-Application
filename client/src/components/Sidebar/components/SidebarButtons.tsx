@@ -35,7 +35,7 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-
+                    onClick={() => setActiveScreen("ChatbotWindow")}
                 >
                     <ShipWheel height={"20px"} />
                     <span>Chatsify AI</span>
