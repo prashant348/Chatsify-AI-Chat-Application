@@ -1,4 +1,3 @@
-import React from 'react'
 import { ShipWheel, ArrowLeft } from 'lucide-react'
 import { useActiveScreenStore } from '../../../zustand/store/ActiveScreenStore'
 

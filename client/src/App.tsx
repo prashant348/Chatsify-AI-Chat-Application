@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-// import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/clerk-react"
 import { SignIn, SignUp } from "@clerk/clerk-react";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -16,28 +15,18 @@ import ChatbotWindow from "./components/ChatbotWindow/ChatbotWindow";
 
 
 const App = () => {
-
   const { activeScreen } = useActiveScreenStore();
-
-  const [ windowInnerWidth, setWindowInnerWidth ] = useState<number>(window.innerWidth)
+  const [windowInnerWidth, setWindowInnerWidth] = useState<number>(window.innerWidth)
 
   useEffect(() => {
     const returnWindowInnerWidth = () => {
       setWindowInnerWidth(window.innerWidth)
-      // console.log(window.visualViewport)
     }
-    
     window.addEventListener("resize", returnWindowInnerWidth)
-    
-    return () =>{
+    return () => {
       window.removeEventListener("resize", returnWindowInnerWidth)
     }
-
   }, [])
-
- 
-  
-
 
   return (
     <>
@@ -66,18 +55,15 @@ const App = () => {
             element={
               <Loader>
                 <ProtectedRoute >
-                  {/* <Dashboard children={<SidebarMainContent />}/> */}
-
-
                   {windowInnerWidth > 640 && (
-                    activeScreen === "MainScreen" 
-                    || activeScreen === "ChatWindow" 
-                    || activeScreen === "FriendRequestsWindow" 
+                    activeScreen === "MainScreen"
+                    || activeScreen === "ChatWindow"
+                    || activeScreen === "FriendRequestsWindow"
                     || activeScreen === "InboxWindow"
                     || activeScreen === "ChatbotWindow"
                   ) && (
-                    <Dashboard children={<SidebarMainContent />} />
-                  )}
+                      <Dashboard children={<SidebarMainContent />} />
+                    )}
 
 
                   {windowInnerWidth <= 640 && activeScreen === "MainScreen" && (
@@ -85,32 +71,32 @@ const App = () => {
                   )}
 
                   {windowInnerWidth <= 640 && activeScreen === "ChatWindow" && (
-                    <div 
-                    className="fixed top-0 left-0 h-full w-full text-white "  
+                    <div
+                      className="fixed top-0 left-0 h-full w-full text-white "
                     >
                       <ChatWindowTemplate />
                     </div>
                   )}
 
                   {windowInnerWidth <= 640 && activeScreen === "FriendRequestsWindow" && (
-                    <div 
-                    className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
+                    <div
+                      className="fixed top-0 left-0 h-full bg-transparent w-full text-white "
                     >
                       <FriendRequestsWindow />
                     </div>
                   )}
 
                   {windowInnerWidth <= 640 && activeScreen === "InboxWindow" && (
-                    <div 
-                    className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
+                    <div
+                      className="fixed top-0 left-0 h-full bg-transparent w-full text-white "
                     >
                       <InboxWindow />
                     </div>
                   )}
 
                   {windowInnerWidth <= 640 && activeScreen === "ChatbotWindow" && (
-                    <div 
-                    className="fixed top-0 left-0 h-full bg-transparent w-full text-white "  
+                    <div
+                      className="fixed top-0 left-0 h-full bg-transparent w-full text-white "
                     >
                       <ChatbotWindow />
                     </div>
@@ -121,7 +107,6 @@ const App = () => {
               </Loader>
             }
           />
-
         </Routes>
       </Router>
     </>

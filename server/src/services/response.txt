@@ -51,3 +51,119 @@ Bot: I'm Kimi, a large language model developed by Moonshot AI.
 You: hi
 Bot: Hey there! How can I help you today?
 
+You: types of APIs and their use?
+Bot: APIs are not all the same shape; they sit at different layers of the stack, expose different things, and are optimised for different jobs.  
+The easiest way to keep the zoo straight is to ask two questions:
+
+1. What **transport / protocol** is used to reach the API?  
+2. What **style / contract** does the API expose once you reach it?
+
+Below are the main answers you will meet in the wild, what each one is good for, and a one-sentence “use it when …” rule.
+
+-------------------------------------------------
+1. Transport-oriented families
+-------------------------------------------------
+1.1 REST (HTTP)  
+    • Stateless, resource-oriented, uses the verbs of HTTP (GET, POST …).  
+    • Payload normally JSON, but can be XML, binary, etc.  
+    • Use when you want the simplest, most cache-friendly way to expose data over the web.
+
+1.2 GraphQL (HTTP)  
+    • Single end-point; client specifies nested shape of data it wants.  
+    • Use when the client UI is complex, bandwidth is scarce, or you need to aggregate many backend services in one request.
+
+1.3 gRPC (HTTP/2)  
+    • Contract-first with Protocol Buffers; bi-directional streaming.  
+    • Use for low-latency internal service-to-service calls, especially in polyglot micro-service stacks.
+
+1.4 WebSocket / Socket.io  
+    • Full-duplex TCP socket tunneled over HTTP(S).  
+    • Use for chat, live dashboards, multiplayer games—anything that needs real-time push.
+
+1.5 Webhooks (HTTP)  
+    • Reverse REST: you register a URL; the server POSTs to it when something happens.  
+    • Use to receive asynchronous events from Stripe, GitHub, Twilio, etc.
+
+1.6 Server-Sent Events (HTTP)  
+    • One-way stream from server to client over ordinary HTTP.  
+    • Use when only the server needs to push (news feed, stock ticker) and you want to avoid the complexity of WebSockets.
+
+-------------------------------------------------
+2. Style-oriented families
+-------------------------------------------------
+2.1 SOAP (XML over HTTP, SMTP, JMS …)  
+    • Strict WSDL contract, built-in error handling (faults), WS-* security.  
+    • Use inside large enterprises or legacy banking systems that already rely on WS-Security, transactions, etc.
+
+2.2 XML-RPC / JSON-RPC  
+    • Simple remote-procedure-call: one method name, ordered parameters.  
+    • Use for lightweight internal scripting when you do not need REST’s resource modelling.
+
+2.3 OpenAPI-first REST  
+    • REST with a machine-readable Swagger/OpenAPI spec that can generate client SDKs.  
+    • Use when you must ship SDKs in many languages and keep docs in sync with code.
+
+2.4 AsyncAPI / CloudEvents  
+    • Same idea as OpenAPI, but for event-driven or messaging APIs (Kafka, RabbitMQ).  
+    • Use to document topics, schemas, and headers when you publish events.
+
+-------------------------------------------------
+3. Layer-specific families
+-------------------------------------------------
+3.1 Library / Language APIs  
+    • The #include or import you do every day—e.g., the Java List API.  
+    • Use to build software inside one process.
+
+3.2 Operating-system APIs (POSIX, Win32)  
+    • Kernel syscalls exposed as C functions.  
+    • Use when writing native apps or drivers.
+
+3.3 Hardware / Firmware APIs (GPIO, I²C, UART)  
+    • Use to blink LEDs on a Raspberry Pi or read a temperature sensor.
+
+3.4 Browser APIs (DOM, Fetch, WebRTC, WebGL)  
+    • JavaScript interfaces provided by the browser.  
+    • Use to build front-end web applications.
+
+3.5 Third-party SaaS APIs  
+    • Twilio (SMS), SendGrid (email), Stripe (payments), Google Maps (geo).  
+    • Use to add capabilities you do not want to build or maintain.
+
+-------------------------------------------------
+4. Message-bus & streaming APIs
+-------------------------------------------------
+4.1 Kafka Producer/Consumer API  
+    • High-throughput durable log.  
+    • Use for event sourcing, analytics pipeline.
+
+4.2 AMQP (RabbitMQ)  
+    • Reliable queuing with routing rules.  
+    • Use for task queues, retries, competing consumers.
+
+4.3 MQTT  
+    • Tiny header, QoS levels, pub/sub.  
+    • Use for IoT sensors on 2G links.
+
+-------------------------------------------------
+5. Choosing quickly
+-------------------------------------------------
+Need browser + mobile + CDN caching? → REST (OpenAPI)  
+Need one request to fetch nested UI data? → GraphQL  
+Need 50 µs latency between Go and Python services? → gRPC  
+Need Slack to tell you when someone posts? → Webhook  
+Need live sports scores on the page? → WebSocket or SSE  
+Need to pay an invoice from SAP to a 1990s mainframe? → SOAP  
+Need to blink an LED on an ESP32? → GPIO Hardware API
+
+You: generate a simple greeting message
+Bot: Hello there—hope your day’s off to a great start!
+
+You: hi
+Bot: Hi! What can I help you with today?
+
+You: hi
+Bot: Hey! What can I help you with today?
+
+You: hi
+Bot: Hi! What can I help you with today?
+

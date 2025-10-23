@@ -2,27 +2,23 @@ import GeneralLoader from '../GeneralLoader'
 import { useGeneralLoaderStore } from '../../zustand/store/GeneralLoader'
 import ChatBoxTemplate from './components/ChatBoxTemplate'
 import { useSearchResultWindowResponseStore } from '../../zustand/store/SearchResultWindowResponse'
+import type { SearchResultWindowPropsType } from '../../types/SearchResultWindow.types'
 
-type User = {
-  id: string
-  username: string
-  imageUrl: string
+// type User = {
+//   id: string
+//   username: string
+//   imageUrl: string
   
-}
+// }
 
-interface SearchResultWindowPropsType {
-  users: User[]
-}
+// interface SearchResultWindowPropsType {
+//   users: User[]
+// }
 
 const SearchResultWindow = ({ users }: SearchResultWindowPropsType) => {
 
   const { isLoading } = useGeneralLoaderStore()
   const searchResultWindowResponse  = useSearchResultWindowResponseStore(state => state.searchResultWindowResponse)
-
-
-
-
-
 
   return (
     <div 

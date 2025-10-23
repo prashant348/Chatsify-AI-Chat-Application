@@ -9,6 +9,7 @@ import { useUser } from "@clerk/clerk-react"
 import { useAuth } from "@clerk/clerk-react"
 import { useUserIdStore } from "../../../zustand/store/UserIdStore"
 import { useChatBoxContextMenuStore } from "../../../zustand/store/ChatBoxContextMenuStore"
+import { useEffect } from "react"
 
 interface ChatBoxTemplatePropsType {
   username: string,
@@ -116,7 +117,6 @@ export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl
   const { setUserId } = useUserIdStore()
   // const { setSidebarWidth } = useSidebarWidthStore()
 
-  
  
   return (
     <div

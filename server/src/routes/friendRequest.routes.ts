@@ -1,15 +1,10 @@
-
 import express from "express";
-import { User } from "../models/User.model";
+import { User } from "../models/User/User.model";
 import { getAuth } from "@clerk/express";
 import { clerkMiddleware } from "@clerk/express";
 
-
-
 const router = express.Router()
-
 router.use(clerkMiddleware())
-
 
 router.get("/api/:userid/friends", async (req, res) => {
     try {
@@ -197,8 +192,6 @@ router.post("/api/accept-request", async (req, res) => {
     }
 })
 
-
-
 router.delete("/api/reject-request", async (req, res) => {
     try {
 
@@ -351,6 +344,5 @@ router.delete("/api/:userid/remove-friend", async (req, res) => {
         res.status(500).json({ message: err })
     }
 })
-
 
 export default router

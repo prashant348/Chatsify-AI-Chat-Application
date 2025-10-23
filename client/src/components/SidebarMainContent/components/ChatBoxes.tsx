@@ -3,7 +3,9 @@ import { useEffect, useState } from "react"
 import GeneralLoader from "../../GeneralLoader"
 import { useAuth } from "@clerk/clerk-react"
 import { useUser } from "@clerk/clerk-react"
-import { ContextMenu } from "./ChatBoxTemplate"
+// import { ContextMenu } from "./ChatBoxTemplate"
+
+
 type friend = {
   friendClerkId: string,
   friendUsername: string,
@@ -14,12 +16,15 @@ type friend = {
   }[],
 }
 
+
+
 const ChatBoxes = () => {
-  const [ friendsArray, setFriendsArray ] = useState<friend[]>([])
-  const [ isLoading, setisLoading ] = useState<boolean>(true)
+  const [friendsArray, setFriendsArray] = useState<friend[]>([])
+  const [isLoading, setisLoading] = useState<boolean>(true)
   const { getToken } = useAuth()
   const { user } = useUser()
-
+  const [error, setError] = useState<string>("")
+  const [ isRetryBtnClicked, setIsRetryBtnClicked ] = useState<boolean>(false)
 
   // dummy data for testing 
 
@@ -64,12 +69,13 @@ const ChatBoxes = () => {
         console.log(friends)
       } catch (err) {
         console.error("error in fetching friends: ", err)
+        setError("Retry")
       } finally {
         setisLoading(false)
       }
     }
     getFriends()
-  }, [])
+  }, [isRetryBtnClicked])
 
   return (
     <div
@@ -83,16 +89,32 @@ const ChatBoxes = () => {
       ))} */}
 
       {isLoading && <GeneralLoader />}
-      {!isLoading && friendsArray.length === 0 && <p className="h-full w-full flex justify-center items-center">No friends</p>}
+      {!isLoading && friendsArray.length === 0 && !error && <p className="h-full w-full flex justify-center items-center">No friends</p>}
+      {!isLoading 
+      && friendsArray.length === 0
+      && error
+      &&
+      <p className="h-full w-full flex justify-center items-center">
+       <button 
+       className="bg-[#303030] p-2 rounded-md cursor-pointer"
+       onClick={() => {
+        setisLoading(true)
+        setIsRetryBtnClicked(!isRetryBtnClicked)
+       }}>
+        {error}
+       </button>
+      </p>
+      }
+
       {!isLoading && friendsArray.map((friend) => (
-        <ChatBoxTemplate 
-        username={friend.friendUsername} 
-        lastMsg={`${friend.messages[friend.messages.length - 1]?.msg === undefined? "": friend.messages[friend.messages.length - 1].msg}`} 
-        lastMsgType={friend.messages[friend.messages.length - 1]?.type}
-        imgUrl={friend.friendAvatar} key={friend.friendUsername} 
-        userId={friend.friendClerkId}
+        <ChatBoxTemplate
+          username={friend.friendUsername}
+          lastMsg={`${friend.messages[friend.messages.length - 1]?.msg === undefined ? "" : friend.messages[friend.messages.length - 1].msg}`}
+          lastMsgType={friend.messages[friend.messages.length - 1]?.type}
+          imgUrl={friend.friendAvatar} key={friend.friendUsername}
+          userId={friend.friendClerkId}
         />
-        
+
       ))}
 
     </div>

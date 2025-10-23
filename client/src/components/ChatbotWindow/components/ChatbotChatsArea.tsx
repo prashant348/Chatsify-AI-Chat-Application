@@ -11,7 +11,7 @@ export default function ChatbotChatsArea() {
     const { getToken } = useAuth()
     const { setAllChatbotMessages, allChatbotMessages } = useChatbotMessageStore()
     const bottomRef = useRef<HTMLDivElement>(null)
-    const [ isLoading, setIsLoading ] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
         const fetchChats = async () => {
@@ -28,7 +28,7 @@ export default function ChatbotChatsArea() {
                 console.log(data)
 
                 console.log(data.chatbotChats)
-                
+
                 setAllChatbotMessages(data.chatbotChats)
 
                 console.log("chatbot chats fetched!")
@@ -48,16 +48,15 @@ export default function ChatbotChatsArea() {
 
     return (
         <div className='h-full w-full'>
-            {isLoading && <GeneralLoader />} 
+            {isLoading && <GeneralLoader />}
             {!isLoading && allChatbotMessages.map((chat, idx) => (
                 <div key={idx} className='flex flex-col p-2 gap-2'>
                     <p className='flex justify-end'>
-                        <span className='bg-blue-500 p-2 rounded-lg max-w-[50%]'>{chat.you}</span>
+                        <span className='bg-blue-500 p-2 rounded-lg max-w-[70%]'>{chat.you}</span>
                     </p>
                     <p className='flex justify-start '>
-                        <span className='bg-[#303030] p-2 rounded-lg max-w-[50%]'>
-                            {chat.bot === ""? "Thinking..." : chat.bot}
-                            {/* {chat.bot} */}
+                        <span className='bg-[#303030] p-2 rounded-lg max-w-[70%]'>
+                            {chat.bot === "" ? "Thinking..." : chat.bot}
                         </span>
                     </p>
                 </div>

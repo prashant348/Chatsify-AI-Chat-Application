@@ -1,7 +1,9 @@
 import React from 'react'
 import { useUser } from '@clerk/clerk-react'
 
-const Loader = ({ children }: { children: React.ReactNode }) => {
+import type { LoaderProps } from '../types/Loader.types'
+
+const Loader: React.FC<LoaderProps> = ({ children }) => {
 
     const { isLoaded } = useUser()
 

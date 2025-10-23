@@ -1,7 +1,7 @@
 import express from "express"
 import { clerkMiddleware } from "@clerk/express"
 import { getAuth } from "@clerk/express"
-import { User } from "../models/User.model"
+import { User } from "../models/User/User.model"
 
 const router = express.Router()
 

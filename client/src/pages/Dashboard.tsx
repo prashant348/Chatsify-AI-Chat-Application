@@ -10,14 +10,18 @@ import ChatbotWindow from "../components/ChatbotWindow/ChatbotWindow"
 import { useSidebarWidthStore } from "../zustand/store/SidebarWidth"
 // import { useChatBoxContextMenuStore } from "../zustand/store/ChatBoxContextMenuStore"
 
-interface ResizableSidebarProps {
-  defaultWidth?: number,
-  children: React.ReactNode
-}
+import type { DashboardProps } from "../types/Dashboard.types"
+import { useSocket } from "../hooks/useSocket"
+import { useFriendStatusStore } from "../zustand/store/FriendStatusStore"
+
+// interface ResizableSidebarProps {
+//   defaultWidth?: number,
+//   children: React.ReactNode
+// }
 
 
 
-const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 * window.innerWidth, children }) => {
+const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * window.innerWidth, children }) => {
   // Responsive width state
   const [sidebarWidth, setSidebarWidth] = useState<number>(0.4 * window.innerWidth)
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -35,6 +39,9 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
   const { signal } = controller
 
   const setSidebarWidthGlobally = useSidebarWidthStore(state => state.setSidebarWidth)
+
+  const socket = useSocket()
+  const { status, setStatus } = useFriendStatusStore()
   // const sidebarWidthGlobally = useSidebarWidthStore(state => state.sidebarWidth)
 
   // const { showContextMenu, setShowContextMenu } = useChatBoxContextMenuStore()
@@ -176,6 +183,38 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
 
   // }, [sidebarRef.current?.offsetWidth, showContextMenu, window.innerWidth])
 
+  useEffect(() => {
+    socket.connect()
+
+    socket.on("receive-status", ({ from, status }) => {
+      console.log("from server: ", { from, status })
+      setStatus(status)
+    })
+
+    const sendStatus = () => {
+      socket.emit("send-status", {
+        from: user?.id,
+        status: "online"
+      })
+    }
+
+    sendStatus()
+
+    const handleUnload = () => {
+      console.log("tab closed!")
+      socket.emit("send-status", {
+        from: user?.id,
+        status: ""
+      })
+    }
+
+    window.addEventListener("beforeunload", handleUnload)
+    console.log("-------------------------------------------")
+    return () => {
+      socket.disconnect()
+      window.removeEventListener("beforeunload", handleUnload)
+    }
+  }, [status])
 
   return (
     <>
@@ -209,7 +248,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({ defaultWidth = 0.4 
               position: "relative",
               overflow: "auto"
             }}
-            
+
           >
             {children}
           </div>

@@ -1,12 +1,8 @@
 import express from "express";
 import clerkClient from "@clerk/clerk-sdk-node";
-import { User } from "../models/User.model";
-import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node';
-import { clerkMiddleware } from "@clerk/express";
-import { getAuth } from "@clerk/express";
-const router = express.Router();
+import { User } from "../models/User/User.model";
 
-router.use(clerkMiddleware()) 
+const router = express.Router();
 
 router.get("/api/users", async (req, res) => {
     try { 
@@ -18,7 +14,6 @@ router.get("/api/users", async (req, res) => {
         res.status(500).send(err)
     }
 }) 
-
 
 router.post("/api/:userid", async (req, res) => {
     try {
@@ -64,7 +59,6 @@ router.get("/api/user/:username", async (req, res) => {
         res.status(500).json(err)
     }
 })
-
 
 export default router
 

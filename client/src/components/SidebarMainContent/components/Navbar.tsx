@@ -8,15 +8,16 @@ import { useSearchResultWindowResponseStore } from '../../../zustand/store/Searc
 import { useReqSentStore } from '../../../zustand/store/ReqSentStore.ts'
 
 
-type User = {
-  id: string
-  username: string
-  imageUrl: string
-}
+import type { User } from '../../../types/types.ts'
 
+// type User = {
+//   id: string
+//   username: string
+//   imageUrl: string
+// }
 
+const Navbar: React.FC = () => {
 
-const Navbar = () => {
   const setShowSidebar = useSidebarStore((state) => state.setShowSidebar)
   const { showSearchResultWindow, setShowSearchResultWindow } = useSearchResultWindow()
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -24,14 +25,14 @@ const Navbar = () => {
   const setIsLoading = useGeneralLoaderStore(state => state.setIsLoading)
   const setFilteredUsers = useFilteredUsersStore(state => state.setFilteredUsers)
   const setSearchResultWindowResponse = useSearchResultWindowResponseStore(state => state.setSearchResultWindowResponse)
-  const controller = new AbortController();
+  const controller: AbortController = new AbortController();
   const { signal } = controller
   const { setIsReqSent } = useReqSentStore()
-  const handleHambtnClick = () => {
+
+
+  const handleHambtnClick: () => void = () => {
     setShowSidebar(true)
   }
-
-  
 
   useEffect(() => {
     const fetchUsersByUsername: (param: string) => void = async (inputUsername) => {
@@ -42,13 +43,15 @@ const Navbar = () => {
         setIsLoading(false)
         return
       }
+
       setIsLoading(true)
+
       try {
 
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, { signal })
+        const res: Response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, { signal })
         const data = await res.json()
 
-        const matched = data.filter((user: User) => {
+        const matched: User[] = data.filter((user: User) => {
           return user.username.startsWith(inputUsername)
         })
 
@@ -76,6 +79,7 @@ const Navbar = () => {
         console.error("error in fetching users: ", err)
       } 
     }
+
     fetchUsersByUsername(query)
 
     return () => {
