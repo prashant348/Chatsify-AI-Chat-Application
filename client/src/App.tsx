@@ -66,17 +66,19 @@ const App = () => {
                     )}
 
 
-                  {windowInnerWidth <= 640 && activeScreen === "MainScreen" && (
+                  {windowInnerWidth <= 640 
+                  && (activeScreen === "MainScreen" || activeScreen === "ChatWindow" )
+                  && (
                     <Dashboard children={<SidebarMainContent />} />
                   )}
 
-                  {windowInnerWidth <= 640 && activeScreen === "ChatWindow" && (
+                  {/* {windowInnerWidth <= 640 && activeScreen === "ChatWindow" && (
                     <div
                       className="fixed top-0 left-0 h-full w-full text-white "
                     >
                       <ChatWindowTemplate />
                     </div>
-                  )}
+                  )} */}
 
                   {windowInnerWidth <= 640 && activeScreen === "FriendRequestsWindow" && (
                     <div

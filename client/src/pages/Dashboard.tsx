@@ -13,6 +13,7 @@ import { useSidebarWidthStore } from "../zustand/store/SidebarWidth"
 import type { DashboardProps } from "../types/Dashboard.types"
 import { useSocket } from "../hooks/useSocket"
 import { useFriendStatusStore } from "../zustand/store/FriendStatusStore"
+import "../index.css"
 
 // interface ResizableSidebarProps {
 //   defaultWidth?: number,
@@ -139,10 +140,10 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
 
     //Jab aap mouse se resizer ko pakadte ho, us waqt mouse ka X position (horizontal position) store ho jaata hai.
     // Ye starting point hai resize ka.
-    const startX: number = e.clientX;
+    const startX = e.clientX;
 
     // .offsetWidth ek DOM property hai jo kisi HTML element ki visible width (pixels me) return karti hai, including padding, border (lekin margin nahi).
-    const initialSidebarWidth: number = sidebarRef.current?.offsetWidth || defaultWidth;
+    const initialSidebarWidth = sidebarRef.current?.offsetWidth || defaultWidth;
 
 
     const doResize = (e: MouseEvent) => {
@@ -279,6 +280,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
               {activeScreen === "ChatbotWindow" ? <ChatbotWindow /> : ""}
             </div>
           )}
+
         </div>
 
       </div>
@@ -292,6 +294,12 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
           onClick={() => setShowSidebar(false)}
         />
       )} */}
+
+      {window.innerWidth <= 640 && activeScreen === "ChatWindow" && (
+        <div className=" fixed top-0 left-0 z-40 h-full w-full text-white">
+          <ChatWindowTemplate />
+        </div>
+      )}
 
       {showSidebar && <Sidebar />}
       {activeScreen === "FriendRequestsWindow" ? <FriendRequestsWindow /> : ""}

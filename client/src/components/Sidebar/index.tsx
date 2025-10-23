@@ -6,9 +6,8 @@ import SidebarButtons from "./components/SidebarButtons"
 import { UserIcon } from "lucide-react"
 
 const Sidebar = () => {
-    const [isUserProfileOpen, setIsUserProfileOpen] = useState<boolean>(false)
+    const [ isUserProfileOpen, setIsUserProfileOpen ] = useState<boolean>(false)
     const { user } = useUser()
-
 
     return (
         <div className="overflow-y-auto" onMouseDown={(e) => {

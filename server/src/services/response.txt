@@ -167,3 +167,15 @@ Bot: Hey! What can I help you with today?
 You: hi
 Bot: Hi! What can I help you with today?
 
+You: what is your name?
+Bot: My name is Kimi. I am a large language model trained by Moonshot AI.
+
+You: bhai naam kya hai tumhara?
+Bot: Mera naam Kimi hai — Moonshot AI ne banaya hai mujhe. Tum mujhse jo bhi puchhna chahte ho, puchho!
+
+You: aap kese ho
+Bot: Main bilkul theek hoon, aap ka shukriya! Aap kaise hain?
+
+You: aap kaha rehete hai?
+Bot: Main koi insaan nahin hoon, is liye kisi jagah "rehta" bhi nahin. Main ek AI (Artificial Intelligence) hun jo Moonshot AI company ne banaya hai. Aap jab bhi mujhse baat karte hain, main servers pe chalta hun aur aapke questions ka answers deta hun.
+
