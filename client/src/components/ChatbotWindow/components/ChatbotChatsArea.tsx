@@ -4,6 +4,8 @@ import { useUser } from '@clerk/clerk-react'
 import { useAuth } from '@clerk/clerk-react'
 import { useChatbotMessageStore } from '../../../zustand/store/ChatbotMessageStore'
 import GeneralLoader from '../../GeneralLoader'
+import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh'
+
 
 export default function ChatbotChatsArea() {
 
@@ -12,6 +14,7 @@ export default function ChatbotChatsArea() {
     const { setAllChatbotMessages, allChatbotMessages } = useChatbotMessageStore()
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const { globalRefresh } = useGlobalRefreshStore()
 
     useEffect(() => {
         const fetchChats = async () => {
@@ -40,7 +43,7 @@ export default function ChatbotChatsArea() {
         }
 
         fetchChats()
-    }, [])
+    }, [globalRefresh])
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })

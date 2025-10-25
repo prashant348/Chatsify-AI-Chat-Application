@@ -7,11 +7,12 @@ html, body, #root {
   background: #000; /* optional: white flash avoid */
 }
 
+
 @keyframes fade-in {
     from {
-        filter: brightness(1);
+        opacity: 0;
     } to {
-        filter: brightness(0.5);
+        opacity: 1;
     }
 }
 
@@ -39,3 +40,10 @@ html, body, #root {
     }
 }
 
+@keyframes slide-in-from-right {
+    from {
+        transform: translateX(var(--slide-distance));
+    } to {
+        transform: translateX(0);
+    }
+}

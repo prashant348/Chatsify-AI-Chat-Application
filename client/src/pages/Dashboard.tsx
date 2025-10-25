@@ -26,7 +26,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   // Responsive width state
   const [sidebarWidth, setSidebarWidth] = useState<number>(0.4 * window.innerWidth)
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const minWidth: number = 251;
+  const minWidth: number = 260;
   const maxWidth: number = window.innerWidth - 384 // 384 is the width of the main content which is 24% of 1600
   const resizerRef = useRef<HTMLDivElement>(null)
 
@@ -209,6 +209,29 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
       window.removeEventListener("beforeunload", handleUnload)
     }
   }, [status])
+
+  // update slide distance dynamically
+  useEffect(() => {
+    // initial set
+    document.documentElement.style.setProperty(
+      "--slide-distance",
+      `${window.innerWidth}px`
+    );
+
+    // update on resize
+    const handleResize = () => {
+      document.documentElement.style.setProperty(
+        "--slide-distance",
+        `${window.innerWidth}px`
+      );
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   return (
     <>

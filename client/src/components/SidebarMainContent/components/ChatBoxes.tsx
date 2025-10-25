@@ -4,7 +4,7 @@ import GeneralLoader from "../../GeneralLoader"
 import { useAuth } from "@clerk/clerk-react"
 import { useUser } from "@clerk/clerk-react"
 // import { ContextMenu } from "./ChatBoxTemplate"
-
+import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
 
 type friend = {
   friendClerkId: string,
@@ -25,7 +25,7 @@ const ChatBoxes = () => {
   const { user } = useUser()
   const [error, setError] = useState<string>("")
   const [ isRetryBtnClicked, setIsRetryBtnClicked ] = useState<boolean>(false)
-
+  const globalRefresh = useGlobalRefreshStore(state => state.globalRefresh)
   // dummy data for testing 
 
   // const chatBoxes = [
@@ -75,7 +75,7 @@ const ChatBoxes = () => {
       }
     }
     getFriends()
-  }, [isRetryBtnClicked])
+  }, [isRetryBtnClicked, globalRefresh])
 
   return (
     <div

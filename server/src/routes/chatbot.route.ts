@@ -29,5 +29,33 @@ router.get("/api/:userid/chatbot-chats", async (req, res) => {
     }
 })
 
+
+router.delete("/api/:userid/delete-chatbot-chats", async (req, res) => {
+    try {
+        const { userid } = req.params
+        console.log("params: ", userid)
+
+        const you = await User.findOne({ clerkUserId: userid })
+
+        if (!you) return res.status(404).json({ message: "user(you) not found!" })
+
+        await User.updateOne(
+            { clerkUserId: userid },
+            {
+                $set: {
+                    chatbotChats: []
+                }
+            }
+        )
+
+        res.status(200).json({ message: "you and your chatbot chats deleted!" })
+        console.log("chatbots chat deleted!")
+
+    } catch (err) {
+        console.error("--err in deleting chatbot chats: ", err)
+        res.status(500).json({ message: err })
+    }
+})
+
 export default router
 

@@ -3,6 +3,7 @@ import ChatWindowBottomNavbar from "./components/ChatWindowBottomNavbar"
 import ChatWindowChatsArea from "./components/ChatWindowChatsArea"
 import { useEffect } from "react"
 import { useChatWindowUsernameStore } from "../../zustand/store/ChatWindowUsername"
+import "../../index.css"
 
 const ChatWindowTemplate = () => {
 
@@ -24,11 +25,21 @@ const ChatWindowTemplate = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   const distance = window.innerWidth; // dynamic width
+  //   document.documentElement.style.setProperty("--slide-distance", `${distance}px`);
+
+  // })
 
   return (
-    <div className="h-[calc(var(--vh)*100)] flex flex-col w-full bg-black">
+    <div
+      className="h-[calc(var(--vh)*100)] flex flex-col w-full bg-black"
+      style={{
+        animation: window.innerWidth <= 640 ? "slide-in-from-right 0.3s ease-in-out forwards" : ""
+      }}
+    >
       {/* Sticky top navbar */}
-      <div className="sticky top-0 z-20 bg-[#0f0f0f]">
+      <div className="sticky top-0 z-21 bg-[#0f0f0f]">
         <ChatWindowNavbar username={chatWindowUsername} />
       </div>
       {/* Chat area fills remaining space */}
@@ -39,6 +50,19 @@ const ChatWindowTemplate = () => {
       <div className="sticky bottom-0 z-20 bg-[#0f0f0f]">
         <ChatWindowBottomNavbar />
       </div>
+
+      {/* <style>
+        {`
+          @keyframes slide-in-from-right {
+            0% {
+              transform: translateY(${window.innerWidth}px);
+            }
+            100% {
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style> */}
     </div>
   )
 }

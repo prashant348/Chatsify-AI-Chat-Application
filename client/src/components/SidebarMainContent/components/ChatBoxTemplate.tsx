@@ -9,6 +9,9 @@ import { useUser } from "@clerk/clerk-react"
 import { useAuth } from "@clerk/clerk-react"
 import { useUserIdStore } from "../../../zustand/store/UserIdStore"
 import { useChatBoxContextMenuStore } from "../../../zustand/store/ChatBoxContextMenuStore"
+import { useChatWindowUserIdStore } from "../../../zustand/store/ChatWindowUserId"
+import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
+import "../../../index.css"
 import { useEffect } from "react"
 
 interface ChatBoxTemplatePropsType {
@@ -21,21 +24,10 @@ interface ChatBoxTemplatePropsType {
 
 export function ContextMenu() {
   const { sidebarWidth } = useSidebarWidthStore()
-  // const { showContextMenu } = useChatBoxContextMenuStore()
   const { user } = useUser()
   const { getToken } = useAuth()
   const friendId = useUserIdStore(state => state.userId)
-
-  // useEffect(() => {
-  //   if (showContextMenu && window.innerWidth) {
-  //     setSidebarWidth(0.4 * window.innerWidth)
-  //   }
-
-  //   return () => {
-  //     setSidebarWidth(0.4 * window.innerWidth)
-  //   }
-  // }, [window.innerWidth])
-
+  const { setGlobalRefresh, globalRefresh } = useGlobalRefreshStore()
 
   const handleRemoveButton = async () => {
     try {
@@ -53,6 +45,7 @@ export function ContextMenu() {
       const data = await res.json()
       console.log(data)
       console.log("client: friend removed!")
+      setGlobalRefresh(!globalRefresh)
     } catch (err) {
       console.error("error in removing friend: ", err)
     }
@@ -60,15 +53,18 @@ export function ContextMenu() {
   
   return (
     <div
-      className="w-full h-full bg-transparent fixed z-30 left-0 top-0 cursor-default"
+      className="w-full h-full bg-transparent cursor-not-allowed fixed z-30 left-0 top-0"
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
       }}
+      style={{
+        animation: "fade-in 0.2s ease-in-out forwards"
+      }}
     >
 
       <div
-        className="fixed p-2  z-30  w-[140px] border border-[#303030] rounded-lg bg-[#0f0f0f]"
+        className="fixed p-2 cursor-auto z-30  w-[140px] border border-[#303030] rounded-lg bg-[#0f0f0f]"
         style={{
           left: window.innerWidth <= 640 ? window.innerWidth - 140 : sidebarWidth - 140,
           top: 120
@@ -111,12 +107,20 @@ export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl
 
   const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
   const setChatWindowUsername = useChatWindowUsernameStore((state) => state.setChatWindowUsername)
+  const setChatWindowUserId = useChatWindowUserIdStore((state) => state.setChatWindowUserId)
   const setChatWindowAvatar = useChatWindowAvatarStore((state) => state.setChatWindowAvatar)
-  // const [showContextMenu, setShowContextMenu] = useState<boolean>(false)
   const { showContextMenu, setShowContextMenu } = useChatBoxContextMenuStore()
   const { setUserId } = useUserIdStore()
-  // const { setSidebarWidth } = useSidebarWidthStore()
 
+
+  // after removing friend and then if friend sends you req and when 
+  // you accept and when friend chatbox renders on yu dashboard, it renders with context menu opened,
+  // that is why this logic will check if context menu is open, and if open then it will close it
+  useEffect(() => {
+    if (showContextMenu) {
+      setShowContextMenu(!showContextMenu)
+    }
+  }, [])
  
   return (
     <div
@@ -126,6 +130,7 @@ export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl
         e.stopPropagation()
         setChatWindowAvatar(imgUrl)
         setChatWindowUsername(username)
+        setChatWindowUserId(userId)
         setActiveScreen("ChatWindow")
       }}
     >

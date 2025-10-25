@@ -179,3 +179,6 @@ Bot: Main bilkul theek hoon, aap ka shukriya! Aap kaise hain?
 You: aap kaha rehete hai?
 Bot: Main koi insaan nahin hoon, is liye kisi jagah "rehta" bhi nahin. Main ek AI (Artificial Intelligence) hun jo Moonshot AI company ne banaya hai. Aap jab bhi mujhse baat karte hain, main servers pe chalta hun aur aapke questions ka answers deta hun.
 
+You: hi
+Bot: Hey! What can I help you with today?
+

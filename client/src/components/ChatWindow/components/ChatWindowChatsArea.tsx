@@ -2,13 +2,9 @@ import { useEffect, useRef, useState } from "react"
 import { useMessageStore } from "../../../zustand/store/MessageStore"
 import { useUser } from "@clerk/clerk-react"
 import { useChatWindowUsernameStore } from "../../../zustand/store/ChatWindowUsername"
+import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
 
 
-// interface Chats {
-//   text: string
-//   type: "sent" | "received"
-
-// }
 const ChatWindowChatsArea = () => {
   const { allMessages, setAllMessages } = useMessageStore()
   const bottomRef = useRef<HTMLDivElement | null>(null)
@@ -16,6 +12,7 @@ const ChatWindowChatsArea = () => {
   const [ friendId, setFriendId ] = useState<string>("")
   const { chatWindowUsername } = useChatWindowUsernameStore()
   // const [ chats, setChats ] = useState<Chats[]>()
+  const { globalRefresh } = useGlobalRefreshStore()
 
   useEffect(() => {
     const fetchReceiverId = async (receiverUsername: string) => {
@@ -59,7 +56,7 @@ const ChatWindowChatsArea = () => {
     }
 
     fetchChatMessages()
-  }, [user?.id, friendId])
+  }, [user?.id, friendId, globalRefresh])
 
 
   // Auto-scroll
