@@ -173,16 +173,9 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   }
 
 
-  // console.log(sidebarRef.current?.offsetWidth)
-  // console.log(showContextMenu)
-  // useEffect(() => {
-
-  //   if (sidebarRef.current?.offsetWidth && !showContextMenu) {
-  //     // console.log(sidebarWidthGlobally)
-  //     setSidebarWidthGlobally(sidebarRef.current?.offsetWidth || defaultWidth)
-  //   }
-
-  // }, [sidebarRef.current?.offsetWidth, showContextMenu, window.innerWidth])
+  useEffect(() => {
+    setSidebarWidthGlobally(0.4 * window.innerWidth)
+  }, [window.innerWidth])
 
   useEffect(() => {
     socket.connect()

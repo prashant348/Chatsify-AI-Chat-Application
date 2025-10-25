@@ -70,7 +70,7 @@ export function ContextMenu() {
       <div
         className="fixed p-2  z-30  w-[140px] border border-[#303030] rounded-lg bg-[#0f0f0f]"
         style={{
-          left: sidebarWidth - 140,
+          left: window.innerWidth <= 640 ? window.innerWidth - 140 : sidebarWidth - 140,
           top: 120
         }}
       >
