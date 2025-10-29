@@ -33,6 +33,12 @@ Thumbs.db
 # Clerk / Auth related cache (safe side)
 .clerk/
 
+# Ignore Python cache folders
+__pycache__/
+server/src/services/flask/__pycache__/
+*pyc
+server/src/services/flask/*pyc
+
 # Optional: lockfiles if you don’t want to commit them (choose as per team)
 # package-lock.json
 # yarn.lock
