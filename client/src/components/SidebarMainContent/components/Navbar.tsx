@@ -6,15 +6,7 @@ import { useGeneralLoaderStore } from '../../../zustand/store/GeneralLoader.ts'
 import { useFilteredUsersStore } from '../../../zustand/store/FilteredUsers.ts'
 import { useSearchResultWindowResponseStore } from '../../../zustand/store/SearchResultWindowResponse.ts'
 import { useReqSentStore } from '../../../zustand/store/ReqSentStore.ts'
-
-
-import type { User } from '../../../types/types.ts'
-
-// type User = {
-//   id: string
-//   username: string
-//   imageUrl: string
-// }
+import { fetchUsersGlobaly } from '../../../APIs/services/fetchUsersGloably.service.ts'
 
 const Navbar: React.FC = () => {
 
@@ -30,66 +22,26 @@ const Navbar: React.FC = () => {
   const { setIsReqSent } = useReqSentStore()
 
 
-  const handleHambtnClick: () => void = () => {
+  const handleHambtnClick = (): void => {
     setShowSidebar(true)
   }
 
   useEffect(() => {
-    const fetchUsersByUsername: (param: string) => void = async (inputUsername) => {
-
-      if (!inputUsername) {
-        setFilteredUsers([])
-        setSearchResultWindowResponse("Search people by their usernames!")
-        setIsLoading(false)
-        return
+    const fetchData = async () => {
+      const result = await fetchUsersGlobaly(query, signal, setFilteredUsers, setIsLoading)
+      if (result === "Error" || result === "AbortError") {
+        return;
+      } else if (result === "Search people by their usernames!") {
+        setSearchResultWindowResponse(result)
+      } else if (result === "No users found!") {
+        setSearchResultWindowResponse(result)
       }
-
-      setIsLoading(true)
-
-      try {
-
-        const res: Response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, { signal })
-        const data = await res.json()
-
-        const matched: User[] = data.filter((user: User) => {
-          return user.username.startsWith(inputUsername)
-        })
-
-        setFilteredUsers(matched)
-        setIsLoading(false)
-
-        if (matched.length > 0) {
-          console.log("Found:", matched);
-          console.log("Found for: ", query)
-        }
-        else if (matched.length === 0 && !inputUsername) {
-          console.log("Search people by their usernames!")
-          setSearchResultWindowResponse("Search people by their usernames!")
-        }
-        else if (matched.length === 0 && inputUsername) {
-          console.log("No users found for: ", query)
-          setSearchResultWindowResponse("No users found!")
-        }
-
-      } catch (err: any) {
-        if (err.name === 'AbortError') {
-          console.log('Previous request was cancelled!');
-          return; // Kuch mat karo
-        }
-        console.error("error in fetching users: ", err)
-      } 
     }
-
-    fetchUsersByUsername(query)
-
+    fetchData()
     return () => {
       controller.abort()
     }
-
   }, [query])
-
-
-
 
   return (
     <div className='h-[60px] flex shrink-0'>
@@ -115,9 +67,6 @@ const Navbar: React.FC = () => {
           onFocus={() => {
             console.log("focus")
             setShowSearchResultWindow(true)
-            //  ye isliye likha kyuki: jab mai input mai kuch aisa likh ke chor deta tha jisse "no users found!" msg dikhe yaa loader ghum raha ho
-            //  aur tab agr mai window minimize karke fir chalu karta tha toh input clear ho jata tha bina "onChange" event chale
-            // jiski vajah msg "Search people by their username!" ki jagah "No users found!" msg dikh raha tha, jo ki ek logical bug tha!
             setFilteredUsers([])
             setSearchResultWindowResponse("Search people by their usernames!")
             setIsReqSent(false)

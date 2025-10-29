@@ -3,6 +3,8 @@ import { Socket } from "socket.io";
 import { registerChatbotHandlers } from "./chatbot.socket";
 import { registerChatHandlers } from "./one-on-one-chat.socket";
 import { registerUserStatusHandlers } from "./userStatus.socket";
+import { registerTextToSpeechHandlers } from "./text-to-speech.socket";
+
 
 import { User } from "../models/User/User.model";
 import { FriendsSchema } from "../models/User/Friends.Schema";
@@ -14,6 +16,7 @@ export const registerSocketHandlers = (io: ioServer) => {
             console.log("User connected: ", socket.id)
             const userId = socket.handshake.query.userId as string
             socket.join(userId)
+            registerTextToSpeechHandlers(io, socket, userId)
             // chat with chatbot logic
             registerChatbotHandlers(io, socket, userId)
             // one on one chat logic

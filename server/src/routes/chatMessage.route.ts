@@ -39,7 +39,7 @@ router.delete("/api/:userid/:friendid/delete-chats", async (req, res) => {
 
         if (!friend) return res.status(404).json({ message: "friend not found!" })
 
-        
+
         await User.updateOne(
             { clerkUserId: userid, "friends.friendClerkId": friendid },
             {

@@ -7,8 +7,10 @@ import { useAuth } from "@clerk/clerk-react"
 import GeneralLoader from "../GeneralLoader"
 import { useInboxMsgRemoveStore } from "../../zustand/store/InboxMsgRemove"
 import { RefreshCcw } from "lucide-react"
+import { fetchInboxMessages } from "../../APIs/services/fetchInboxMessages"
+import "../../index.css"
 
-interface inboxMsgType {
+interface InboxMsgType {
     userId: string
     username: string
     userAvatar: string
@@ -21,43 +23,32 @@ const InboxWindow = () => {
     const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
     const { user } = useUser()
     const { getToken } = useAuth()
-    const [ inboxMessages, setInboxMessages ] = useState<inboxMsgType[]>([])
-    const [ isLoading, setIsLoading ] = useState<boolean>(true)
+    const [inboxMessages, setInboxMessages] = useState<InboxMsgType[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const inboxMsgRemove = useInboxMsgRemoveStore((state) => state.inboxMsgRemove)
-    const [ refresh, setRefresh ] = useState<boolean>(false)
+    const [refresh, setRefresh] = useState<boolean>(false)
+
 
     useEffect(() => {
-        const fetchInboxMessages = async () => {
-            try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}/inbox`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${await getToken()}`
-                    }
-                })
-
-                const data = await res.json()
-                console.log(data)
-                const inboxMessages = data.inbox
-                // console.log(inboxMessages)
-                // will render reverse array for showing latest data first
-                setInboxMessages([...inboxMessages].reverse())
-                console.log("inbox fetched!")
-            } catch (err) {
-                console.error("error in fetching inbox messages: ", err)
-            } finally {
+        const fetchData = async () => {
+            const result = await fetchInboxMessages(getToken, user?.id)
+            if (result === "Error") {
                 setIsLoading(false)
+            } else {
+                setIsLoading(false)
+                setInboxMessages(result)
             }
         }
-
-        fetchInboxMessages()
+        fetchData()
     }, [inboxMsgRemove, refresh])
 
     return (
         <div
             className='fixed top-0 left-0 z-100 h-screen w-full flex justify-center items-center bg-black/50 text-white'
             onClick={() => setActiveScreen("MainScreen")}
+            style={{
+                animation: window.innerWidth <= 640 ? "slide-in-from-right 0.3s ease-in forwards" : ""
+            }}
         >
             <div
                 className='h-full w-full sm:h-[500px] sm:w-[600px] bg-[#0f0f0f] flex flex-col border border-[#363636] sm:rounded-2xl overflow-y-auto'
@@ -73,14 +64,14 @@ const InboxWindow = () => {
                         </button>
                     </div>
                     <div className="flex h-full w-full items-center justify-between">
-                        <div>Inbox</div> 
+                        <div>Inbox</div>
                         <div className=" flex justify-center items-center">
-                            <button 
-                            className="h-[36px] w-[36px] rounded-full cursor-pointer flex justify-center items-center hover:bg-[#2b2b2b] hover:rotate-[-180deg] transition-all duration-300"
-                            onClick={() => {
-                                setRefresh(!refresh)
-                                setIsLoading(true)
-                            }}
+                            <button
+                                className="h-[36px] w-[36px] rounded-full cursor-pointer flex justify-center items-center hover:bg-[#2b2b2b] hover:rotate-[-180deg] transition-all duration-300"
+                                onClick={() => {
+                                    setRefresh(!refresh)
+                                    setIsLoading(true)
+                                }}
                             >
                                 <RefreshCcw size={18} className="text-blue-400" />
                             </button>

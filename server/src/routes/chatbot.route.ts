@@ -57,5 +57,26 @@ router.delete("/api/:userid/delete-chatbot-chats", async (req, res) => {
     }
 })
 
+router.get("/api/:userid/request-made", async (req, res) => {
+    try {
+        const { userid } = req.params
+        console.log("params: ", userid)
+
+        const you = await User.findOne({ clerkUserId: userid })
+
+        if (!you) return res.status(404).json({ message: "user(you) not found!" })
+
+        const numberOfRequestsMade = you.requestsMade
+
+        res.status(200).json({ requestsMade: numberOfRequestsMade })
+        console.log("no. of req made: ", numberOfRequestsMade)
+    } catch (err) {
+        console.error("--error in request tracker: ", err)
+        res.status(500).json({ message: err })
+    }
+})
+
+// router.post("/api/:userid/save-text-to-speech-chats")
+
 export default router
 

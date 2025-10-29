@@ -5,6 +5,7 @@ import { useAuth } from "@clerk/clerk-react"
 import { useUser } from "@clerk/clerk-react"
 import { useRequestPendingStore } from "../../../zustand/store/RequestsPending"
 
+import { handleAcceptFriendRequest, handleRejectFriendRequest } from "../../../APIs/handlers/FriendRequest.handlers"
 interface RequestBoxTemplatePropsType {
   senderUsername: string,
   senderAvatar: string,
@@ -12,10 +13,12 @@ interface RequestBoxTemplatePropsType {
   receivedAt: string
 }
 
-
-
-
-export default function RequestBoxTemplate({ senderUsername, senderAvatar, senderId, receivedAt }: RequestBoxTemplatePropsType) {
+export default function RequestBoxTemplate({
+  senderUsername,
+  senderAvatar,
+  senderId,
+  receivedAt
+}: RequestBoxTemplatePropsType) {
 
   const { getToken } = useAuth()
   const { user } = useUser()
@@ -27,54 +30,6 @@ export default function RequestBoxTemplate({ senderUsername, senderAvatar, sende
   }))
   const setIsReqPending = useRequestPendingStore(state => state.setIsReqPending)
   const isReqPending = useRequestPendingStore(state => state.isReqPending)
-
-  const handleReqAcceptClick = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/accept-request`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "authorization": `Bearer ${await getToken()}`
-        },
-        body: JSON.stringify({
-          senderUsername: senderUsername,
-          senderAvatar: senderAvatar,
-          senderId: senderId
-        })
-      })
-
-      const data = await res.json()
-      console.log(data)
-      setIsReqPending(!isReqPending)
-    } catch (err) {
-      console.error("err in accepting req: ", err)
-    }
-  }
-
-  const handleReqRejectClick = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/reject-request`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "authorization": `Bearer ${await getToken()}`
-        },
-        body: JSON.stringify({
-          senderId: senderId,
-          receiverId: user?.id
-        })
-      })
-
-      const data = await res.json()
-      console.log(data)
-      setIsReqPending(!isReqPending)
-
-    } catch (err) {
-      console.error("err in rejecting req: ", err)
-    }
-  }
-
-
 
   return (
     <div className="h-[70px] w-full hover:bg-[#1f1f1f] transition all duration-300 flex justify-between items-center px-4 cursor-pointer">
@@ -96,18 +51,27 @@ export default function RequestBoxTemplate({ senderUsername, senderAvatar, sende
 
         <button
           className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all duration-200 hover:bg-[#2b2b2b] rounded-full"
-          onClick={() => {
-            handleReqRejectClick()
+          onClick={async () => {
+            const result = await handleRejectFriendRequest(getToken, senderId, user?.id)
+            if (result === "Success") {
+              setIsReqPending(!isReqPending)
+            } else if (result === "Error") {
+              return
+            }
           }}
-
         >
           <X size={20} className="text-red-400" />
         </button>
 
         <button
           className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all duration-200 hover:bg-[#2b2b2b] rounded-full"
-          onClick={() => {
-            handleReqAcceptClick()
+          onClick={async () => {
+            const result = await handleAcceptFriendRequest(getToken, senderUsername, senderAvatar, senderId)
+            if (result === "Success") {
+              setIsReqPending(!isReqPending)
+            } else if (result === "Error") {
+              return
+            }
           }}
         >
           <Check size={20} className="text-green-400" />

@@ -1,11 +1,10 @@
-
 import Navbar from './components/Navbar'
 import ChatBoxes from './components/ChatBoxes'
 import { useSearchResultWindow } from '../../zustand/store/SearchResultWindow'
 import SearchResultWindow from '../SearchResultWindow'
 import { useFilteredUsersStore } from '../../zustand/store/FilteredUsers'
 
-const index = () => {
+const SidebarMainContent = () => {
 
   const showSearchResultWindow = useSearchResultWindow(state => state.showSearchResultWindow)
   const filteredUsers = useFilteredUsersStore(state => state.filteredUsers)
@@ -18,4 +17,4 @@ const index = () => {
   )
 }
 
-export default index
+export default SidebarMainContent

@@ -1,12 +1,11 @@
-import { Users, Bookmark, ShipWheel, Settings, Moon, UserPlus, Sun, Inbox } from "lucide-react"
+import { Users, Bookmark, ShipWheel, Settings, Moon, UserPlus, Sun, Inbox, AudioLines } from "lucide-react"
 import { useAppThemeStore } from "../../../zustand/store/AppTheme"
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
-
+import { useSidebarStore } from "../../../zustand/store/SidebarStore"
 export default function SidebarButtons() {
-
-    // const [theme, setTheme] = useState<string>("dark")
     const { appTheme, setAppTheme } = useAppThemeStore((state) => state)
     const { setActiveScreen } = useActiveScreenStore((state) => state)
+    const { setShowSidebar } = useSidebarStore()
 
     return (
         <div>
@@ -35,10 +34,24 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => setActiveScreen("ChatbotWindow")}
+                    onClick={() => {
+                        setShowSidebar(false)
+                        setActiveScreen("ChatbotWindow")
+                    }}
                 >
                     <ShipWheel height={"20px"} />
                     <span>Chatsify AI</span>
+                </button>
+
+                <button
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    onClick={() => {
+                        setShowSidebar(false)
+                        setActiveScreen("TextToSpeechWindow")
+                    }}
+                >
+                    <AudioLines height={"20px"} />
+                    <span className="">Text-To-Speech</span>
                 </button>
 
                 <button

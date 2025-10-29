@@ -182,3 +182,88 @@ Bot: Main koi insaan nahin hoon, is liye kisi jagah "rehta" bhi nahin. Main ek A
 You: hi
 Bot: Hey! What can I help you with today?
 
+You: bjhgjghjghj
+Bot: It looks like your message might have been a typo or a test — could you clarify what you meant or what you'd like help with?
+
+You: hey, i want to know exact number of  how many API calls i can do per day on this AI model
+Bot: Hey! There’s no single, universal “daily limit” for the model itself—how many calls you can make in a day is controlled entirely by the usage tier (a.k.a. rate-limit bucket) that your personal OpenAI account falls into.  
+So the only way to get an exact number is to look up your own account:
+
+1. Log in to https://platform.openai.com  
+2. Open the sidebar → “Settings” → “Limits” (or go directly to https://platform.openai.com/account/limits)  
+3. Find the row for the model you’re using (e.g. gpt-3.5-turbo, gpt-4, gpt-4-turbo, etc.).  
+   – The first column shows the TPM (tokens-per-minute) limit.  
+   – The second column shows the RPM (requests-per-minute) limit.  
+   – The third column shows the RPD (requests-per-day) limit.  
+   That RPD number is the exact maximum API calls you can make per day for that model with your current key.
+
+If you just created a paid account you’ll typically start at something like:
+
+gpt-3.5-turbo: 200 RPM / 40k TPM / 10k RPD  
+gpt-4: 200 RPM / 10k TPM / 10k RPD  
+
+Higher tiers (Tier 2–5) scale those numbers up automatically as your cumulative spend increases. If you need more than your current tier allows you can also request a quota increase from the same “Limits” page.
+
+So the short answer: the exact daily call limit is the RPD value shown in your personal OpenAI dashboard; it’s not a fixed number that applies to everyone.
+
+You: hi
+Bot: Hi! How can I help you today?
+
+You: good morning
+Bot: Good morning! What can I help you with today?
+
+You: hey
+Bot: Hey! What can I help you with today?
+
+You: hi
+Bot: Hey! How can I help you today?
+
+You: hello
+Bot: Hello! How can I help you today?
+
+You: WhatsUp
+Bot: Hey! Not much—just here, ready to help. What’s up with you?
+
+You: have a good day
+Bot: Thanks! You too—hope yours is smooth and satisfying.
+
+You: helo
+Bot: Hey! Looks like you meant to say "hello"—hi there! How can I help you today?
+
+You: hey man
+Bot: Hey! What’s up?
+
+You: hi
+Bot: Hi there! How can I help you today?
+
+You: hi
+Bot: Hi! What can I help you with today?
+
+You: hey man how are you?
+Bot: Hey! I'm doing great—thanks for asking! 😊 How about you? What's on your mind today?
+
+You: whats going on?
+Bot: Not much on this end—just pixels and prompts.  
+You?
+
+You: hi
+Bot: Hey! How can I help you today?
+
+You: hi
+Bot: Hey! What can I help you with today?
+
+You: whats going on?
+Bot: Not much on my end—just here, ready to help. What’s going on with you?
+
+You: give me a morning greeting message
+Bot: Good morning! Here’s to a fresh start and a day that greets you with possibilities—may your coffee be strong, your mind clear, and your smile unstoppable.
+
+You: hi
+Bot: Hi! How can I help you today?
+
+You: hello bro
+Bot: Hey! What’s up?
+
+You: hey whats going on bro?
+Bot: Yo! Not much—just hanging out in the digital void, ready to help you out. What’s going on with you?
+

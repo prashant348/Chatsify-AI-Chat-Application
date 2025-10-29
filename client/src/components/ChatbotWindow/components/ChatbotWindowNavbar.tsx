@@ -1,37 +1,15 @@
 import { ShipWheel, ArrowLeft } from 'lucide-react'
 import { useActiveScreenStore } from '../../../zustand/store/ActiveScreenStore'
-import { MoreVertical, Mic, Brush, Trash } from 'lucide-react'
+import { MoreVertical, Brush, Trash, RefreshCcw } from 'lucide-react'
 import { useState } from 'react'
 import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh'
 import { useUser } from '@clerk/clerk-react'
+import { handleDeleteChatbotChat } from '../../../APIs/handlers/handleDeleteChatbotChat.handler'
 
 const MoreButtonModal = () => {
 
     const { setGlobalRefresh, globalRefresh } = useGlobalRefreshStore()
     const { user } = useUser()
-
-    const deleteChats = async () => {
-        try {
-
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}/delete-chatbot-chats`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    yourId: user?.id,
-                })
-            })
-
-            const data = await res.json()
-            console.log(data)
-            console.log("you and your chatbot chats deleted!")
-            setGlobalRefresh(!globalRefresh)
-        } catch (err) {
-            console.error("err in deleting chats: ", err)
-        }
-    }
-
 
     return (
         <div
@@ -42,11 +20,16 @@ const MoreButtonModal = () => {
         >
             <div className=" p-2 fixed right-3 top-[60px] rounded-lg border border-[#303030] bg-[#0f0f0f] hover:cursor-auto">
                 <div className="flex flex-col">
-                    <button className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]">
+                    <button
+                        className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                        onClick={() => {
+                            setGlobalRefresh(!globalRefresh)
+                        }}
+                    >
                         <span>
-                            <Mic size={18} />
+                            <RefreshCcw size={18} />
                         </span>
-                        <span>Mute</span>
+                        <span>Refresh</span>
                     </button>
                     <button className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]">
                         <span>
@@ -59,7 +42,14 @@ const MoreButtonModal = () => {
                 <div className="w-full">
                     <button
                         className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]"
-                        onClick={deleteChats}
+                        onClick={async () => {
+                            const result = await handleDeleteChatbotChat(user?.id as string)
+                            if (result === "Success") {
+                                setGlobalRefresh(!globalRefresh)
+                            } else if (result === "Error") {
+                                return;
+                            }
+                        }}
                     >
                         <span>
                             <Trash size={18} className="text-red-500" />
@@ -96,7 +86,7 @@ export default function ChatbotWindowNavbar() {
                     className='cursor-pointer p-1 rounded-full opacity-60 hover:opacity-100'
                     onClick={() => setShowModal(!showModal)}
                     style={{
-                        backgroundColor: showModal? "#303030": ""
+                        backgroundColor: showModal ? "#303030" : ""
                     }}
                 >
                     <MoreVertical />

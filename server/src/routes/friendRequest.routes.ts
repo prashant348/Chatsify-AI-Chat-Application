@@ -339,7 +339,7 @@ router.delete("/api/:userid/remove-friend", async (req, res) => {
         )
         res.status(200).json({ friends: user.friends })
         console.log("friend removed!")
-    } catch(err) {
+    } catch (err) {
         console.log("error in removing friend: ", err)
         res.status(500).json({ message: err })
     }

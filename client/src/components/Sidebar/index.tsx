@@ -1,4 +1,3 @@
-
 import "../../index.css"
 import { useUser, UserButton, UserProfile } from "@clerk/clerk-react"
 import { useState } from "react"
@@ -6,7 +5,7 @@ import SidebarButtons from "./components/SidebarButtons"
 import { UserIcon } from "lucide-react"
 
 const Sidebar = () => {
-    const [ isUserProfileOpen, setIsUserProfileOpen ] = useState<boolean>(false)
+    const [isUserProfileOpen, setIsUserProfileOpen] = useState<boolean>(false)
     const { user } = useUser()
 
     return (

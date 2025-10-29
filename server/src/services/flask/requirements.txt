@@ -1,3 +1,7 @@
 flask
 flask_cors
 python-dotenv
+openai
+pyttsx3
+supabase
+

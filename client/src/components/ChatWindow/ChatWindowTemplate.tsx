@@ -6,7 +6,6 @@ import { useChatWindowUsernameStore } from "../../zustand/store/ChatWindowUserna
 import "../../index.css"
 
 const ChatWindowTemplate = () => {
-
   const chatWindowUsername = useChatWindowUsernameStore(state => state.chatWindowUsername)
 
   useEffect(() => {
@@ -24,12 +23,6 @@ const ChatWindowTemplate = () => {
       window.visualViewport?.removeEventListener('scroll', setVh);
     };
   }, []);
-
-  // useEffect(() => {
-  //   const distance = window.innerWidth; // dynamic width
-  //   document.documentElement.style.setProperty("--slide-distance", `${distance}px`);
-
-  // })
 
   return (
     <div
@@ -50,19 +43,6 @@ const ChatWindowTemplate = () => {
       <div className="sticky bottom-0 z-20 bg-[#0f0f0f]">
         <ChatWindowBottomNavbar />
       </div>
-
-      {/* <style>
-        {`
-          @keyframes slide-in-from-right {
-            0% {
-              transform: translateY(${window.innerWidth}px);
-            }
-            100% {
-              transform: translateY(0);
-            }
-          }
-        `}
-      </style> */}
     </div>
   )
 }

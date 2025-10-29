@@ -2,7 +2,6 @@ import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useChatWindowUsernameStore } from "../../../zustand/store/ChatWindowUsername"
 import { useChatWindowAvatarStore } from "../../../zustand/store/ChatWindowAvatar"
 import { MoreVertical } from "lucide-react"
-// import { useEffect, useState } from "react"
 import { useSidebarWidthStore } from "../../../zustand/store/SidebarWidth"
 import { Trash, Mic, Pin } from "lucide-react"
 import { useUser } from "@clerk/clerk-react"
@@ -11,8 +10,8 @@ import { useUserIdStore } from "../../../zustand/store/UserIdStore"
 import { useChatBoxContextMenuStore } from "../../../zustand/store/ChatBoxContextMenuStore"
 import { useChatWindowUserIdStore } from "../../../zustand/store/ChatWindowUserId"
 import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
-import "../../../index.css"
 import { useEffect } from "react"
+import "../../../index.css"
 
 interface ChatBoxTemplatePropsType {
   username: string,
@@ -50,7 +49,7 @@ export function ContextMenu() {
       console.error("error in removing friend: ", err)
     }
   }
-  
+
   return (
     <div
       className="w-full h-full bg-transparent cursor-not-allowed fixed z-30 left-0 top-0"
@@ -121,7 +120,7 @@ export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl
       setShowContextMenu(!showContextMenu)
     }
   }, [])
- 
+
   return (
     <div
       className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center cursor-pointer"

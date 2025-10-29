@@ -6,13 +6,8 @@ import ProtectedRoute from "./Routes/ProtectedRoute";
 import Loader from "./components/Loader";
 import SidebarMainContent from "./components/SidebarMainContent/index";
 import { useActiveScreenStore } from "./zustand/store/ActiveScreenStore";
-import ChatWindowTemplate from "./components/ChatWindow/ChatWindowTemplate";
 import { useEffect, useState } from "react";
 import "./App.css"
-import FriendRequestsWindow from "./components/FriendRequestsWindow/FriendRequestsWindow";
-import InboxWindow from "./components/InboxWindow/InboxWindow";
-import ChatbotWindow from "./components/ChatbotWindow/ChatbotWindow";
-
 
 const App = () => {
   const { activeScreen } = useActiveScreenStore();
@@ -49,62 +44,21 @@ const App = () => {
               </Loader>
             }
           />
-
           <Route
             path="/dashboard"
             element={
               <Loader>
                 <ProtectedRoute >
-                  {windowInnerWidth > 640 && (
+                  {(windowInnerWidth > 640 || windowInnerWidth <= 640) && (
                     activeScreen === "MainScreen"
                     || activeScreen === "ChatWindow"
                     || activeScreen === "FriendRequestsWindow"
                     || activeScreen === "InboxWindow"
                     || activeScreen === "ChatbotWindow"
+                    || activeScreen === "TextToSpeechWindow"
                   ) && (
                       <Dashboard children={<SidebarMainContent />} />
                     )}
-
-
-                  {windowInnerWidth <= 640 
-                  && (activeScreen === "MainScreen" || activeScreen === "ChatWindow" )
-                  && (
-                    <Dashboard children={<SidebarMainContent />} />
-                  )}
-
-                  {/* {windowInnerWidth <= 640 && activeScreen === "ChatWindow" && (
-                    <div
-                      className="fixed top-0 left-0 h-full w-full text-white "
-                    >
-                      <ChatWindowTemplate />
-                    </div>
-                  )} */}
-
-                  {windowInnerWidth <= 640 && activeScreen === "FriendRequestsWindow" && (
-                    <div
-                      className="fixed top-0 left-0 h-full bg-transparent w-full text-white "
-                    >
-                      <FriendRequestsWindow />
-                    </div>
-                  )}
-
-                  {windowInnerWidth <= 640 && activeScreen === "InboxWindow" && (
-                    <div
-                      className="fixed top-0 left-0 h-full bg-transparent w-full text-white "
-                    >
-                      <InboxWindow />
-                    </div>
-                  )}
-
-                  {windowInnerWidth <= 640 && activeScreen === "ChatbotWindow" && (
-                    <div
-                      className="fixed top-0 left-0 h-full bg-transparent w-full text-white "
-                    >
-                      <ChatbotWindow />
-                    </div>
-                  )}
-
-
                 </ProtectedRoute >
               </Loader>
             }

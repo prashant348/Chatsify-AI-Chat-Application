@@ -8,13 +8,12 @@ import { useUser } from "@clerk/clerk-react"
 import InboxWindow from "../components/InboxWindow/InboxWindow"
 import ChatbotWindow from "../components/ChatbotWindow/ChatbotWindow"
 import { useSidebarWidthStore } from "../zustand/store/SidebarWidth"
-// import { useChatBoxContextMenuStore } from "../zustand/store/ChatBoxContextMenuStore"
-
 import type { DashboardProps } from "../types/Dashboard.types"
 import { useSocket } from "../hooks/useSocket"
 import { useFriendStatusStore } from "../zustand/store/FriendStatusStore"
+import { createUser } from "../APIs/services/createUser.service"
+import TextToSpeechWindow from "../components/TextToSpeechWindow"
 import "../index.css"
-
 // interface ResizableSidebarProps {
 //   defaultWidth?: number,
 //   children: React.ReactNode
@@ -26,7 +25,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   // Responsive width state
   const [sidebarWidth, setSidebarWidth] = useState<number>(0.4 * window.innerWidth)
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const minWidth: number = 260;
+  const minWidth: number = 251;
   const maxWidth: number = window.innerWidth - 384 // 384 is the width of the main content which is 24% of 1600
   const resizerRef = useRef<HTMLDivElement>(null)
 
@@ -48,45 +47,26 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   // const { showContextMenu, setShowContextMenu } = useChatBoxContextMenuStore()
 
   useEffect(() => {
-    console.log({
-      clerkUserId: user?.id,
-      username: user?.username,
-      email: user?.emailAddresses[0].emailAddress,
-      avatar: user?.imageUrl
-    })
-    const sendYourData = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            clerkUserId: user?.id,
-            username: user?.username,
-            email: user?.emailAddresses[0].emailAddress,
-            avatar: user?.imageUrl
-          }),
-          signal
-        })
-        const data = await res.json()
-        console.log(data)
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-          console.log("request aborted")
-          return
-        }
-        console.error("error in sending your data: ", err)
+    const createData = async () => {
+      const result = await createUser(
+        user?.id,
+        user?.username,
+        user?.emailAddresses[0].emailAddress,
+        user?.imageUrl,
+        signal
+      )
+
+      if (result === "Success") {
+        console.log("user created successfully")
+      } else if (result === "Error") {
+        console.log("error in creating user(you): ")
       }
     }
-    sendYourData()
-
+    createData()
     return () => {
       controller.abort()
     }
-
   }, [])
-
 
   // Update widths on window resize
   useEffect(() => {
@@ -203,7 +183,6 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
     }
 
     window.addEventListener("beforeunload", handleUnload)
-    console.log("-------------------------------------------")
     return () => {
       socket.disconnect()
       window.removeEventListener("beforeunload", handleUnload)
@@ -232,7 +211,12 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-
+  useEffect(() => {
+    console.log("DASHBOARD MOUNTED")
+    return () => {
+      console.log("DASHBOARD UNMOUNTED")
+    }
+  })
   return (
     <>
       <div
@@ -252,7 +236,12 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
           }
         }}
       >
-        <div className="dashboard-container h-screen flex bg-black" style={{ pointerEvents: showSidebar ? "none" : "auto" }} >
+        <div
+          className="dashboard-container h-screen flex bg-black"
+          style={{
+            pointerEvents: showSidebar ? "none" : "auto"
+          }}
+        >
           {/* sidebar */}
           <div
             ref={sidebarRef}
@@ -294,6 +283,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
               {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : ""}
               {activeScreen === "MainScreen" ? <p>Select a chat to start messaging</p> : ""}
               {activeScreen === "ChatbotWindow" ? <ChatbotWindow /> : ""}
+              {activeScreen === "TextToSpeechWindow" ? <TextToSpeechWindow /> : ""}
             </div>
           )}
 
@@ -301,7 +291,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
 
       </div>
 
-      {/* ye bhi ek tarika hai */}
+      {/* another method: */}
       {/* Overlay to block all interaction when sidebar is open */}
       {/* {showSidebar && (
         <div
@@ -311,13 +301,24 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
         />
       )} */}
 
+      {/* for mobile */}
       {window.innerWidth <= 640 && activeScreen === "ChatWindow" && (
         <div className=" fixed top-0 left-0 z-40 h-full w-full text-white">
           <ChatWindowTemplate />
         </div>
       )}
-
+      {window.innerWidth <= 640 && activeScreen === "ChatbotWindow" && (
+        <div className=" fixed top-0 left-0 z-40 h-full w-full text-white">
+          <ChatbotWindow />
+        </div>
+      )}
+      {window.innerWidth <= 640 && activeScreen === "TextToSpeechWindow" && (
+        <div className=" fixed top-0 left-0 z-40 h-full w-full text-white">
+          <TextToSpeechWindow />
+        </div>
+      )}
       {showSidebar && <Sidebar />}
+      {/* for desktop and mobile both */}
       {activeScreen === "FriendRequestsWindow" ? <FriendRequestsWindow /> : ""}
       {activeScreen === "InboxWindow" ? <InboxWindow /> : ""}
 

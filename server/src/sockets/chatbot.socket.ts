@@ -2,13 +2,24 @@ import { Socket } from "socket.io";
 import { Server as ioServer } from "socket.io";
 import { User } from "../models/User/User.model";
 import { generateResponse } from "../utils/generateResponse";
+import { requestTracker } from "../utils/requestTracker";
 
-export const registerChatbotHandlers = (io: ioServer, socket: Socket, userId: string) => {
+export const registerChatbotHandlers = (
+    io: ioServer, 
+    socket: Socket, 
+    userId: string
+): void => {
     try {
         socket.on("send-msg-chatbot", async (prompt) => {
             // log the message from client
             console.log("from client: ", prompt)
-
+            const requestsMade = await requestTracker(userId)
+            if (requestsMade === "Error") return
+            if (requestsMade >= 10) {
+                console.log("Daily limit reached!")
+                io.to(userId).emit("receive-limit-reached", "Daily limit reached!")
+                return;
+            }
             // generate response from AI
             const response = await generateResponse(prompt)
 
@@ -32,6 +43,8 @@ export const registerChatbotHandlers = (io: ioServer, socket: Socket, userId: st
                 you: prompt,
                 bot: response
             })
+
+            user.requestsMade += 1
 
             // save changes!
             await user.save()

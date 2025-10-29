@@ -6,10 +6,10 @@ import { useActiveScreenStore } from "../../zustand/store/ActiveScreenStore"
 import GeneralLoader from "../GeneralLoader"
 import { ArrowLeft, RefreshCcw } from "lucide-react"
 import { useRequestPendingStore } from "../../zustand/store/RequestsPending"
+import { fetchReceivedFriendRequests } from "../../APIs/services/fetchReceivedFriendRequests.service"
+import "../../index.css"
 
-
-
-interface senderReqType {
+interface FriendRequetsType {
   senderId: string,
   senderUsername: string,
   senderAvatar: string,
@@ -19,38 +19,23 @@ interface senderReqType {
 export default function FriendRequestsWindow() {
 
   const { getToken } = useAuth()
-  const [friendRequests, setFriendRequests] = useState<senderReqType[]>([])
+  const [friendRequests, setFriendRequests] = useState<FriendRequetsType[]>([])
   const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [refresh, setRefresh] = useState<boolean>(false)
   const isReqPending = useRequestPendingStore(state => state.isReqPending)
 
   useEffect(() => {
-
-    const fetchReceivedFriendRequests = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/receive-request`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${await getToken()}`
-          }
-        })
-        const data = await res.json()
-
-        const friendRequests = data.friendRequestsReceivedFrom_List
-        setFriendRequests(friendRequests)
-        console.log("frnd reqs arr: ", friendRequests)
-        console.log("length: ", friendRequests.length)
-
-      } catch (err) {
-        console.error("error in fetching requests: ", err)
-      } finally {
+    const fetchData = async () => {
+      const result = await fetchReceivedFriendRequests(getToken)
+      if (result === "Error") {
         setIsLoading(false)
+      } else {
+        setIsLoading(false)
+        setFriendRequests(result)
       }
     }
-
-    fetchReceivedFriendRequests()
+    fetchData()
   }, [isReqPending, refresh])
 
   return (
@@ -58,6 +43,9 @@ export default function FriendRequestsWindow() {
       className='fixed top-0 left-0 z-100 h-screen w-full flex justify-center items-center bg-black/50 text-white'
       onClick={() => {
         setActiveScreen("MainScreen")
+      }}
+      style={{
+        animation: window.innerWidth <= 640 ? "slide-in-from-right 0.3s ease-in forwards" : ""
       }}
     >
       <div
@@ -91,7 +79,6 @@ export default function FriendRequestsWindow() {
           </div>
         </div>
 
-     
         <div
           className="h-full w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#363636] scrollbar-track-trasparent"
           style={{

@@ -5,6 +5,7 @@ import { SenderFriendSchema } from "./SenderFriend.Schema";
 import { FriendsSchema } from "./Friends.Schema";
 import { InboxSchema } from "./Inbox.Schema";
 import { ChatbotSchema } from "./Chatbot.Schema";
+import { TextToSpeechAISchema } from "./TextToSpeechAI.Schema";
 
 const UserSchema = new mongoose.Schema({
     clerkUserId: { type: String, unique: true, required: true, sparse: true },
@@ -15,7 +16,9 @@ const UserSchema = new mongoose.Schema({
     friendRequestsSentTo: { type: [ReceiverFriendSchema] },
     friendRequestsReceivedFrom: { type: [SenderFriendSchema] },
     inbox: { type: [InboxSchema] },
-    chatbotChats: { type: [ChatbotSchema]}
+    chatbotChats: { type: [ChatbotSchema]},
+    textToSpeechAIChats: { type: [TextToSpeechAISchema]},
+    requestsMade: { type: Number, default: 0 }
 })
 
 

@@ -5,7 +5,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { useChatbotMessageStore } from '../../../zustand/store/ChatbotMessageStore'
 import GeneralLoader from '../../GeneralLoader'
 import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh'
-
+import { fetchChatbotChatMessages } from '../../../APIs/services/fetchChatbotChatMessages.service'
 
 export default function ChatbotChatsArea() {
 
@@ -17,32 +17,17 @@ export default function ChatbotChatsArea() {
     const { globalRefresh } = useGlobalRefreshStore()
 
     useEffect(() => {
-        const fetchChats = async () => {
-            try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${user?.id}/chatbot-chats`, {
-                    method: "GET",
-                    headers: {
-                        contentType: "application/json",
-                        "authorization": `Bearer ${await getToken()}`
-                    }
-                })
-
-                const data = await res.json()
-                console.log(data)
-
-                console.log(data.chatbotChats)
-
-                setAllChatbotMessages(data.chatbotChats)
-
-                console.log("chatbot chats fetched!")
-            } catch (err) {
-                console.error("err in fetching chatbot chats: ", err)
-            } finally {
+        const fetchData = async () => {
+            setIsLoading(true)
+            const result = await fetchChatbotChatMessages(getToken, user?.id)
+            if (result instanceof Array) {
+                setIsLoading(false)
+                setAllChatbotMessages(result)
+            } else if (result === "Error") {
                 setIsLoading(false)
             }
         }
-
-        fetchChats()
+        fetchData()
     }, [globalRefresh])
 
     useEffect(() => {
@@ -55,10 +40,10 @@ export default function ChatbotChatsArea() {
             {!isLoading && allChatbotMessages.map((chat, idx) => (
                 <div key={idx} className='flex flex-col p-2 gap-2'>
                     <p className='flex justify-end'>
-                        <span className='bg-blue-500 p-2 rounded-lg max-w-[70%]'>{chat.you}</span>
+                        <span className='bg-blue-500 border border-blue-400 p-2 rounded-lg max-w-[70%]'>{chat.you}</span>
                     </p>
                     <p className='flex justify-start '>
-                        <span className='bg-[#303030] p-2 rounded-lg max-w-[70%]'>
+                        <span className='bg-[#303030] border border-[#404040] p-2 rounded-lg max-w-[70%]'>
                             {chat.bot === "" ? "Thinking..." : chat.bot}
                         </span>
                     </p>
