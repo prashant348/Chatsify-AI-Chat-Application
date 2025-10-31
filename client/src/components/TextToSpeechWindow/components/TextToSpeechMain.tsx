@@ -33,30 +33,75 @@ export default function TextToSpeechMain() {
     const { getToken } = useAuth()
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { globalRefresh } = useGlobalRefreshStore()
+    const [ error, setError ] = useState<string>("")
+    const [ isRetryBtnClicked, setIsRetryBtnClicked ] = useState<boolean>(false)
+
+    const controllerRef = useRef<AbortController | null>(null)
+    const reqIdRef = useRef<number>(0)
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [allTextToSpeechMessages])
 
     useEffect(() => {
+        console.log("fetching data")
         const fetchData = async () => {
+            if (!user?.id) {
+                setIsLoading(false)
+                console.log("no userid given")
+                return
+            }
+
+            controllerRef.current?.abort()
+
+            const controller = new AbortController()
+            controllerRef.current = controller
+            const currentReqId = ++reqIdRef.current
+
             setIsLoading(true)
-            const result = await fetchTextToSpeechAIChatMessages(getToken, user?.id)
+            setError("")
+
+            const result = await fetchTextToSpeechAIChatMessages(getToken, user?.id, controller.signal)
+
+            if (currentReqId !== reqIdRef.current) return
+
             if (result instanceof Array) {
-                setIsLoading(false)
                 setAllTextToSpeechMessages(result)
-            } else if (result === "Error") {
                 setIsLoading(false)
+                setError("")
+            } else if (result === "AbortError") {
+                setIsLoading(false)
+            } else {
+                setIsLoading(false)
+                setError("Retry")
             }
         }
         fetchData()
-    }, [globalRefresh])
+    }, [globalRefresh, isRetryBtnClicked])
 
     return (
         <div
             className="h-full w-full"
         >
             {isLoading && <GeneralLoader />}
+            {!isLoading
+                && allTextToSpeechMessages.length === 0
+                && error
+                &&
+                <div className="h-full w-full flex flex-col gap-1 justify-center items-center">
+                    <span className="text-center">
+                        Unable to fetch chats!
+                    </span>
+                    <button
+                        className="bg-[#212121] hover:bg-[#303030] p-2 border border-[#404040] rounded-md cursor-pointer"
+                        onClick={() => {
+                            setIsLoading(true)
+                            setIsRetryBtnClicked(!isRetryBtnClicked)
+                        }}>
+                        {error}
+                    </button>
+                </div>
+            }
             {!isLoading && allTextToSpeechMessages.map((chat, idx) => (
                 <div key={idx} className='flex flex-col p-2 gap-2'>
                     <div className='flex justify-end'>

@@ -7,6 +7,7 @@ import Loader from "./components/Loader";
 import SidebarMainContent from "./components/SidebarMainContent/index";
 import { useActiveScreenStore } from "./zustand/store/ActiveScreenStore";
 import { useEffect, useState } from "react";
+import About from "./pages/About";
 import "./App.css"
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
       window.removeEventListener("resize", returnWindowInnerWidth)
     }
   }, [])
+
 
   return (
     <>
@@ -45,6 +47,12 @@ const App = () => {
             }
           />
           <Route
+            path="/about"
+            element={
+              <About />
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <Loader>
@@ -58,6 +66,7 @@ const App = () => {
                     || activeScreen === "TextToSpeechWindow"
                   ) && (
                       <Dashboard children={<SidebarMainContent />} />
+   
                     )}
                 </ProtectedRoute >
               </Loader>

@@ -1,6 +1,6 @@
 
 import { useRef, useEffect } from 'react'
-import { SendHorizonal } from 'lucide-react'
+import { ArrowUpIcon, AtSign } from 'lucide-react'
 import { useSocket } from '../../../hooks/useSocket'
 import { Socket } from 'socket.io-client'
 import { useChatbotMessageStore } from '../../../zustand/store/ChatbotMessageStore'
@@ -45,12 +45,12 @@ export default function ChatbotWindowBottomNavbar() {
     }
 
     return (
-        <div className='input-box h-[70px] w-full bg-[#0f0f0f] flex justify-between items-center px-3'>
+        <div className='input-box py-[12px] bg-black gap-2 shrink-0  h-[70px] w-full flex justify-between items-center px-3'>
             <input
                 ref={inputRef}
                 type="text"
-                placeholder='Ask anything'
-                className='outline-none w-full h-full px-2'
+                placeholder='Ask anything...'
+                className='outline-none w-full h-full px-4 pr-10 focus:pr-10  bg-[#1f1f1f] rounded-full focus:border-[#404040] focus:border focus:px-[15px]'
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         if (!inputRef.current?.value.trim()) return
@@ -59,16 +59,29 @@ export default function ChatbotWindowBottomNavbar() {
                 }}
             />
 
+
+            <button className="fixed hover:bg-[#303030]  h-9 w-9 shrink-0 flex justify-center items-center rounded-full"
+                style={{
+                    right: 72
+                }}  
+                onClick={() => alert("Feature 'Add Context' coming soon!")}
+            >
+                <AtSign size={20} />
+            </button>
+
             <button
-                className='cursor-pointer opacity-60 hover:opacity-100'
+                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full sm:hover:opacity-100 sm:opacity-60 '
                 onClick={() => {
                     if (!inputRef.current?.value.trim()) return
                     console.log("msg sent to chatbot...")
                     console.log(inputRef.current?.value.trim())
                     handleSend(inputRef.current?.value.trim())
                 }}
+                style={{
+                    opacity: window.innerWidth <= 640 ? 1 : ""
+                }}
             >
-                <SendHorizonal />
+                <ArrowUpIcon />
             </button>
         </div>
     )

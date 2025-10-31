@@ -5,8 +5,9 @@ type TextToSpeechAIMessage = {
 
 export const fetchTextToSpeechAIChatMessages = async (
     token: () => Promise<string | null>,
-    yourId: string | undefined
-): Promise<TextToSpeechAIMessage[] | "Error"> => {
+    yourId: string | undefined,
+    abortSignal: AbortSignal
+): Promise<TextToSpeechAIMessage[] | "Error" | "AbortError"> => {
     try {
         const authToken = await token()
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${yourId}/text-to-speech-ai-chats`, {
@@ -14,7 +15,8 @@ export const fetchTextToSpeechAIChatMessages = async (
             headers: {
                 contentType: "application/json",
                 "authorization": `Bearer ${authToken}`
-            }
+            },
+            signal: abortSignal
         })
         if (!res.ok) throw new Error("failed to fetch chatbot chat messages")
         const data = await res.json()
@@ -23,7 +25,11 @@ export const fetchTextToSpeechAIChatMessages = async (
         const textToSpeechAIChatMessages: TextToSpeechAIMessage[] = data.textToSpeechAIChats
         console.log("text-to-speech-ai chats fetched!")
         return textToSpeechAIChatMessages
-    } catch (err) {
+    } catch (err: any) {
+        if (err.name === "AbortError") {
+            console.log("Previous request was cancelled!")
+            return "AbortError";
+        }
         console.error("err in fetching  text-to-speech-ai chats: ", err)
         return "Error";
     }

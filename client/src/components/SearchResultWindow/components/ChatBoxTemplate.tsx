@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-react"
 import GeneralLoader from "../../GeneralLoader"
 import { useReqSentStore } from "../../../zustand/store/ReqSentStore"
 import { handleSendFriendRequest } from "../../../APIs/handlers/handleSendFriendRequest.handler"
-
+import "../../../index.css"
 
 interface ChatBoxTemplatePropsType {
   username: string,
@@ -18,7 +18,7 @@ function Modal({ msg }: { msg: string }) {
 
   return (
     <div
-      className="h-screen w-full fixed left-0 top-0 z-100 flex justify-center items-center bg-black/50"
+      className="h-screen w-full fixed left-0 top-0 z-100 flex justify-center items-start bg-black/50"
       onMouseDown={(e) => {
         // to save from onBlur event of input (search bar) tag from SidebarMainContent's Navbar.tsx
         e.preventDefault()
@@ -26,16 +26,20 @@ function Modal({ msg }: { msg: string }) {
         setIsReqSent(false)
 
       }}
+
     >
       <div
-        className="h-[80px] w-[200px] flex justify-center items-center rounded-xl bg-[#0f0f0f] border border-[#303030]"
+        className="px-3 py-2 mt-5 flex justify-center items-center rounded-xl bg-[#0f0f0f] border border-[#303030]"
         onMouseDown={(e) => {
           e.preventDefault()
           e.stopPropagation()
         }}
+        style={{
+          animation: "fade-in-slide-down 0.2s ease-in-out forwards"
+        }}
       >
         <div className="flex justify-center items-center gap-2">
-          <span>{msg}</span>
+          <span className="font-bold">{msg}</span>
           <span>
             <CircleCheck size={18} color="#22c55e" />
           </span>
@@ -62,7 +66,6 @@ export default function ChatBoxTemplate({ username, latestMsg, imgUrl, id }: Cha
           e.stopPropagation()
           console.log("chatbox clicked: ", id)
         }}
-
       >
 
         <div className="flex items-center gap-[10px]">

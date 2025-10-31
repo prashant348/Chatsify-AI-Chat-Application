@@ -7,18 +7,12 @@ import FriendRequestsWindow from "../components/FriendRequestsWindow/FriendReque
 import { useUser } from "@clerk/clerk-react"
 import InboxWindow from "../components/InboxWindow/InboxWindow"
 import ChatbotWindow from "../components/ChatbotWindow/ChatbotWindow"
-import { useSidebarWidthStore } from "../zustand/store/SidebarWidth"
 import type { DashboardProps } from "../types/Dashboard.types"
 import { useSocket } from "../hooks/useSocket"
-import { useFriendStatusStore } from "../zustand/store/FriendStatusStore"
 import { createUser } from "../APIs/services/createUser.service"
 import TextToSpeechWindow from "../components/TextToSpeechWindow"
 import "../index.css"
-// interface ResizableSidebarProps {
-//   defaultWidth?: number,
-//   children: React.ReactNode
-// }
-
+import { useFriendStatusStoreBase } from "../zustand/store/FriendStatusStore"
 
 
 const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * window.innerWidth, children }) => {
@@ -38,13 +32,9 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   const controller = new AbortController()
   const { signal } = controller
 
-  const setSidebarWidthGlobally = useSidebarWidthStore(state => state.setSidebarWidth)
-
   const socket = useSocket()
-  const { status, setStatus } = useFriendStatusStore()
-  // const sidebarWidthGlobally = useSidebarWidthStore(state => state.sidebarWidth)
+  const { setStatusForUser } = useFriendStatusStoreBase()
 
-  // const { showContextMenu, setShowContextMenu } = useChatBoxContextMenuStore()
 
   useEffect(() => {
     const createData = async () => {
@@ -118,7 +108,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   const startResizing = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    //Jab aap mouse se resizer ko pakadte ho, us waqt mouse ka X position (horizontal position) store ho jaata hai.
+    //Jab aap mouse se resizer ko pakadte ho, us samay mouse ka X position (horizontal position) store ho jaata hai.
     // Ye starting point hai resize ka.
     const startX = e.clientX;
 
@@ -135,11 +125,8 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
       }
 
       const dx: number = e.clientX - startX;
-      // const newWidth = Math.min(Math.max(initialSidebarWidth + dx, minWidth), maxWidth);
       const newWidth: number = initialSidebarWidth + dx
       setSidebarWidth(newWidth);
-      setSidebarWidthGlobally(newWidth)
-      setSidebarWidthGlobally(sidebarRef.current?.offsetWidth || defaultWidth)
     }
 
 
@@ -154,32 +141,30 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
 
 
   useEffect(() => {
-    setSidebarWidthGlobally(0.4 * window.innerWidth)
-  }, [window.innerWidth])
-
-  useEffect(() => {
     socket.connect()
 
-    socket.on("receive-status", ({ from, status }) => {
-      console.log("from server: ", { from, status })
-      setStatus(status)
-    })
-
-    const sendStatus = () => {
+    // join a room named by this user's clerk id so server can target this socket via io.to(userId)
+    if (user?.id) {
+      socket.emit("join-room", { userId: user.id })
+      // then announce presence
       socket.emit("send-status", {
-        from: user?.id,
+        from: user.id,
         status: "online"
       })
     }
-
-    sendStatus()
+    socket.on("receive-status", ({ from, status }) => {
+      console.log("from server: ", { from, status })
+      setStatusForUser(from, status)
+    })
 
     const handleUnload = () => {
       console.log("tab closed!")
-      socket.emit("send-status", {
-        from: user?.id,
-        status: ""
-      })
+      if (user?.id) {
+        socket.emit("send-status", {
+          from: user.id,
+          status: ""
+        })
+      }
     }
 
     window.addEventListener("beforeunload", handleUnload)
@@ -187,7 +172,10 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
       socket.disconnect()
       window.removeEventListener("beforeunload", handleUnload)
     }
-  }, [status])
+  }, [])
+
+
+
 
   // update slide distance dynamically
   useEffect(() => {
@@ -211,16 +199,11 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    console.log("DASHBOARD MOUNTED")
-    return () => {
-      console.log("DASHBOARD UNMOUNTED")
-    }
-  })
+  
   return (
     <>
       <div
-        className={showSidebar ? "brightness-50 transition duration-300 ease-in" : ""}
+        className={showSidebar ? "brightness-50  transition duration-300 ease-in" : ""}
         onClick={() => {
           if (showSidebar) {
             setShowSidebar(false)
@@ -245,7 +228,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
           {/* sidebar */}
           <div
             ref={sidebarRef}
-            className="sidebar"
+            className="sidebar flex-shrink-0"
             style={{
               width: window.innerWidth <= 640 ? "100%" : sidebarWidth,
               minWidth: window.innerWidth <= 640 ? "100%" : minWidth,
@@ -269,7 +252,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
                 width: 5,
                 cursor: "e-resize",
                 flexShrink: 0
-
+                
               }}
             />
           )}
@@ -277,7 +260,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
           {/* rightside chat window  */}
           {window.innerWidth > 640 && (
             <div
-              className="chat-window text-white flex justify-center items-center min-w-[384px]"
+              className="chat-window text-white flex justify-center items-center "
               style={{ flexGrow: 1 }}
             >
               {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : ""}

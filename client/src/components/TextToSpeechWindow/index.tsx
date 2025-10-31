@@ -3,22 +3,27 @@ import TextToSpeechMain from "./components/TextToSpeechMain"
 import TextToSpeechFooter from "./components/TextToSpeechFooter"
 import "../../index.css"
 
+
 export default function TextToSpeechWindow() {
 
     return (
         <div
-            className="flex flex-col h-full w-full"
+            className="h-[calc(var(--vh)*100)] flex flex-col w-full"
             style={{
                 animation: window.innerWidth <= 640
                     ? "slide-in-from-right 0.3s ease-in forwards"
                     : ""
             }}
         >
-            <TextToSpeechHeader />
-            <div className='response-area bg-black h-full w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#303030] scrollbar-track-transparent'>
+            <div className="sticky top-0 z-21 bg-[#0f0f0f]">
+                <TextToSpeechHeader />
+            </div>
+            <div className='flex-1 min-h-0 bg-black w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#303030] scrollbar-track-transparent'>
                 <TextToSpeechMain />
             </div>
-            <TextToSpeechFooter />
+            <div className="sticky bottom-0  z-20 bg-[#0f0f0f]">
+                <TextToSpeechFooter />
+            </div>
         </div>
     )
 }

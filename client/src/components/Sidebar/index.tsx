@@ -2,25 +2,25 @@ import "../../index.css"
 import { useUser, UserButton, UserProfile } from "@clerk/clerk-react"
 import { useState } from "react"
 import SidebarButtons from "./components/SidebarButtons"
-import { UserIcon } from "lucide-react"
-
+import { UserIcon, InfoIcon, HelpCircleIcon, SquareArrowOutUpRight } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 const Sidebar = () => {
     const [isUserProfileOpen, setIsUserProfileOpen] = useState<boolean>(false)
     const { user } = useUser()
-
+    const navigate = useNavigate()
     return (
         <div className="overflow-y-auto" onMouseDown={(e) => {
             e.preventDefault()
             e.stopPropagation()
         }}>
             <div
-                className="fixed top-0 left-0 z-50 bg-[#0f0f0f] h-screen w-[254px] sm:w-[274px] border-r border-r-[#212121] text-white"
+                className="fixed top-0 flex flex-col left-0 z-50 bg-[#0f0f0f] h-screen w-[254px] sm:w-[274px] border-r border-r-[#212121] text-white"
                 style={{
                     animation: "slide-in 0.3s ease-in-out forwards",
                 }}
             >
 
-                <div className="main-box w-full h-[134px]  border-b border-b-[#212121] pt-6 px-6">
+                <div className="main-box w-full shrink-0 h-[134px]  border-b border-b-[#212121] pt-6 px-6">
 
                     <UserButton appearance={{
                         elements: {
@@ -40,7 +40,7 @@ const Sidebar = () => {
 
                 </div>
 
-                <div className="my-profile-box h-[50px] w-full py-[5px] border-b border-b-[#212121]">
+                <div className="my-profile-box h-[50px] shrink-0 w-full py-[5px] border-b border-b-[#212121]">
                     <button
                         className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
                         onClick={() => setIsUserProfileOpen(true)}
@@ -52,6 +52,40 @@ const Sidebar = () => {
 
                 <div className="sidebar-buttons">
                     <SidebarButtons />
+                </div>
+
+                <div className="h-full w-full flex flex-col justify-end"
+                >
+                    <div className=" border-t border-t-[#212121] py-[5px]">
+
+                        <div className="my-profile-box h-[40px] w-full">
+                            <button
+                                className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                                onClick={() => navigate("/about")}
+                            >
+
+                                <InfoIcon height={"20px"} className="flex-shrink-0" />
+
+                                <span className="flex justify-between w-full items-center">
+                                    <span>
+                                        About
+                                    </span>
+                                    <span className="opacity-60">
+                                        <SquareArrowOutUpRight size={14} />
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
+                        <div className="my-profile-box h-[40px] w-full">
+                            <button
+                                className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                                onClick={() => alert("Feature coming soon!")}
+                            >
+                                <HelpCircleIcon height={"20px"} />
+                                <span className="">Help</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
             </div>

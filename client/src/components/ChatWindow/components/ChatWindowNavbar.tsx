@@ -1,7 +1,6 @@
 import { SidebarIcon, MoreVerticalIcon, ArrowLeft } from "lucide-react"
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useChatWindowAvatarStore } from '../../../zustand/store/ChatWindowAvatar.ts'
-import { useFriendStatusStore } from "../../../zustand/store/FriendStatusStore.ts"
 import { useState } from "react"
 import { Trash, Mic, Brush, RefreshCcw } from "lucide-react"
 import { useAuth } from "@clerk/clerk-react"
@@ -11,7 +10,8 @@ import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh.ts"
 import { handleDeleteUserChat } from "../../../APIs/handlers/handleDeleteUserChat.handler.ts"
 import "../../../index.css"
 
-const MoreButtonModal = () => {
+import { useFriendStatusStoreBase } from "../../../zustand/store/FriendStatusStore.ts"
+const MoreButtonModal = ({ onClose }: { onClose: () => void }) => {
 
     const { getToken } = useAuth()
     const { user } = useUser()
@@ -20,15 +20,23 @@ const MoreButtonModal = () => {
 
     return (
         <div
-            className="fixed z-40 top-0 left-0 w-full h-full bg-transparent cursor-not-allowed"
+            className="fixed z-40 top-0 bg-black/50 left-0 w-full h-full cursor-auto"
             style={{
-                animation: "fade-in 0.2s ease-in-out forwards"
+                animation: "fade-in 0.3s ease-in-out forwards"
+            }}
+            onClick={() => {
+                onClose()
             }}
         >
-            <div className=" p-2 fixed right-3 top-[60px] rounded-lg border border-[#303030] bg-[#0f0f0f] hover:cursor-auto">
+            <div 
+            className=" p-2 fixed right-3 top-[50px] rounded-lg border border-[#303030] bg-[#0f0f0f] hover:cursor-auto"
+            style={{
+                animation: "fade-in-slide-down 0.3s ease-in-out forwards"
+            }}
+            >
                 <div className="flex flex-col">
                     <button
-                        className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                        className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
                         onClick={() => {
                             setGlobalRefresh(!globalRefresh)
                         }}
@@ -38,13 +46,19 @@ const MoreButtonModal = () => {
                         </span>
                         <span>Refresh</span>
                     </button>
-                    <button className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]">
+                    <button 
+                    className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                    onClick={() => alert("Feature coming soon!")}
+                    >
                         <span>
                             <Mic size={18} />
                         </span>
                         <span>Mute</span>
                     </button>
-                    <button className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]">
+                    <button 
+                    className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                    onClick={() => alert("Feature coming soon!")}
+                    >
                         <span>
                             <Brush size={18} />
                         </span>
@@ -54,7 +68,7 @@ const MoreButtonModal = () => {
                 <div className="h-[1px] bg-[#303030] w-full my-1" />
                 <div className="w-full">
                     <button
-                        className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                        className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
                         onClick={async () => {
                             const result = await handleDeleteUserChat(getToken, user?.id, chatWindowUserId)
                             if (result === "Success") {
@@ -79,12 +93,13 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
 
     const setActiveScreen = useActiveScreenStore(state => state.setActiveScreen)
     const chatWindowAvatar = useChatWindowAvatarStore((state) => state.chatWindowAvatar)
-    const { status } = useFriendStatusStore()
     const [showModal, setShowModal] = useState<boolean>(false)
-
+    const { chatWindowUserId } = useChatWindowUserIdStore()
+    const statuses = useFriendStatusStoreBase(state => state.statuses)
+    const displayStatus = statuses[chatWindowUserId]
 
     return (
-        <div className="h-[60px] w-full bg-[#0f0f0f] px-3 flex justify-between items-center shrink-0">
+        <div className="h-[60px] w-full bg-[#0f0f0f] px-3 border-b border-b-[#212121] sm:border-none flex justify-between items-center shrink-0">
 
             <div className="left-side-of-navbar flex gap-3 items-center">
 
@@ -103,30 +118,32 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
 
                 <div className="user-username status flex flex-col">
                     <p className="text-[16px] font-bold">{username}</p>
-                    <p className="last-seen-msg text-sm text-green-500">{status ? status : ""}</p>
+                    <p className="last-seen-msg text-sm text-green-500">{displayStatus}</p>
                 </div>
             </div>
 
-            <div className="right-side-of-navbar flex gap-3">
-                <button className="opacity-60 hover:opacity-100 cursor-pointer rotate-180">
-                    <SidebarIcon />
+            <div className=' z-45 flex items-center gap-2'>
+                <button
+                    className="cursor-pointer h-8 w-8 flex justify-center items-center p-1 rounded-full opacity-60 hover:opacity-100 rotate-180"
+                    onClick={() => alert("Feature coming soon!")}
+                >
+                    <SidebarIcon size={20} />
                 </button>
                 <button
-                    className="opacity-60 z-45 hover:opacity-100 cursor-pointer rounded-full p-1"
-                    onClick={() => {
-                        setShowModal(!showModal)
-                    }}
+                    className='cursor-pointer h-8 w-8 flex justify-center items-center p-1 rounded-full opacity-60 hover:opacity-100'
+                    onClick={() => setShowModal(!showModal)}
                     style={{
-                        backgroundColor: showModal ? "#303030" : ""
+                        backgroundColor: showModal ? "#303030" : "",
+                        opacity: showModal ? 1 : ""
                     }}
                 >
-                    <MoreVerticalIcon />
+                    <MoreVerticalIcon size={20} />
                 </button>
             </div>
 
 
             {showModal && (
-                <MoreButtonModal />
+                <MoreButtonModal onClose={() => setShowModal(false)} />
             )}
         </div>
     )

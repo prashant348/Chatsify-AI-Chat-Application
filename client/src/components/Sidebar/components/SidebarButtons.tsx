@@ -1,4 +1,4 @@
-import { Users, Bookmark, ShipWheel, Settings, Moon, UserPlus, Sun, Inbox, AudioLines } from "lucide-react"
+import { Users, Bookmark, Moon, UserPlus, Sun, Inbox, AudioLines, Settings2Icon, BotMessageSquareIcon } from "lucide-react"
 import { useAppThemeStore } from "../../../zustand/store/AppTheme"
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useSidebarStore } from "../../../zustand/store/SidebarStore"
@@ -12,6 +12,9 @@ export default function SidebarButtons() {
             <div className="my-profile-box w-full py-[5px] border-b border-b-[#212121]">
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    onClick={() => {
+                        alert("Feature coming soon!")
+                    }}
                 >
                     <Users height={"20px"} />
                     <span className="">New Room</span>
@@ -19,6 +22,9 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    onClick={() => {
+                        alert("Feature coming soon!")
+                    }}
                 >
                     <Bookmark height={"20px"} />
                     <span className="">Saved Messages</span>
@@ -39,7 +45,7 @@ export default function SidebarButtons() {
                         setActiveScreen("ChatbotWindow")
                     }}
                 >
-                    <ShipWheel height={"20px"} />
+                    <BotMessageSquareIcon height={"20px"} />
                     <span>Chatsify AI</span>
                 </button>
 
@@ -65,14 +71,20 @@ export default function SidebarButtons() {
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    onClick={() => {
+                        alert("Feature coming soon!")
+                    }}
                 >
-                    <Settings height={"20px"} />
+                    <Settings2Icon height={"20px"} />
                     <span className="">Settings</span>
                 </button>
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => setAppTheme(appTheme === "dark" ? "light" : "dark")}
+                    onClick={() => {
+                        alert("Feature coming soon!")
+                        setAppTheme(appTheme === "dark" ? "light" : "dark")
+                    }}
                 >
                     {appTheme === "dark" && (
                         <div className="flex items-center gap-4">

@@ -22,10 +22,46 @@ router.post("/api/:userid", async (req, res) => {
         const userExists = await User.findOne({ clerkUserId: userid })
 
         if (userExists) {
-            console.log("user already exists")
-            console.log(userExists)
-            res.status(409).json({ message: "user already exists" })
-            return
+
+            if (userExists.username === username
+                && userExists.avatar === avatar
+            ) {
+                console.log("user already exists")
+                console.log(userExists)
+                return res.status(409).json({ message: "user already exists" });
+            } else {
+                // first update yourself!
+                userExists.username = username
+                userExists.avatar = avatar
+                await userExists.save()
+                console.log("you updated successfully in your doc!")
+                console.log({ clerkUserId, username, email, avatar })
+
+                // now update update yourself in your friends data
+                userExists.friends.map(async (friend) => {
+                    // check if each friend of yours exist!
+                    const friendExists = await User.findOne({ clerkUserId: friend.friendClerkId })
+                    // if exist...
+                    if (friendExists) {
+                        // ...then find yourself in his/her friends list
+                        friendExists.friends.map(async (friend) => {
+                            // if found yourself...
+                            if (friend.friendClerkId === userid) {
+                                // ...then update yourself
+                                friend.friendUsername = username
+                                friend.friendAvatar = avatar
+                                await friendExists.save()
+                            }
+                        })
+                    }
+                })
+                console.log("you also updated successfully in your friends list!")
+                return res.status(200).json({
+                    message: "user updated successfully!",
+                    updatedUserInfo: { clerkUserId: userid, username, email, avatar }
+                })
+            }
+
         }
 
         await User.create({
@@ -36,7 +72,7 @@ router.post("/api/:userid", async (req, res) => {
         })
 
         res.status(201).json({ userInfo: { clerkUserId, username, email, avatar } })
-
+        console.log("user (you) created in db!")
     } catch (err) {
         console.error("Error in fetching you: ", err)
         res.status(500).send(err)

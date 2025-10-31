@@ -15,20 +15,46 @@ export default function ChatbotChatsArea() {
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { globalRefresh } = useGlobalRefreshStore()
+    const [error, setError] = useState<string>("")
+    const [isRetryBtnClicked, setIsRetryBtnClicked] = useState<boolean>(false)
+    const controllerRef = useRef<AbortController | null>(null)
+    const reqIdRef = useRef<number>(0)
+
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!user?.id) {
+                setIsLoading(false)
+                return
+            }
+
+            // abort previous pending request (if any)
+            controllerRef.current?.abort()
+
+            // create new controller + request id
+            const controller = new AbortController()
+            controllerRef.current = controller
+            const currentReqId = ++reqIdRef.current
+
             setIsLoading(true)
-            const result = await fetchChatbotChatMessages(getToken, user?.id)
+            setError("")
+            const result = await fetchChatbotChatMessages(getToken, user?.id, controller.signal)
+            
+            if (currentReqId !== reqIdRef.current) return
+
             if (result instanceof Array) {
-                setIsLoading(false)
                 setAllChatbotMessages(result)
-            } else if (result === "Error") {
                 setIsLoading(false)
+                setError("")
+            } else if (result === "AbortError") {
+                setIsLoading(false)
+            } else {
+                setIsLoading(false)
+                setError("Retry")
             }
         }
         fetchData()
-    }, [globalRefresh])
+    }, [globalRefresh, isRetryBtnClicked])
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -37,6 +63,24 @@ export default function ChatbotChatsArea() {
     return (
         <div className='h-full w-full'>
             {isLoading && <GeneralLoader />}
+            {!isLoading
+                && allChatbotMessages.length === 0
+                && error
+                && 
+                <div className="h-full w-full flex flex-col gap-1 justify-center items-center">
+                    <span className="text-center">
+                        Unable to fetch chats!
+                    </span>
+                    <button
+                        className="bg-[#212121] hover:bg-[#303030] p-2 border border-[#404040] rounded-md cursor-pointer"
+                        onClick={() => {
+                            setIsLoading(true)
+                            setIsRetryBtnClicked(!isRetryBtnClicked)
+                        }}>
+                        {error}
+                    </button>
+                </div>
+            }
             {!isLoading && allChatbotMessages.map((chat, idx) => (
                 <div key={idx} className='flex flex-col p-2 gap-2'>
                     <p className='flex justify-end'>

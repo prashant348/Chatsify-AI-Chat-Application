@@ -51,7 +51,7 @@ router.post("/api/send-request", async (req, res) => {
 
             // if yes, then show "req already sent" and return
             if (receiverReq) {
-                res.status(409).json({ message: "req already sent!" })
+                res.status(409).json({ message: "Request already sent!" })
                 console.log("req already sent!")
                 return
             }
@@ -64,7 +64,7 @@ router.post("/api/send-request", async (req, res) => {
 
             // if already friends!
             if (friendsMoment) {
-                res.status(409).json({ message: "already friends!" })
+                res.status(409).json({ message: "Already friends!" })
                 console.log("already friends!") // for debugging
                 return
             }
@@ -78,7 +78,7 @@ router.post("/api/send-request", async (req, res) => {
             await receiver.save()
 
             // success response
-            res.status(201).json({ message: "req sent!" })
+            res.status(201).json({ message: "Request sent!" })
             return
         }
 

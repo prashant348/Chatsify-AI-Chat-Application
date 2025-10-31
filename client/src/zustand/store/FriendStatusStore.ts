@@ -1,11 +1,19 @@
 import { create } from "zustand";
 
-interface FriendStatusStoreType {
-    status: string
-    setStatus: (status: string) => void
+type StatusMap = Record<string, string>;
+
+interface FriendStatusStoreType3 {
+    statuses: StatusMap;
+    setStatusForUser: (from: string, status: string) => void;
+    getStatus: (from: string) => string;
 }
 
-export const useFriendStatusStore = create<FriendStatusStoreType>((set) => ({
-    status: "",
-    setStatus: (status: string) => set({ status }),
-}))
+export const useFriendStatusStoreBase = create<FriendStatusStoreType3>((set, get) => ({
+    statuses: {},
+    setStatusForUser: (from: string, status: string) =>
+        set((prev) => ({ statuses: { ...prev.statuses, [from]: status } })),
+    getStatus: (from: string) => {
+        const s = get().statuses[from];
+        return s ?? "";
+    },
+}));

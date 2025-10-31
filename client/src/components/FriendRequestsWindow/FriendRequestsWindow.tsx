@@ -49,13 +49,13 @@ export default function FriendRequestsWindow() {
       }}
     >
       <div
-        className='h-full w-full sm:h-[400px] sm:w-[400px] bg-[#0f0f0f] flex flex-col border border-[#363636] sm:rounded-2xl overflow-y-auto'
+        className='h-full w-full sm:h-[400px] sm:w-[400px] bg-[#0f0f0f] flex flex-col sm:border sm:border-[#363636] sm:rounded-2xl overflow-y-auto'
         onClick={(e) => e.stopPropagation()}
       >
         <div className="h-[60px] w-full flex items-center gap-4 sm:gap-0 px-4 border-b border-b-[#363636] text-xl">
           <div className="sm:hidden flex justify-center items-center">
             <button
-              className="opacity-50 hover:opacity-100 cursor-pointer"
+              className="opacity-60 hover:opacity-100 cursor-pointer"
               onClick={() => {
                 setActiveScreen("MainScreen")
               }}

@@ -9,7 +9,7 @@ export const fetchUsersGlobaly = async (
     abortSignal: AbortSignal,
     setFilteredUsers: (users: User[]) => void,
     setIsLoading: (show: boolean) => void
-): Promise<string> => {
+): Promise<string | "AbortError" | "Error" | "Success"> => {
     if (!query) {
         setFilteredUsers([])
         setIsLoading(false)

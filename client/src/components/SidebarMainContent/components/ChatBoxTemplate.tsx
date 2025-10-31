@@ -1,17 +1,18 @@
+// ...existing code...
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useChatWindowUsernameStore } from "../../../zustand/store/ChatWindowUsername"
 import { useChatWindowAvatarStore } from "../../../zustand/store/ChatWindowAvatar"
 import { MoreVertical } from "lucide-react"
-import { useSidebarWidthStore } from "../../../zustand/store/SidebarWidth"
 import { Trash, Mic, Pin } from "lucide-react"
 import { useUser } from "@clerk/clerk-react"
 import { useAuth } from "@clerk/clerk-react"
 import { useUserIdStore } from "../../../zustand/store/UserIdStore"
-import { useChatBoxContextMenuStore } from "../../../zustand/store/ChatBoxContextMenuStore"
+// removed global context menu store import
 import { useChatWindowUserIdStore } from "../../../zustand/store/ChatWindowUserId"
 import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
-import { useEffect } from "react"
+import { useEffect, useState, useRef } from "react"
 import "../../../index.css"
+import { useContextMenuOffsetStore } from "../../../zustand/store/ContextMenuOffset"
 
 interface ChatBoxTemplatePropsType {
   username: string,
@@ -21,12 +22,12 @@ interface ChatBoxTemplatePropsType {
   lastMsgType: "sent" | "received"
 }
 
-export function ContextMenu() {
-  const { sidebarWidth } = useSidebarWidthStore()
+export function ContextMenu({ friendId, onClose }: { friendId: string, onClose: () => void }) {
   const { user } = useUser()
   const { getToken } = useAuth()
-  const friendId = useUserIdStore(state => state.userId)
   const { setGlobalRefresh, globalRefresh } = useGlobalRefreshStore()
+  const { contextMenuOffsetLeft, contextMenuOffsetTop } = useContextMenuOffsetStore()
+
 
   const handleRemoveButton = async () => {
     try {
@@ -45,38 +46,41 @@ export function ContextMenu() {
       console.log(data)
       console.log("client: friend removed!")
       setGlobalRefresh(!globalRefresh)
+      onClose()
     } catch (err) {
       console.error("error in removing friend: ", err)
+      onClose()
     }
   }
 
   return (
     <div
-      className="w-full h-full bg-transparent cursor-not-allowed fixed z-30 left-0 top-0"
+      className="w-full h-full cursor-auto bg-black/50 fixed z-30 left-0 top-0"
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
+        onClose()
       }}
       style={{
-        animation: "fade-in 0.2s ease-in-out forwards"
+        animation: "fade-in-slide-down 0.2s ease-in-out forwards"
       }}
     >
 
       <div
         className="fixed p-2 cursor-auto z-30  w-[140px] border border-[#303030] rounded-lg bg-[#0f0f0f]"
         style={{
-          left: window.innerWidth <= 640 ? window.innerWidth - 140 : sidebarWidth - 140,
-          top: 120
+          left: window.innerWidth > 640? contextMenuOffsetLeft - 140: contextMenuOffsetLeft - 150,
+          top: contextMenuOffsetTop + 60
         }}
       >
         <div className="flex flex-col">
-          <button className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]">
+          <button className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]">
             <span>
               <Mic size={18} />
             </span>
             <span>Mute</span>
           </button>
-          <button className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]">
+          <button className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]">
             <span>
               <Pin size={18} />
             </span>
@@ -86,7 +90,7 @@ export function ContextMenu() {
         <div className="h-[1px] bg-[#303030] w-full my-1" />
         <div className="w-full">
           <button
-            className="cursor-pointer flex gap-1 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+            className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
             onClick={() => {
               handleRemoveButton()
             }}
@@ -103,27 +107,41 @@ export function ContextMenu() {
 }
 
 export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl, userId }: ChatBoxTemplatePropsType) {
+  const thisChatBoxTemplateRef = useRef<HTMLDivElement>(null)
 
   const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
   const setChatWindowUsername = useChatWindowUsernameStore((state) => state.setChatWindowUsername)
   const setChatWindowUserId = useChatWindowUserIdStore((state) => state.setChatWindowUserId)
   const setChatWindowAvatar = useChatWindowAvatarStore((state) => state.setChatWindowAvatar)
-  const { showContextMenu, setShowContextMenu } = useChatBoxContextMenuStore()
   const { setUserId } = useUserIdStore()
 
+  // single owner id in userId store controls which ChatBox's context menu is open
+  const contextMenuOwnerId = useUserIdStore(state => state.userId)
 
-  // after removing friend and then if friend sends you req and when 
-  // you accept and when friend chatbox renders on yu dashboard, it renders with context menu opened,
-  // that is why this logic will check if context menu is open, and if open then it will close it
+  const { setContextMenuOffsetLeft, setContextMenuOffsetTop } = useContextMenuOffsetStore()
+  const [ windowInnerWidth, setWindowInnerWidth ] = useState<number>(window.innerWidth)
+
+  // ensure any global leftover is closed on mount (keeps previous behavior minimal)
   useEffect(() => {
-    if (showContextMenu) {
-      setShowContextMenu(!showContextMenu)
+    setUserId("") // clear global selected id if any (optional)
+  }, [setUserId])
+
+
+  useEffect(() => {
+    setContextMenuOffsetLeft(thisChatBoxTemplateRef.current?.offsetWidth || 0)
+    const handleResize = () => {
+      setWindowInnerWidth(window.innerWidth)
     }
-  }, [])
+    window.addEventListener("resize", handleResize)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [windowInnerWidth])
 
   return (
     <div
-      className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center cursor-pointer"
+      ref={thisChatBoxTemplateRef}
+      className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center cursor-pointer "
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -132,46 +150,59 @@ export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl
         setChatWindowUserId(userId)
         setActiveScreen("ChatWindow")
       }}
+
     >
-      <div className="flex gap-[10px] items-center">
+      <div className="flex gap-[10px] items-center flex-1 min-w-0">
 
         <div className="avatar-box  h-[50px] w-[50px] rounded-full overflow-hidden shrink-0 flex justify-center items-center">
           <img src={imgUrl} alt="user_avatar" />
         </div>
 
-        <div className="user-username latest-msg flex flex-col">
-          <p className="text-[16px] font-bold">{username}</p>
+        <div className="user-username latest-msg flex flex-col w-full flex-1 min-w-0 pr-2 overflow-hidden">
+          <p className="text-[16px] font-bold truncate">{username}</p>
           <p
-            className="last-seen-msg text-sm"
+            className="last-seen-msg text-sm truncate"
             style={{
               opacity: lastMsgType === "sent" ? 1 : 0.6,
-              color: lastMsgType === "sent" ? "#1a73e8" : ""
+              color: lastMsgType === "sent" ? "#1a73e8" : "",
             }}
+            title={lastMsg}
           >
             {lastMsg}
           </p>
         </div>
       </div>
 
-      <div className="z-40">
+      <div 
+      className=" shrink-0 ml-1"
+      style={{
+        zIndex: contextMenuOwnerId === userId ? 40 :  25 
+      }}
+      >
         <button
           className="cursor-pointer flex justify-center items-center hover:bg-[#303030] h-10 w-10 rounded-full"
           onClick={(e) => {
+            console.log(thisChatBoxTemplateRef.current?.offsetTop)
+            console.log(thisChatBoxTemplateRef.current?.offsetWidth)
+            setContextMenuOffsetTop(thisChatBoxTemplateRef.current?.offsetTop || 0)
+            setContextMenuOffsetLeft(thisChatBoxTemplateRef.current?.offsetWidth || 0)
             e.preventDefault()
             e.stopPropagation()
-            setShowContextMenu(!showContextMenu)
-            setUserId(userId)
+            // toggle local menu and set current userId for actions if needed
+            // toggle context menu owner: opening one will close any other
+            setUserId(contextMenuOwnerId === userId ? "" : userId)
           }}
           style={{
-            backgroundColor: showContextMenu ? "#303030" : ""
+            backgroundColor: contextMenuOwnerId === userId ? "#303030" : ""
           }}
         >
           <MoreVertical />
         </button>
       </div>
 
-      {showContextMenu && <ContextMenu />}
+      {contextMenuOwnerId === userId && <ContextMenu friendId={userId} onClose={() => setUserId("")} />}
 
     </div>
   )
 }
+// ...existing code...

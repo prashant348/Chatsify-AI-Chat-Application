@@ -1,13 +1,12 @@
 @import "tailwindcss";
 @plugin "tailwind-scrollbar";
 
-html,
-body,
-#root {
-    /* overflow-y: hidden; */
-    /* overscroll-behavior-y: contain; */
-    background: #000;
-    /* optional: white flash avoid */
+/* ensure layout fills viewport and no default margins cause extra scroll */
+html, body, #root {
+  /* height: 100%; */
+  /* margin: 0; */
+  background-color: #000;
+  /* -webkit-tap-highlight-color: transparent; */
 }
 
 
@@ -48,6 +47,30 @@ body,
 
     to {
         transform: translateX(-275px);
+    }
+}
+
+@keyframes fade-in-slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

@@ -1,4 +1,4 @@
-import { MenuIcon } from 'lucide-react'
+import { MenuIcon, X } from 'lucide-react'
 import { useSidebarStore } from '../../../zustand/store/SidebarStore.ts'
 import { useSearchResultWindow } from '../../../zustand/store/SearchResultWindow.ts'
 import { useEffect, useRef, useState } from 'react'
@@ -21,6 +21,7 @@ const Navbar: React.FC = () => {
   const { signal } = controller
   const { setIsReqSent } = useReqSentStore()
 
+  const navbarRef = useRef<HTMLDivElement>(null)
 
   const handleHambtnClick = (): void => {
     setShowSidebar(true)
@@ -44,7 +45,7 @@ const Navbar: React.FC = () => {
   }, [query])
 
   return (
-    <div className='h-[60px] flex shrink-0'>
+    <div ref={navbarRef} className='h-[60px] flex shrink-0'>
       <div className='w-[60px] shrink-0 flex justify-center items-center'>
         <button
           className='hambtn hover:bg-[#212121] rounded-full p-2 cursor-pointer'
@@ -91,7 +92,20 @@ const Navbar: React.FC = () => {
             setQuery(e.target.value.toLowerCase().trim())
           }}
         />
-
+        {query && (<div className='fixed top-[16px] rounded-r-full  h-7 w-7'
+          style={{
+            left: navbarRef.current?.offsetWidth ? navbarRef.current.offsetWidth - 40 : ""
+          }}
+        >
+          <button
+            className='h-full w-full rounded-full hover:bg-[#303030] flex justify-center items-center'
+            onClick={() => {
+              searchInputRef.current!.value = ""
+            }}
+          >
+            <X size={16} />
+          </button>
+        </div>)}
       </div>
     </div>
   )

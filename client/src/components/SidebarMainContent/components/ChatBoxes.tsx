@@ -56,24 +56,37 @@ const ChatBoxes = () => {
         && friendsArray.length === 0
         && error
         &&
-        <p className="h-full w-full flex justify-center items-center">
+        <div className="h-full w-full flex flex-col gap-1 justify-center items-center">
+          <span className="text-center">
+            Unable to fetch friends!
+          </span>
           <button
-            className="bg-[#303030] p-2 rounded-md cursor-pointer"
+            className="bg-[#212121] hover:bg-[#303030] p-2 border border-[#404040] rounded-md cursor-pointer"
             onClick={() => {
               setisLoading(true)
               setIsRetryBtnClicked(!isRetryBtnClicked)
             }}>
             {error}
           </button>
-        </p>
+        </div>
       }
+      {!isLoading && <ChatBoxTemplate 
+        key={1}
+        username={"dummy_user"}
+        lastMsg={"dummy_user joined Chatsify!"}
+        lastMsgType={"sent"}
+        imgUrl="fhfhf"
+        userId="1234567890"
+      />}
 
       {!isLoading && friendsArray.map((friend) => (
         <ChatBoxTemplate
+          // key={idx}
+          key={friend.friendClerkId}
           username={friend.friendUsername}
           lastMsg={`${friend.messages[friend.messages.length - 1]?.msg === undefined ? "" : friend.messages[friend.messages.length - 1].msg}`}
           lastMsgType={friend.messages[friend.messages.length - 1]?.type}
-          imgUrl={friend.friendAvatar} key={friend.friendUsername}
+          imgUrl={friend.friendAvatar}
           userId={friend.friendClerkId}
         />
 

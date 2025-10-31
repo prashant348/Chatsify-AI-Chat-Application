@@ -267,3 +267,6 @@ Bot: Hey! What’s up?
 You: hey whats going on bro?
 Bot: Yo! Not much—just hanging out in the digital void, ready to help you out. What’s going on with you?
 
+You: hi
+Bot: Hi! How can I help you today?
+
