@@ -3,6 +3,7 @@ import ChatWindowBottomNavbar from "./components/ChatWindowBottomNavbar"
 import ChatWindowChatsArea from "./components/ChatWindowChatsArea"
 import { useChatWindowUsernameStore } from "../../zustand/store/ChatWindowUsername"
 import "../../index.css"
+import { useEffect } from "react"
 
 const ChatWindowTemplate = () => {
   const chatWindowUsername = useChatWindowUsernameStore(state => state.chatWindowUsername)
@@ -24,12 +25,29 @@ const ChatWindowTemplate = () => {
   //   };
   // }, []);
 
+  // SCROLLING STOP LOGIC WHEN THIS COMPONENT RENDERS
+  // useEffect(() => {
+  //   console.log("Disable scrolling!")
+  //   // Disable scroll
+  //   document.body.style.overflow = "hidden";
+
+  //   // Cleanup: enable scroll when component unmounts
+  //   return () => {
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, []);
+
+  
+  useEffect(() => {
+
+  })
+
   return (
     <div
       className="h-[calc(var(--vh)*100)] flex flex-col w-full bg-black"
       style={{
         animation: window.innerWidth <= 640 ? "slide-in-from-right 0.3s ease-in-out forwards" : "",
-        
+
       }}
     >
       {/* Sticky top navbar */}

@@ -24,6 +24,21 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    const handleTouchMove: EventListener = (e) => {
+      e.preventDefault();
+      console.log('-- documentElement touch move:', e.timeStamp, e);
+    };
+
+    document.documentElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      document.documentElement.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+
+
+
 
   return (
     <>
@@ -53,6 +68,7 @@ const App = () => {
             }
           />
           <Route
+
             path="/dashboard"
             element={
               <Loader>
@@ -66,7 +82,7 @@ const App = () => {
                     || activeScreen === "TextToSpeechWindow"
                   ) && (
                       <Dashboard children={<SidebarMainContent />} />
-   
+
                     )}
                 </ProtectedRoute >
               </Loader>

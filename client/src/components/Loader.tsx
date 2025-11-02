@@ -18,7 +18,7 @@ const Loader: React.FC<LoaderProps> = ({ children }) => {
     }
 
     return (
-        <div className='h-screen flex justify-center items-center'>{children}</div>
+        <div className='h-[calc(var(--vh)*100)] flex  bg-amber-300'>{children}</div>
     )
 }
 

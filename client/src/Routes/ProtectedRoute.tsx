@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="w-full bg-gray-500">{children}</div>
+    <div className="w-full h-full bg-gray-500">{children}</div>
   )
 }
 

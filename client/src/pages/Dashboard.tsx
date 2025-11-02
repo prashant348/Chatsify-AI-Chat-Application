@@ -203,7 +203,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
   return (
     <>
       <div
-        className={showSidebar ? "brightness-50  transition duration-300 ease-in" : ""}
+        className={showSidebar ? "brightness-50 h-full transition duration-300 ease-in" : "h-full"}
         onClick={() => {
           if (showSidebar) {
             setShowSidebar(false)
@@ -220,7 +220,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
         }}
       >
         <div
-          className="dashboard-container h-screen flex bg-black"
+          className="dashboard-container h-full flex bg-black"
           style={{
             pointerEvents: showSidebar ? "none" : "auto"
           }}

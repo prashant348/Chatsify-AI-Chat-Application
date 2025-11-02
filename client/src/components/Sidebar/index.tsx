@@ -8,13 +8,24 @@ const Sidebar = () => {
     const [isUserProfileOpen, setIsUserProfileOpen] = useState<boolean>(false)
     const { user } = useUser()
     const navigate = useNavigate()
+
     return (
-        <div className="overflow-y-auto" onMouseDown={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-        }}>
+        <div
+            className=" bg-[#0f0f0f] z-50 fixed top-0 bottom-0 left-0 h-[calc(var(--vh)*100)] overflow-y-auto "
+            onMouseDown={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+            }}
+            onTouchMove={(e) => {
+                e.stopPropagation()
+            }}
+
+            style={{
+                animation: "slide-in 0.3s ease-in-out forwards"
+            }}
+        >
             <div
-                className="fixed top-0 flex flex-col left-0 z-50 bg-[#0f0f0f] h-screen w-[254px] sm:w-[274px] border-r border-r-[#212121] text-white"
+                className=" flex flex-col bg-[#0f0f0f] h-full w-[254px] sm:w-[274px] border-r border-r-[#212121] text-white"
                 style={{
                     animation: "slide-in 0.3s ease-in-out forwards",
                 }}

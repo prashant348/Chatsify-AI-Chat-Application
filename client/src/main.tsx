@@ -26,8 +26,9 @@ if (!(window as any).__vh_setup) {
     window.addEventListener("resize", setVh);
     window.addEventListener("orientationchange", setVh);
   }
-  ;(window as any).__vh_setup = true;
+  ; (window as any).__vh_setup = true;
 }
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
