@@ -1,5 +1,5 @@
 import { ArrowUpIcon, Gauge } from "lucide-react"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { useSocket } from "../../../hooks/useSocket"
 import { Socket } from "socket.io-client"
 import { useTextToSpeechMessageStore } from "../../../zustand/store/TextToSpeechMessageStore"
@@ -10,6 +10,7 @@ export default function TextToSpeechFooter() {
     const inputRef = useRef<HTMLInputElement>(null)
     const socket: Socket = useSocket()
     const { addYourMsg, addBotMsg } = useTextToSpeechMessageStore()
+    const [ query, setQuery ] = useState<string>("")
 
     useEffect(() => {
         socket.connect()
@@ -44,6 +45,9 @@ export default function TextToSpeechFooter() {
                         handleSend(inputRef.current!.value.trim())
                     }
                 }}
+                onChange={(e) => {
+                    setQuery(e.target.value.trim())
+                }}
             />
 
             <button className="fixed hover:bg-[#303030]  h-9 w-9 shrink-0 flex justify-center items-center rounded-full"
@@ -66,7 +70,7 @@ export default function TextToSpeechFooter() {
             </button>
 
             <button
-                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full sm:hover:opacity-100 sm:opacity-60 '
+                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full'
                 onClick={() => {
                     if (!inputRef.current?.value.trim()) return
                     console.log("msg sent to text to speech...")
@@ -74,7 +78,7 @@ export default function TextToSpeechFooter() {
                     handleSend(inputRef.current?.value.trim())
                 }}
                 style={{
-                    opacity: window.innerWidth <= 640 ? 1 : ""
+                    opacity: query ? 1 : 0.6
                 }}
             >
                 <ArrowUpIcon />

@@ -1,6 +1,6 @@
 import { PaperclipIcon } from "lucide-react"
 import { ArrowUpIcon, SmilePlus } from "lucide-react"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useUser } from "@clerk/clerk-react"
 import { useSocket } from "../../../hooks/useSocket"
 import { useMessageStore } from "../../../zustand/store/MessageStore"
@@ -13,6 +13,7 @@ const ChatWindowBottomNavbar = () => {
     const { user } = useUser()
     const { addReceived, addSent } = useMessageStore()
     const { chatWindowUserId } = useChatWindowUserIdStore()
+    const [ query, setQuery ] = useState<string>("")
 
     useEffect(() => {
         socket.connect()
@@ -63,6 +64,9 @@ const ChatWindowBottomNavbar = () => {
                         sendMessage(msgInputRef.current!.value.trim())
                     }
                 }}
+                onChange={(e) => {
+                    setQuery(e.target.value.trim())
+                }}
             />
 
             <button className="fixed hover:bg-[#303030]  h-9 w-9 shrink-0 flex justify-center items-center rounded-full"
@@ -84,14 +88,14 @@ const ChatWindowBottomNavbar = () => {
             </button>
 
             <button
-                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full sm:hover:opacity-100 sm:opacity-60 '
+                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full'
                 onClick={() => {
                     if (!msgInputRef.current?.value.trim()) return
                     console.log(msgInputRef.current?.value.trim())
                     sendMessage(msgInputRef.current?.value.trim())
                 }}
                 style={{
-                    opacity: window.innerWidth <= 640 ? 1 : ""
+                    opacity: query ? 1 : 0.6
                 }}
             >
                 <ArrowUpIcon />

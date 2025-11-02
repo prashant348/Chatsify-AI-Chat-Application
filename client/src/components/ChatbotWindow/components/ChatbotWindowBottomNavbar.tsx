@@ -1,5 +1,5 @@
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { ArrowUpIcon, AtSign } from 'lucide-react'
 import { useSocket } from '../../../hooks/useSocket'
 import { Socket } from 'socket.io-client'
@@ -11,6 +11,7 @@ export default function ChatbotWindowBottomNavbar() {
     const socket: Socket = useSocket()
     const { addYourMsg, addBotMsg } = useChatbotMessageStore()
     const { globalRefresh, setGlobalRefresh } = useGlobalRefreshStore()
+    const [ query, setQuery ] = useState<string>("")
 
     useEffect(() => {
         socket.connect()
@@ -57,6 +58,9 @@ export default function ChatbotWindowBottomNavbar() {
                         handleSend(inputRef.current!.value.trim())
                     }
                 }}
+                onChange={(e) => {
+                    setQuery(e.target.value.trim())
+                }}
             />
 
 
@@ -70,7 +74,7 @@ export default function ChatbotWindowBottomNavbar() {
             </button>
 
             <button
-                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full sm:hover:opacity-100 sm:opacity-60 '
+                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full'
                 onClick={() => {
                     if (!inputRef.current?.value.trim()) return
                     console.log("msg sent to chatbot...")
@@ -78,7 +82,7 @@ export default function ChatbotWindowBottomNavbar() {
                     handleSend(inputRef.current?.value.trim())
                 }}
                 style={{
-                    opacity: window.innerWidth <= 640 ? 1 : ""
+                    opacity: query ? 1 : 0.6
                 }}
             >
                 <ArrowUpIcon />

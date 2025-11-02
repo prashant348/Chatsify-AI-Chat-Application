@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
         <input
           ref={searchInputRef}
           type="text"
-          className='bg-[#212121] outline-none hover:border hover:px-[15px] hover:border-[#363636] text-white rounded-r-full rounded-l-full w-full h-full px-4 '
+          className='bg-[#212121] outline-none hover:border hover:px-[15px] pr-8 hover:border-[#363636] text-white rounded-r-full rounded-l-full w-full h-full px-4 '
           placeholder='Search people globaly'
           onFocus={() => {
             console.log("focus")
