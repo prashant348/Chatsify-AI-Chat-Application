@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 PORT = os.getenv("PORT")
-
+port = int(os.environ.get("PORT", 5001))
 
 @app.route("/api/generate_response", methods=["POST"])
 def handle_llm(): 
@@ -41,4 +41,4 @@ def handle_tts():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=PORT, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True)
