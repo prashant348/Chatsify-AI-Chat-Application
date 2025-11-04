@@ -59,7 +59,7 @@ export default function ChatBoxTemplate({ username, latestMsg, imgUrl, id }: Cha
   return (
     <>
       <div
-        className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center"
+        className="chat-box bg-[#0f0f0f] px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center"
         onMouseDown={(e) => {
           console.log("mousedown")
           e.preventDefault()

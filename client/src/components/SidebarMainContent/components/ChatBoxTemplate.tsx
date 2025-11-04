@@ -141,7 +141,7 @@ export default function ChatBoxTemplate({ username, lastMsg, lastMsgType, imgUrl
   return (
     <div
       ref={thisChatBoxTemplateRef}
-      className="chat-box px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center cursor-pointer "
+      className="chat-box bg-[#0f0f0f] px-[10px] min-h-[70px] max-h-[70px] hover:bg-[#212121] w-full flex justify-between items-center cursor-pointer "
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()

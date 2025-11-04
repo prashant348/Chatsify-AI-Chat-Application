@@ -24,15 +24,18 @@ const MoreButtonModal = ({ onClose }: { onClose: () => void }) => {
             style={{
                 animation: "fade-in 0.3s ease-in-out forwards"
             }}
+            onMouseDown={(e) => {
+                e.preventDefault()
+            }}
             onClick={() => {
                 onClose()
             }}
         >
-            <div 
-            className=" p-2 fixed right-3 top-[50px] rounded-lg border border-[#303030] bg-[#0f0f0f] hover:cursor-auto"
-            style={{
-                animation: "fade-in-slide-down 0.3s ease-in-out forwards"
-            }}
+            <div
+                className=" p-2 fixed right-3 top-[50px] rounded-lg border border-[#303030] bg-[#0f0f0f] hover:cursor-auto"
+                style={{
+                    animation: "fade-in-slide-down 0.3s ease-in-out forwards"
+                }}
             >
                 <div className="flex flex-col">
                     <button
@@ -40,24 +43,26 @@ const MoreButtonModal = ({ onClose }: { onClose: () => void }) => {
                         onClick={() => {
                             setGlobalRefresh(!globalRefresh)
                         }}
+                        onMouseDown={(e) => e.preventDefault()}
+
                     >
                         <span>
                             <RefreshCcw size={18} />
                         </span>
                         <span>Refresh</span>
                     </button>
-                    <button 
-                    className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
-                    onClick={() => alert("Feature coming soon!")}
+                    <button
+                        className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                        onClick={() => alert("Feature coming soon!")}
                     >
                         <span>
                             <Mic size={18} />
                         </span>
                         <span>Mute</span>
                     </button>
-                    <button 
-                    className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
-                    onClick={() => alert("Feature coming soon!")}
+                    <button
+                        className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                        onClick={() => alert("Feature coming soon!")}
                     >
                         <span>
                             <Brush size={18} />
@@ -77,6 +82,8 @@ const MoreButtonModal = ({ onClose }: { onClose: () => void }) => {
                                 return;
                             }
                         }}
+                        onMouseDown={(e) => e.preventDefault()}
+
                     >
                         <span>
                             <Trash size={18} className="text-red-500" />
@@ -97,6 +104,7 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
     const { chatWindowUserId } = useChatWindowUserIdStore()
     const statuses = useFriendStatusStoreBase(state => state.statuses)
     const displayStatus = statuses[chatWindowUserId]
+
 
     return (
         <div className="h-[60px] w-full bg-[#0f0f0f] px-3 border-b border-b-[#212121] sm:border-none flex justify-between items-center shrink-0">
@@ -136,6 +144,7 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
                         backgroundColor: showModal ? "#303030" : "",
                         opacity: showModal ? 1 : ""
                     }}
+                    onMouseDown={(e) => e.preventDefault()}
                 >
                     <MoreVerticalIcon size={20} />
                 </button>

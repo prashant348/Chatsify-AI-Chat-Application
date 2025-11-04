@@ -38,7 +38,7 @@ export default function InboxMsgBoxTemplate(
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     return (
-        <div className="group w-full flex items-center justify-between hover:bg-[#1f1f1f] transition-all duration-200 p-3 mb-2 shadow-sm">
+        <div className="group w-full bg-[#0f0f0f] flex items-center justify-between hover:bg-[#1f1f1f] transition-all duration-200 p-3 shadow-sm">
 
             {/* Left Section - Avatar + Info */}
             <div className="flex items-center gap-3 overflow-hidden">
@@ -79,9 +79,10 @@ export default function InboxMsgBoxTemplate(
                         setIsLoading(false)
                     }
                 }}
+                onMouseDown={(e) => e.preventDefault()}
             >
-                {isLoading && <GeneralLoader />}
-                {!isLoading && <X size={18} className="text-gray-400 hover:text-red-400" />}
+                {isLoading && <GeneralLoader sizeInPixels={22} />}
+                {!isLoading && <X size={22} className="text-gray-400 hover:text-red-400" />}
             </button>
         </div>
     )

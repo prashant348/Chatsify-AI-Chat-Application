@@ -6,7 +6,7 @@ import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh'
 import { useUser } from '@clerk/clerk-react'
 import { handleDeleteChatbotChat } from '../../../APIs/handlers/handleDeleteChatbotChat.handler'
 
-const MoreButtonModal = ({ onClose }: { onClose: () => void}) => {
+const MoreButtonModal = ({ onClose }: { onClose: () => void }) => {
 
     const { setGlobalRefresh, globalRefresh } = useGlobalRefreshStore()
     const { user } = useUser()
@@ -17,14 +17,15 @@ const MoreButtonModal = ({ onClose }: { onClose: () => void}) => {
             style={{
                 animation: "fade-in 0.3s ease-in-out forwards"
             }}
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => {
                 onClose()
             }}
         >
             <div className=" p-2 fixed right-3 top-[50px] rounded-lg border border-[#303030] bg-[#0f0f0f] hover:cursor-auto"
-            style={{
-                animation: "fade-in-slide-down 0.3s ease-in-out forwards"
-            }}
+                style={{
+                    animation: "fade-in-slide-down 0.3s ease-in-out forwards"
+                }}
             >
                 <div className="flex flex-col">
                     <button
@@ -32,15 +33,17 @@ const MoreButtonModal = ({ onClose }: { onClose: () => void}) => {
                         onClick={() => {
                             setGlobalRefresh(!globalRefresh)
                         }}
+                        onMouseDown={(e) => e.preventDefault()}
+
                     >
                         <span>
                             <RefreshCcw size={18} />
                         </span>
                         <span>Refresh</span>
                     </button>
-                    <button 
-                    className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
-                    onClick={() => alert("Feature coming soon!")}
+                    <button
+                        className="cursor-pointer flex gap-2 w-full items-center p-1 rounded-md hover:bg-[#303030]"
+                        onClick={() => alert("Feature coming soon!")}
                     >
                         <span>
                             <Brush size={18} />
@@ -60,6 +63,8 @@ const MoreButtonModal = ({ onClose }: { onClose: () => void}) => {
                                 return;
                             }
                         }}
+                        onMouseDown={(e) => e.preventDefault()}
+
                     >
                         <span>
                             <Trash size={18} className="text-red-500" />
@@ -99,6 +104,8 @@ export default function ChatbotWindowNavbar() {
                         backgroundColor: showModal ? "#303030" : "",
                         opacity: showModal ? 1 : ""
                     }}
+                    onMouseDown={(e) => e.preventDefault()}
+
                 >
                     <MoreVertical size={20} />
                 </button>

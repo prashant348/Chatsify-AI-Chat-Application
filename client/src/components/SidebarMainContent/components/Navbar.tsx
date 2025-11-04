@@ -7,7 +7,7 @@ import { useFilteredUsersStore } from '../../../zustand/store/FilteredUsers.ts'
 import { useSearchResultWindowResponseStore } from '../../../zustand/store/SearchResultWindowResponse.ts'
 import { useReqSentStore } from '../../../zustand/store/ReqSentStore.ts'
 import { fetchUsersGlobaly } from '../../../APIs/services/fetchUsersGloably.service.ts'
-
+import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh.ts'
 const Navbar: React.FC = () => {
 
   const setShowSidebar = useSidebarStore((state) => state.setShowSidebar)
@@ -22,6 +22,7 @@ const Navbar: React.FC = () => {
   const { setIsReqSent } = useReqSentStore()
 
   const navbarRef = useRef<HTMLDivElement>(null)
+  const { globalRefresh } = useGlobalRefreshStore()
 
   const handleHambtnClick = (): void => {
     setShowSidebar(true)
@@ -30,19 +31,23 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetchUsersGlobaly(query, signal, setFilteredUsers, setIsLoading)
-      if (result === "Error" || result === "AbortError") {
+      if (result === "Error") {
+        setIsLoading(false)
+        setSearchResultWindowResponse("Retry")
         return;
       } else if (result === "Search people by their usernames!") {
         setSearchResultWindowResponse(result)
       } else if (result === "No users found!") {
         setSearchResultWindowResponse(result)
+      } else if (result === "AbortError") {
+        return
       }
     }
     fetchData()
     return () => {
       controller.abort()
     }
-  }, [query])
+  }, [query, globalRefresh])
 
   return (
     <div ref={navbarRef} className='h-[60px] flex shrink-0'>
@@ -99,7 +104,11 @@ const Navbar: React.FC = () => {
         >
           <button
             className='h-full w-full rounded-full hover:bg-[#303030] flex justify-center items-center'
+            onMouseDown={(e) => {
+              e.preventDefault()
+            }}
             onClick={() => {
+              setQuery("")
               searchInputRef.current!.value = ""
             }}
           >

@@ -3,14 +3,16 @@ import { useRef, useEffect, useState } from "react"
 import { useSocket } from "../../../hooks/useSocket"
 import { Socket } from "socket.io-client"
 import { useTextToSpeechMessageStore } from "../../../zustand/store/TextToSpeechMessageStore"
-
 import maleGenderSymbol from "../../../assets/male_gender_symbol.svg"
+import { useChatTextToSpeechErrorStore } from "../../../zustand/store/ErrorStore"
+
 export default function TextToSpeechFooter() {
 
     const inputRef = useRef<HTMLInputElement>(null)
     const socket: Socket = useSocket()
     const { addYourMsg, addBotMsg } = useTextToSpeechMessageStore()
-    const [ query, setQuery ] = useState<string>("")
+    const [query, setQuery] = useState<string>("")
+    const { error } = useChatTextToSpeechErrorStore()
 
     useEffect(() => {
         socket.connect()
@@ -39,15 +41,25 @@ export default function TextToSpeechFooter() {
                 type="text"
                 placeholder='Enter text...'
                 className='outline-none w-full h-full px-4 pr-20 focus:pr-20  bg-[#1f1f1f] rounded-full focus:border-[#404040] focus:border focus:px-[15px]'
+                style={{
+                    touchAction: "pan-x"
+                }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
+                        if (error === "Retry") return;
                         if (!inputRef.current?.value.trim()) return
+                        setQuery("")
                         handleSend(inputRef.current!.value.trim())
                     }
                 }}
                 onChange={(e) => {
                     setQuery(e.target.value.trim())
                 }}
+                onFocus={() => {
+                    const myCustomEvent = new CustomEvent("scroll-to-bottom-chat")
+                    window.dispatchEvent(myCustomEvent)
+                }}
+                onTouchMove={(e) => e.stopPropagation()}
             />
 
             <button className="fixed hover:bg-[#303030]  h-9 w-9 shrink-0 flex justify-center items-center rounded-full"
@@ -64,22 +76,25 @@ export default function TextToSpeechFooter() {
                     right: 72
                 }}
                 onClick={() => alert("Feature 'Change Voice' coming soon!")}
-            >   
+            >
                 <img src={maleGenderSymbol} alt="male_gender_symbol" className="h-6 w-6" />
-                
+
             </button>
 
             <button
                 className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full'
                 onClick={() => {
-                    if (!inputRef.current?.value.trim()) return
+                    if (error === "Retry") return;
+                    if (!inputRef.current?.value.trim()) return;
+                    setQuery("")
                     console.log("msg sent to text to speech...")
                     console.log(inputRef.current?.value.trim())
                     handleSend(inputRef.current?.value.trim())
                 }}
                 style={{
-                    opacity: query ? 1 : 0.6
+                    opacity: query && !error ? 1 : 0.6
                 }}
+                onMouseDown={(e) => e.preventDefault()}
             >
                 <ArrowUpIcon />
             </button>

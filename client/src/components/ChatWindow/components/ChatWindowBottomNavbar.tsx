@@ -5,6 +5,7 @@ import { useUser } from "@clerk/clerk-react"
 import { useSocket } from "../../../hooks/useSocket"
 import { useMessageStore } from "../../../zustand/store/MessageStore"
 import { useChatWindowUserIdStore } from "../../../zustand/store/ChatWindowUserId"
+import { useChatWindowErrorStore } from "../../../zustand/store/ErrorStore"
 
 const ChatWindowBottomNavbar = () => {
 
@@ -13,7 +14,9 @@ const ChatWindowBottomNavbar = () => {
     const { user } = useUser()
     const { addReceived, addSent } = useMessageStore()
     const { chatWindowUserId } = useChatWindowUserIdStore()
-    const [ query, setQuery ] = useState<string>("")
+    const [query, setQuery] = useState<string>("")
+    const { error } = useChatWindowErrorStore()
+
 
     useEffect(() => {
         socket.connect()
@@ -58,14 +61,26 @@ const ChatWindowBottomNavbar = () => {
                 type="text"
                 placeholder='Type a message...'
                 className='outline-none w-full h-full px-4 pr-20 focus:pr-20   bg-[#1f1f1f] rounded-full focus:border-[#404040] focus:border focus:px-[15px]'
+                
+                style={{
+                    touchAction: "pan-x"
+                }}
+
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                        if (!msgInputRef.current?.value.trim()) return
+                        if (error === "Retry") return;
+                        if (!msgInputRef.current?.value.trim()) return;
+                        setQuery("")
                         sendMessage(msgInputRef.current!.value.trim())
                     }
                 }}
                 onChange={(e) => {
                     setQuery(e.target.value.trim())
+                }}
+                onTouchMove={(e) => e.stopPropagation()}
+                onFocus={() => {
+                    const myCustomEvent = new CustomEvent("scroll-to-bottom-chat")
+                    window.dispatchEvent(myCustomEvent)
                 }}
             />
 
@@ -90,13 +105,16 @@ const ChatWindowBottomNavbar = () => {
             <button
                 className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full'
                 onClick={() => {
+                    if (error === "Retry") return
                     if (!msgInputRef.current?.value.trim()) return
+                    setQuery("")
                     console.log(msgInputRef.current?.value.trim())
                     sendMessage(msgInputRef.current?.value.trim())
                 }}
                 style={{
-                    opacity: query ? 1 : 0.6
+                    opacity: query && !error ? 1 : 0.6
                 }}
+                onMouseDown={(e) => e.preventDefault()}
             >
                 <ArrowUpIcon />
             </button>

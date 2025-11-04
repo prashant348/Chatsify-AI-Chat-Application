@@ -270,3 +270,18 @@ Bot: Yo! Not much—just hanging out in the digital void, ready to help you out.
 You: hi
 Bot: Hi! How can I help you today?
 
+You: hi
+Bot: Hi! How can I help you today?
+
+You: hey man how are you?
+Bot: Hey! I'm doing great, thanks for asking! How about you?
+
+You: hi
+Bot: Hi! How can I help you today?
+
+You: hello
+Bot: Hello! How can I help you today?
+
+You: hi my name is prashant and how is your day going?
+Bot: Hi Prashant! Nice to meet you. My day’s going great—thanks for asking! How about yours?
+

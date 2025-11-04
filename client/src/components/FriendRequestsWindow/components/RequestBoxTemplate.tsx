@@ -59,6 +59,7 @@ export default function RequestBoxTemplate({
               return
             }
           }}
+          onMouseDown={(e) => e.preventDefault()}
         >
           <X size={20} className="text-red-400" />
         </button>
@@ -73,6 +74,7 @@ export default function RequestBoxTemplate({
               return
             }
           }}
+          onMouseDown={(e) => e.preventDefault()}
         >
           <Check size={20} className="text-green-400" />
         </button>

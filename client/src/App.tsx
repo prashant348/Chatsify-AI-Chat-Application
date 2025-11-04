@@ -27,6 +27,7 @@ const App = () => {
   useEffect(() => {
     const handleTouchMove: EventListener = (e) => {
       e.preventDefault();
+      e.stopPropagation()
       console.log('-- documentElement touch move:', e.timeStamp, e);
     };
 
@@ -49,7 +50,9 @@ const App = () => {
             path="/signin"
             element={
               <Loader>
-                <SignIn forceRedirectUrl={"/dashboard"} />
+                <div className="h-full w-full flex justify-center items-center">
+                  <SignIn forceRedirectUrl={"/dashboard"} />
+                </div>
               </Loader>
             }
           />
@@ -57,7 +60,9 @@ const App = () => {
             path="/signup"
             element={
               <Loader>
-                <SignUp forceRedirectUrl={"/dashboard"} />
+                <div className="h-full w-full flex justify-center items-center">
+                  <SignUp forceRedirectUrl={"/dashboard"} />
+                </div>
               </Loader>
             }
           />

@@ -18,7 +18,9 @@ export default function TextToSpeechWindow() {
             <div className="sticky top-0 z-21 bg-[#0f0f0f]">
                 <TextToSpeechHeader />
             </div>
-            <div className='flex-1 min-h-0 bg-black w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#303030] scrollbar-track-transparent'>
+            <div 
+            className='flex-1 min-h-0 bg-black w-full'
+            >
                 <TextToSpeechMain />
             </div>
             <div className="sticky bottom-0  z-20 bg-[#0f0f0f]">
