@@ -1,5 +1,5 @@
 import express from "express";
-import { User } from "../models/User/User.model";
+import { User } from "../models/User/User.model.js";
 import { getAuth } from "@clerk/express";
 import { clerkMiddleware } from "@clerk/express";
 

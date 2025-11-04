@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-import { ReceiverFriendSchema } from "./ReceiverFriend.Schema";
-import { SenderFriendSchema } from "./SenderFriend.Schema";
-import { FriendsSchema } from "./Friends.Schema";
-import { InboxSchema } from "./Inbox.Schema";
-import { ChatbotSchema } from "./Chatbot.Schema";
-import { TextToSpeechAISchema } from "./TextToSpeechAI.Schema";
+import { ReceiverFriendSchema } from "./ReceiverFriend.Schema.js";
+import { SenderFriendSchema } from "./SenderFriend.Schema.js";
+import { FriendsSchema } from "./Friends.Schema.js";
+import { InboxSchema } from "./Inbox.Schema.js";
+import { ChatbotSchema } from "./Chatbot.Schema.js";
+import { TextToSpeechAISchema } from "./TextToSpeechAI.Schema.js";
 
 const UserSchema = new mongoose.Schema({
     clerkUserId: { type: String, unique: true, required: true, sparse: true },

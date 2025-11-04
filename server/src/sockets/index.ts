@@ -1,13 +1,13 @@
 import { Server as ioServer } from "socket.io";
 import { Socket } from "socket.io";
-import { registerChatbotHandlers } from "./chatbot.socket";
-import { registerChatHandlers } from "./one-on-one-chat.socket";
-import { registerUserStatusHandlers } from "./userStatus.socket";
-import { registerTextToSpeechHandlers } from "./text-to-speech.socket";
+import { registerChatbotHandlers } from "./chatbot.socket.js";
+import { registerChatHandlers } from "./one-on-one-chat.socket.js";
+import { registerUserStatusHandlers } from "./userStatus.socket.js";
+import { registerTextToSpeechHandlers } from "./text-to-speech.socket.js";
 
 
-import { User } from "../models/User/User.model";
-import { FriendsSchema } from "../models/User/Friends.Schema";
+import { User } from "../models/User/User.model.js";
+import { FriendsSchema } from "../models/User/Friends.Schema.js";
 
 
 export const registerSocketHandlers = (io: ioServer) => {

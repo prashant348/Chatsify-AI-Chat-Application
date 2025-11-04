@@ -3,15 +3,15 @@ dotenv.config()
 import express from "express";
 import type { Request, Response } from "express";
 import cors from "cors"
-import userRouter from "./routes/user.routes";
-import { connectDB } from "./database/db";
-import friendRequestRouter from "./routes/friendRequest.routes";
+import userRouter from "./routes/user.routes.js";
+import { connectDB } from "./database/db.js";
+import friendRequestRouter from "./routes/friendRequest.routes.js";
 import http from "http"
 import { Server as ioServer } from "socket.io";
-import chatMessageRouter from "./routes/chatMessage.route";
-import chatbotRouter from "./routes/chatbot.route"
-import textToSpeechAIRouter from "./routes/text-to-speech-ai.route"
-import { registerSocketHandlers } from "./sockets";
+import chatMessageRouter from "./routes/chatMessage.route.js";
+import chatbotRouter from "./routes/chatbot.route.js"
+import textToSpeechAIRouter from "./routes/text-to-speech-ai.route.js"
+import { registerSocketHandlers } from "./sockets/index.js";
 import path from "path";
 
 const app = express()

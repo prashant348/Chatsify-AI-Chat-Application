@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
 import { Server as ioServer } from "socket.io";
-import { User } from "../models/User/User.model";
-import { generateResponse } from "../utils/generateResponse";
-import { requestTracker } from "../utils/requestTracker";
+import { User } from "../models/User/User.model.js";
+import { generateResponse } from "../utils/generateResponse.js";
+import { requestTracker } from "../utils/requestTracker.js";
 
 export const registerChatbotHandlers = (
     io: ioServer, 

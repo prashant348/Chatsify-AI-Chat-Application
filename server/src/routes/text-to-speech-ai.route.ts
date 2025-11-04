@@ -1,8 +1,8 @@
 import express from "express"
 import { clerkMiddleware } from "@clerk/express"
 import { getAuth } from "@clerk/express"
-import { User } from "../models/User/User.model"
-import { supabaseAdmin } from "../libs/supabase"
+import { User } from "../models/User/User.model.js"
+import { supabaseAdmin } from "../libs/supabase.js"
 
 const router = express.Router()
 router.use(clerkMiddleware())

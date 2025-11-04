@@ -1,6 +1,6 @@
 import express from "express";
 import clerkClient from "@clerk/clerk-sdk-node";
-import { User } from "../models/User/User.model";
+import { User } from "../models/User/User.model.js";
 
 const router = express.Router();
 

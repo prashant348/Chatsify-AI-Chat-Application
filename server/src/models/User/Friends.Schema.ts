@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { MessageSchema } from "./Message.Schema"
+import { MessageSchema } from "./Message.Schema.js"
 
 export const FriendsSchema = new mongoose.Schema({
     friendClerkId: { type: String, required: true },

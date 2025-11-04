@@ -1,7 +1,7 @@
 import { Server as ioServer } from "socket.io"
 import { Socket } from "socket.io"
-import { generateAudio } from "../utils/generateAudio"
-import { User } from "../models/User/User.model"
+import { generateAudio } from "../utils/generateAudio.js"
+import { User } from "../models/User/User.model.js"
 import fs from "fs/promises"
 import path from "path"
 

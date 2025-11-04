@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { Server as ioServer } from "socket.io";
-import { User } from "../models/User/User.model";
+import { User } from "../models/User/User.model.js";
 
 export const registerUserStatusHandlers = (io: ioServer, socket: Socket) => {
     try {
