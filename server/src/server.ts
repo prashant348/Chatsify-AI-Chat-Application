@@ -43,7 +43,9 @@ const io = new ioServer(server, {
         origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
         methods: ["GET", "POST"],
         credentials: true
-    }
+    },
+    transports: ["websocket", "polling"], // Production ke liye both transports needed
+    allowEIO3: true  // Backward compatibility
 })
 
 registerSocketHandlers(io)
