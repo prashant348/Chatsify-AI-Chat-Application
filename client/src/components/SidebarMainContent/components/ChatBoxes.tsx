@@ -83,8 +83,8 @@ const ChatBoxes = () => {
       ref={mainDivRef}
       className='h-full flex flex-col items-center overflow-y-auto scrollbar-thin scrollbar-track-[#0f0f0f] scrollbar-thumb-[#212121]'
       style={{
-        justifyContent: isLoading || error ? "center" : "",
-        alignItems: isLoading || error ? "center" : "",
+        justifyContent: isLoading || error || !friendsArray.length ? "center" : "",
+        alignItems: isLoading || error || !friendsArray.length ? "center" : "",
         overscrollBehavior: "contain",
         touchAction: "pan-y"
       }}

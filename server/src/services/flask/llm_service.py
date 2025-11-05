@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import os
 from dotenv import load_dotenv
 
@@ -8,20 +8,21 @@ API_KEY = os.getenv("API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL")
 PORT = os.getenv("PORT")
 
-openai.api_key = API_KEY
-openai.api_base = API_BASE_URL
+client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL)
+print(API_KEY)
+print(API_BASE_URL)
 
 
 def generate_llm_response(prompt: str) -> str:
     try: 
-        response_obj = openai.ChatCompletion.create(
+        response_obj = client.chat.completions.create(
             model="moonshotai/kimi-k2-instruct",
             messages=[{"role": "user", "content": prompt}],
             temperature=1.1,
             top_p=0.8
         )
 
-        raw_response = response_obj.choices[0].message["content"].strip()
+        raw_response = response_obj.choices[0].message.content.strip()
 
         print("RAW_RESPONSE: ", raw_response, "TYPE: ", type(raw_response))
 
