@@ -12,7 +12,7 @@ openai.api_key = API_KEY
 openai.api_base = API_BASE_URL
 
 
-def generate_llm_reponse(prompt: str):
+def generate_llm_response(prompt: str) -> str:
     try: 
         response_obj = openai.ChatCompletion.create(
             model="moonshotai/kimi-k2-instruct",
@@ -23,12 +23,12 @@ def generate_llm_reponse(prompt: str):
 
         raw_response = response_obj.choices[0].message["content"].strip()
 
-        print(raw_response)
+        print("RAW_RESPONSE: ", raw_response, "TYPE: ", type(raw_response))
 
         with open("./response.txt", "a", encoding="utf-8") as f:
             f.write(f"You: {prompt}\nBot: {raw_response}\n" + "\n")
 
-        return raw_response
+        return str(raw_response)
     except Exception as e:
         print(e)
-        return e
+        return str(e)

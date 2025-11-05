@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from tts_service import  generate_tts_response, upload_audio_to_supabase
-from llm_service import generate_llm_reponse
+from llm_service import generate_llm_response
 
 load_dotenv()
 
@@ -26,12 +26,12 @@ def handle_llm():
 
     if prompt:
         try:
-            raw_response = generate_llm_reponse(prompt)
+            raw_response = generate_llm_response(prompt)
         except Exception as e:
             print("Error:", e)
             return jsonify({"error": str(e)}), 500
 
-    return jsonify({"reply": raw_response}), 200
+    return jsonify({"reply": str(raw_response)}), 200
 
 
 @app.route("/api/generate_audio", methods=["POST"])
