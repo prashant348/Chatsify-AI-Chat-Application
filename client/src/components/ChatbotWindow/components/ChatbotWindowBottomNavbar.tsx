@@ -19,31 +19,47 @@ export default function ChatbotWindowBottomNavbar() {
     useEffect(() => {
         socket.connect()
 
-        socket.on("send-msg-chatbot", (prompt) => {
+        const handleSendMsgToChatbot = (prompt: string) => {
             console.log(prompt)
-        })
+        }
 
-        socket.on("receive-msg-chatbot", (response) => {
+        const handleReceiveMsgFromChatbot = (response: string) => {
             console.log("from server: ", response)
             addBotMsg(response)
-        })
+        }
 
-        socket.on("receive-limit-reached", (data) => {
+        const handleReceiveLimitReached = (data: string) => {
             console.log("from server: ", data)
             alert(data)
             setGlobalRefresh(!globalRefresh)
+        }
+
+
+        socket.on("send-msg-chatbot", handleSendMsgToChatbot)
+
+        socket.on("receive-msg-chatbot", handleReceiveMsgFromChatbot)
+
+        socket.on("receive-limit-reached", handleReceiveLimitReached)
+
+        socket.on("disconnect", (reason) => {
+            console.warn("Disconnected from server: ", reason)
+            if (reason === "ping timeout") socket.connect()
         })
 
         return () => {
             socket.off("receive-msg-chatbot")
             socket.off("send-msg-chatbot")
+            socket.off("receive-limit-reached")
+            socket.off("disconnect") // optional, since disconnect auto clears on disconnect()
             socket.disconnect()
         }
     }, [])
 
     const handleSend = async (prompt: string) => {
         if (!prompt) return
-        socket.emit("send-msg-chatbot", prompt)
+        socket.emit("send-msg-chatbot", prompt, (ack: { status: string }) => {
+            if (ack?.status === "ok") console.log("Delivered")
+        })
         addYourMsg(prompt)
         inputRef.current!.value = ""
     }
@@ -56,7 +72,7 @@ export default function ChatbotWindowBottomNavbar() {
                 placeholder='Ask anything...'
                 className='outline-none w-full h-full px-4 pr-10 focus:pr-10  bg-[#1f1f1f] rounded-full focus:border-[#404040] focus:border focus:px-[15px]'
                 style={{
-                    touchAction:"pan-x"
+                    touchAction: "pan-x"
                 }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {

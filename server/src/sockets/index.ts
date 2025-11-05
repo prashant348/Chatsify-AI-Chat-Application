@@ -23,8 +23,8 @@ export const registerSocketHandlers = (io: ioServer) => {
             registerChatHandlers(io, socket)
             // online/offline status logic
             registerUserStatusHandlers(io, socket)
-            socket.on("disconnect", () => {
-                console.log("User disconnected: ", socket.id)
+            socket.on("disconnect", (reason) => {
+                console.log("User disconnected: ", socket.id, "Reason: ", reason)
             })
         })
     } catch (err) {

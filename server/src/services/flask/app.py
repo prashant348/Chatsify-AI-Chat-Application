@@ -9,6 +9,7 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 PORT = os.getenv("PORT")
 port = int(os.environ.get("PORT", 5001))

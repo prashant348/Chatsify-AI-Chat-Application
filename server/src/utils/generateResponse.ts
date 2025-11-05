@@ -2,6 +2,7 @@ interface FlaskData {
     reply: string
 }
 
+
 export const generateResponse = async (
     prompt: string
 ): Promise<string> => {
@@ -10,6 +11,7 @@ export const generateResponse = async (
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Connection": "keep-alive"
             },
             body: JSON.stringify({ prompt: prompt }), // JSON format mai bhejna zaruri hai
         })

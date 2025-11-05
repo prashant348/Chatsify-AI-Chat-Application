@@ -44,7 +44,9 @@ const io = new ioServer(server, {
         methods: ["GET", "POST"],
         credentials: true
     },
-    transports: ["websocket", "polling"], // Production ke liye both transports needed
+    transports: ["websocket"], // Production ke liye both transports needed
+    pingInterval: 25000,
+    pingTimeout: 5000,
     allowEIO3: true  // Backward compatibility
 })
 

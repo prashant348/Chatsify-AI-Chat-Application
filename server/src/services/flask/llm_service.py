@@ -9,9 +9,6 @@ API_BASE_URL = os.getenv("API_BASE_URL")
 PORT = os.getenv("PORT")
 
 client = OpenAI(api_key=API_KEY, base_url=API_BASE_URL)
-print(API_KEY)
-print(API_BASE_URL)
-
 
 def generate_llm_response(prompt: str) -> str:
     try: 
