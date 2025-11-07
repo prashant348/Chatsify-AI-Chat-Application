@@ -1,4 +1,4 @@
-import { Users, Bookmark, Moon, UserPlus, Sun, Inbox, AudioLines, Settings2Icon, BotMessageSquareIcon } from "lucide-react"
+import { Users, Bookmark, Moon, UserPlus, Sun, Inbox, Settings2Icon, BotMessageSquareIcon } from "lucide-react"
 import { useAppThemeStore } from "../../../zustand/store/AppTheme"
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useSidebarStore } from "../../../zustand/store/SidebarStore"
@@ -49,7 +49,7 @@ export default function SidebarButtons() {
                     <span>Chatsify AI</span>
                 </button>
 
-                <button
+                {/* <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
                     onClick={() => {
                         setShowSidebar(false)
@@ -58,7 +58,7 @@ export default function SidebarButtons() {
                 >
                     <AudioLines height={"20px"} />
                     <span className="">Text-To-Speech</span>
-                </button>
+                </button> */}
 
                 <button
                     className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
