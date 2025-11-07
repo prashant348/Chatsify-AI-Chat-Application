@@ -17,7 +17,7 @@ export default function ChatbotWindowBottomNavbar() {
     const { error } = useChatbotErrorStore()
 
     useEffect(() => {
-        socket.connect()
+        // socket.connect()
 
         const handleSendMsgToChatbot = (prompt: string) => {
             console.log(prompt)
@@ -55,11 +55,18 @@ export default function ChatbotWindowBottomNavbar() {
         }
     }, [])
 
+    // wherever you emit
+    const safeEmit = (event: string, payload: any) => {
+        if (socket.connected) {
+            socket.emit(event, payload);
+        } else {
+            socket.once("connect", () => socket.emit(event, payload));
+        }
+    };
+
     const handleSend = async (prompt: string) => {
         if (!prompt) return
-        socket.emit("send-msg-chatbot", prompt, (ack: { status: string }) => {
-            if (ack?.status === "ok") console.log("Delivered")
-        })
+        safeEmit("send-msg-chatbot", prompt)
         addYourMsg(prompt)
         inputRef.current!.value = ""
     }

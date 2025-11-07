@@ -13,6 +13,7 @@ import chatbotRouter from "./routes/chatbot.route.js"
 import textToSpeechAIRouter from "./routes/text-to-speech-ai.route.js"
 import { registerSocketHandlers } from "./sockets/index.js";
 import path from "path";
+import compression from "compression"
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -25,6 +26,7 @@ app.use(cors({
     credentials: true
 }))
 // middleware to serve static files in express
+app.use(compression())
 app.use(express.static(path.join(__dirname, "public")))
 app.use(express.json())
 app.use("/", textToSpeechAIRouter)
@@ -44,11 +46,13 @@ const io = new ioServer(server, {
         methods: ["GET", "POST"],
         credentials: true
     },
-    transports: ["websocket"], // Production ke liye both transports needed
+    transports: ["websocket"], 
     pingInterval: 25000,
-    pingTimeout: 5000,
-    allowEIO3: true  // Backward compatibility
+    pingTimeout: 60000,
+    allowEIO3: true,  // Backward compatibility
+    path: "/socket.io"
 })
+app.set("trust proxy", 1)
 
 registerSocketHandlers(io)
 
