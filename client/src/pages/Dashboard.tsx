@@ -199,6 +199,37 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
+  // hit the flask server as soon as the page loads and in do not let the flask server go to sleep by hitting in every 12mins
+  useEffect(() => {
+    // instantly hit the flask server as dashboard renders
+    const hitFlaskServer = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_FLASK_SERVER}/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+
+        const data = await res.json()
+        console.log(data.message)
+      } catch (e) {
+        console.log("Error in hitting flask server: ", e)
+      }
+    }
+
+    hitFlaskServer()
+
+    // hit the flask server every 12mins
+    const interval = setInterval(() => {
+      hitFlaskServer()
+    }, 720000)
+
+    // cleanup
+    return () => clearInterval(interval) 
+  }, [])
+
   
   return (
     <>

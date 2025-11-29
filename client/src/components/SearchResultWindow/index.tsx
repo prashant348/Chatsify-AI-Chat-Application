@@ -51,7 +51,7 @@ const SearchResultWindow = ({ users }: SearchResultWindowPropsType) => {
       ref={mainDivRef}
       className='h-full overflow-y-auto flex flex-col'
       style={{
-        justifyContent: users.length === 0 ? "center": "flex-start",
+        justifyContent: users.length === 0 || isLoading ? "center": "flex-start",
         // alignItems: users.length === 0 ? 'center' : 'flex-start',
         animation: window.innerWidth > 640 ? "fade-in 0.2s ease-in forwards" : "fade-in-slide-up 0.2s ease-in forwards",
         overscrollBehavior: "contain",

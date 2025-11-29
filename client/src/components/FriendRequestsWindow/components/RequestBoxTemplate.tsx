@@ -63,7 +63,7 @@ export default function RequestBoxTemplate({
         >
           <X size={20} className="text-red-400" />
         </button>
-
+ 
         <button
           className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all duration-200 hover:bg-[#2b2b2b] rounded-full"
           onClick={async () => {
@@ -72,7 +72,7 @@ export default function RequestBoxTemplate({
               setIsReqPending(!isReqPending)
             } else if (result === "Error") {
               return
-            }
+            } 
           }}
           onMouseDown={(e) => e.preventDefault()}
         >

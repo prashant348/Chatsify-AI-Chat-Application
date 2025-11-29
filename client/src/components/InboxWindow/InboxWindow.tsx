@@ -20,14 +20,14 @@ interface InboxMsgType {
 
 const InboxWindow = () => {
 
+    const [inboxMessages, setInboxMessages] = useState<InboxMsgType[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [refresh, setRefresh] = useState<boolean>(false)
+    const [ error, setError ] = useState<string>("");
     const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
     const { user } = useUser()
     const { getToken } = useAuth()
-    const [inboxMessages, setInboxMessages] = useState<InboxMsgType[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
     const inboxMsgRemove = useInboxMsgRemoveStore((state) => state.inboxMsgRemove)
-    const [refresh, setRefresh] = useState<boolean>(false)
-
     const navbarRef = useRef<HTMLDivElement>(null)
     const mainDivRef = useRef<HTMLDivElement>(null)
     const msgsContentRef = useRef<HTMLDivElement>(null)
@@ -35,13 +35,16 @@ const InboxWindow = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!user?.id) return;
             const result = await fetchInboxMessages(getToken, user?.id)
-            if (result === "Error") {
+            if (result === "Error" || result === undefined) {
                 setIsLoading(false)
-            } else {
+                setError("Something went wrong!")
+            } else  {
                 setIsLoading(false)
+                setError("")
                 setInboxMessages(result)
-            }
+            } 
         }
         fetchData()
     }, [inboxMsgRemove, refresh])
@@ -117,8 +120,8 @@ const InboxWindow = () => {
                             <button
                                 className={`h-[36px] w-[36px] rounded-full cursor-pointer flex justify-center items-center hover:bg-[#2b2b2b] ${isLoading ? "animate-spin" : ""}`}
                                 onClick={() => {
-                                    setRefresh(!refresh)
                                     setIsLoading(true)
+                                    setRefresh(!refresh)
                                 }}
                                 onMouseDown={(e) => e.preventDefault()}
 

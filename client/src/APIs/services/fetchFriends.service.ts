@@ -1,3 +1,5 @@
+import { apiGet } from "../../libs/api"
+
 interface Message {
     msg: string
     type: "sent" | "received"
@@ -10,27 +12,39 @@ type friend = {
     messages: Message[],
 }
 
-export const fetchFriends = async (
-    token: () => Promise<string | null>,
-    userId: string | undefined
-): Promise<friend[] | "Retry"> => {
-    try {
-        const authToken = await token();
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${userId}/friends`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken}`,
-            },
-        });
+// export const fetchFriends = async (
+//     token: () => Promise<string | null>,
+//     userId: string | undefined
+// ): Promise<friend[] | "Retry"> => {
+//     try {
+//         const authToken = await token();
+//         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${userId}/friends`, {
+//             method: "GET",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 "Authorization": `Bearer ${authToken}`,
+//             },
+//         });
 
-        if (!res.ok) throw new Error("Failed to fetch friends");
+//         if (!res.ok) throw new Error("Failed to fetch friends");
 
-        const data = await res.json();
-        const friends: friend[] = data.userFriends;
-        return friends;
-    } catch (err) {
-        console.error("error in fetching friends: ", err);
-        return "Retry";
-    }
-};
+//         const data = await res.json();
+//         const friends: friend[] = data.userFriends;
+//         return friends;
+//     } catch (err) {
+//         console.error("error in fetching friends: ", err);
+//         return "Retry";
+//     }
+// };
+
+
+export async function fetchFriends(getToken: any, userId?: string) {
+  try {
+    const token = await getToken?.();
+    if (!userId) return [];
+    const data = await apiGet<{ userFriends: friend[] }>(`/api/${userId}/friends`, token);
+    return data.userFriends ?? [];
+  } catch (e: any) {       
+    return "error";
+  }
+}

@@ -27,7 +27,7 @@ export function ContextMenu({ friendId, onClose }: { friendId: string, onClose: 
   const { getToken } = useAuth()
   const { setGlobalRefresh, globalRefresh } = useGlobalRefreshStore()
   const { contextMenuOffsetLeft, contextMenuOffsetTop } = useContextMenuOffsetStore()
-
+  const setActiveScreen = useActiveScreenStore(state => state.setActiveScreen)
 
   const handleRemoveButton = async () => {
     try {
@@ -46,6 +46,7 @@ export function ContextMenu({ friendId, onClose }: { friendId: string, onClose: 
       console.log(data)
       console.log("client: friend removed!")
       setGlobalRefresh(!globalRefresh)
+      setActiveScreen("MainScreen")
       onClose()
     } catch (err) {
       console.error("error in removing friend: ", err)

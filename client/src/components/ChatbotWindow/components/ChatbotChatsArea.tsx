@@ -15,7 +15,6 @@ export default function ChatbotChatsArea() {
     const bottomRef = useRef<HTMLDivElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { globalRefresh } = useGlobalRefreshStore()
-    // const [error, setError] = useState<string>("")
     const [isRetryBtnClicked, setIsRetryBtnClicked] = useState<boolean>(false)
     const controllerRef = useRef<AbortController | null>(null)
     const reqIdRef = useRef<number>(0)

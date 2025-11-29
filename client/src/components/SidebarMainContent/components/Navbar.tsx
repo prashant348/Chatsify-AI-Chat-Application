@@ -8,6 +8,9 @@ import { useSearchResultWindowResponseStore } from '../../../zustand/store/Searc
 import { useReqSentStore } from '../../../zustand/store/ReqSentStore.ts'
 import { fetchUsersGlobaly } from '../../../APIs/services/fetchUsersGloably.service.ts'
 import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh.ts'
+// import { Globe } from 'lucide-react'
+// import globe from "../../../assets/globe.svg"
+
 const Navbar: React.FC = () => {
 
   const setShowSidebar = useSidebarStore((state) => state.setShowSidebar)
@@ -64,11 +67,11 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      <div className='w-full pr-2 py-3 '>
+      <div className='global-search-bar w-full h-full pr-2 py-3 '>
         <input
           ref={searchInputRef}
           type="text"
-          className='bg-[#212121] outline-none hover:border hover:px-[15px] pr-8 hover:border-[#363636] text-white rounded-r-full rounded-l-full w-full h-full px-4 '
+          className='bg-[#212121] outline-none hover:border hover:px-[15px] pr-8 hover:border-[#363636] text-white rounded-r-full rounded-l-full w-full h-full px-4'
           placeholder='Search people globaly'
           onFocus={() => {
             console.log("focus")
@@ -97,6 +100,13 @@ const Navbar: React.FC = () => {
             setQuery(e.target.value.toLowerCase().trim())
           }}
         />
+        {/* <div className='fixed top-[16px] left-[64px] h-7 w-7 rounded-full overflow-hidden'>
+          <button
+            className='h-full w-full flex justify-center items-center'
+          >
+            <img src={globe} alt="globe_icon" width={22} height={22} />
+          </button>
+        </div> */}
         {query && (<div className='fixed top-[16px] rounded-r-full  h-7 w-7'
           style={{
             left: navbarRef.current?.offsetWidth ? navbarRef.current.offsetWidth - 40 : ""

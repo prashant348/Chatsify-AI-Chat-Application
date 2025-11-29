@@ -57,7 +57,7 @@ const ChatWindowChatsArea = () => {
       setIsLoading(true)
       setError("")
 
-      const result = await fetchChatMessages(user?.id, chatWindowUserId, controller.signal)
+      const result = await fetchChatMessages(user?.id, chatWindowUserId)
 
       if (currentReqId !== reqIdRef.current) return
 
@@ -65,11 +65,8 @@ const ChatWindowChatsArea = () => {
         setMessagesFor(chatWindowUserId, result as any)
         setIsLoading(false)
         setError("")
-      } else if (result === "AbortError") {
-        // intentionally aborted — do not treat as error
-        // keep UI consistent: stop loader (or keep it if you start next request immediately)
-        setIsLoading(false)
-      } else {
+      }
+      else {
         setIsLoading(false)
         setError("Retry")
       }
@@ -186,9 +183,9 @@ const ChatWindowChatsArea = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMoveBoundaryLocked}
     >
-      <div 
-      ref={msgsContentRef}
-      className="messages-content w-full flex flex-col gap-2"
+      <div
+        ref={msgsContentRef}
+        className="messages-content w-full flex flex-col gap-2"
       >
         {isLoading && <GeneralLoader />}
         {!isLoading

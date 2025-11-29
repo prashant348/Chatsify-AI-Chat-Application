@@ -19,7 +19,7 @@ const Loader: React.FC<LoaderProps> = ({ children }) => {
 
     return (
         <div
-            className='h-[calc(var(--vh)*100)] flex  bg-amber-300'
+            className='h-[calc(var(--vh)*100)] flex  bg-black'
         >
             {children}
         </div>

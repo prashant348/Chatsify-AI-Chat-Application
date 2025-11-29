@@ -1,10 +1,11 @@
 import ChatBoxTemplate from "./ChatBoxTemplate"
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 import GeneralLoader from "../../GeneralLoader"
 import { useAuth } from "@clerk/clerk-react"
 import { useUser } from "@clerk/clerk-react"
-import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
+// import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
 import { fetchFriends } from "../../../APIs/services/fetchFriends.service"
+import { useQuery } from "@tanstack/react-query"
 
 interface Message {
   msg: string
@@ -19,41 +20,73 @@ type friend = {
 }
 
 const ChatBoxes = () => {
-  const [friendsArray, setFriendsArray] = useState<friend[]>([])
-  const [isLoading, setisLoading] = useState<boolean>(true)
+  // const [friendsArray, setFriendsArray] = useState<friend[]>([])
+  // const [isLoading, setisLoading] = useState<boolean>(true)
   const { getToken } = useAuth()
   const { user } = useUser()
-  const [error, setError] = useState<string>("")
-  const [isRetryBtnClicked, setIsRetryBtnClicked] = useState<boolean>(false)
-  const globalRefresh = useGlobalRefreshStore(state => state.globalRefresh)
+  // const [error, setError] = useState<string>("")
+  // const [isRetryBtnClicked, setIsRetryBtnClicked] = useState<boolean>(false)
+  // const globalRefresh = useGlobalRefreshStore(state => state.globalRefresh)
 
   const mainDivRef = useRef<HTMLDivElement>(null)
   const msgsContentRef = useRef<HTMLDivElement>(null)
   const touchStartYRef = useRef<number>(0)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetchFriends(getToken, user?.id)
-
-      if (result instanceof Array) {
-        setisLoading(false)
-        setFriendsArray(result)
-      } else if (result === "Retry") {
-        setisLoading(false)
-        setError("Retry")
-      }
+  const fetchFriendsQuery = async () => {
+    const result: friend[] | "error" = await fetchFriends(getToken, user?.id)
+    if (result instanceof Array) {
+      return result
+    } else if (result === "error") {
+      return result
     }
+  }
 
-    fetchData()
-  }, [isRetryBtnClicked, globalRefresh])
+  const {
+    data: friendsArrayQuery = [],
+    isLoading: isLoadingQuery,
+    error: queryError,
+    refetch,
+    isFetching
+  } = useQuery({
+    queryKey: ["friends", user?.id],
+    queryFn: fetchFriendsQuery,
+    // cacheTime: 30 * 60 * 1000,       // 30 min tak cache me rahe
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    enabled: !!user?.id,             // user available tabhi fetch
+  });
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const result = await fetchFriends(getToken, user?.id)
+  //     if (result instanceof Array) {
+  //       setisLoading(false)
+  //       setFriendsArray(result)
+  //       setError("")
+  //     } else if (result === "Retry") {
+  //       setisLoading(false)
+  //       setError("Retry")
+  //     }
+  //   }
+
+  //   fetchData()
+  // }, [isRetryBtnClicked, globalRefresh])
+  
+
+  // remove button dabane ke baad ka auto refresh logic hai lekin isme problem hai isliye comment out kiya hai!
+  // useEffect(() => {
+  //   if (!isFetching && friendsArrayQuery.length) {
+  //     console.log("refetching... from useEffect hook")
+  //     refetch()
+  //   }
+  // }, [globalRefresh])
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartYRef.current = e.touches[0]?.clientY ?? 0
   }
 
   const handleTouchMoveBoundaryLocked = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (error === "Retry" || isLoading) return
+    if (friendsArrayQuery === "error" || isLoadingQuery || isFetching) return
     const mainBox = mainDivRef.current
     const contentBox = msgsContentRef.current
     if (!mainBox || !contentBox) return
@@ -83,8 +116,8 @@ const ChatBoxes = () => {
       ref={mainDivRef}
       className='h-full flex flex-col items-center overflow-y-auto scrollbar-thin scrollbar-track-[#0f0f0f] scrollbar-thumb-[#212121]'
       style={{
-        justifyContent: isLoading || error || !friendsArray.length ? "center" : "",
-        alignItems: isLoading || error || !friendsArray.length ? "center" : "",
+        justifyContent: isLoadingQuery || friendsArrayQuery === "error" || queryError || !friendsArrayQuery.length ? "center" : "",
+        alignItems: isLoadingQuery || friendsArrayQuery === "error" || queryError || !friendsArrayQuery.length ? "center" : "",
         overscrollBehavior: "contain",
         touchAction: "pan-y"
       }}
@@ -95,23 +128,29 @@ const ChatBoxes = () => {
         ref={msgsContentRef}
         className=" w-full"
       >
-        {isLoading && <GeneralLoader />}
-        {!isLoading && friendsArray.length === 0 && !error && <p className="h-full w-full flex justify-center items-center">No friends</p>}
-        {!isLoading
-          && friendsArray.length === 0
-          && error
+        {isFetching && <GeneralLoader />}
+        {/* {isLoadingQuery && <GeneralLoader />} */}
+        {!isLoadingQuery && friendsArrayQuery.length === 0 && !queryError && <p className="h-full w-full flex justify-center items-center">No friends</p>}
+        {/* {queryError && <p className="h-full w-full flex justify-center items-center">{queryError.message}</p>} */}
+        {!isLoadingQuery
+          && !isFetching
+          && (friendsArrayQuery === "error" || queryError)
           &&
           <div className="h-full w-full flex flex-col gap-1 justify-center items-center">
             <span className="text-center">
               Unable to fetch friends!
+              <br />
+              {queryError?.message}
             </span>
             <button
               className="bg-[#212121] hover:bg-[#303030] p-2 border border-[#404040] rounded-md cursor-pointer"
               onClick={() => {
-                setisLoading(true)
-                setIsRetryBtnClicked(!isRetryBtnClicked)
+                // setisLoading(true)
+                // setIsRetryBtnClicked(!isRetryBtnClicked)
+                console.log("refetching...")
+                refetch()
               }}>
-              {error}
+              Retry
             </button>
           </div>
         }
@@ -124,7 +163,7 @@ const ChatBoxes = () => {
           userId="1234567890"
         />} */}
 
-        {!isLoading && friendsArray.map((friend) => (
+        {!isLoadingQuery && !queryError && friendsArrayQuery !== "error" && friendsArrayQuery.map((friend) => (
           <ChatBoxTemplate
             // key={idx}
             key={friend.friendClerkId}

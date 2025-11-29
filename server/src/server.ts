@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 dotenv.config()
 import express from "express";
-import type { Request, Response } from "express";
+import type { ErrorRequestHandler, Request, Response } from "express";
 import cors from "cors"
 import userRouter from "./routes/user.routes.js";
 import { connectDB } from "./database/db.js";
@@ -14,6 +14,7 @@ import textToSpeechAIRouter from "./routes/text-to-speech-ai.route.js"
 import { registerSocketHandlers } from "./sockets/index.js";
 import path from "path";
 import compression from "compression"
+import { error } from "console";
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -23,10 +24,11 @@ const server = http.createServer(app)
 const __dirname = path.resolve()
 app.use(cors({
     origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
-    credentials: true
-}))
-// middleware to serve static files in express
+    credentials: true,
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+}));
 app.use(compression())
+// middleware to serve static files in express
 app.use(express.static(path.join(__dirname, "public")))
 app.use(express.json())
 app.use("/", textToSpeechAIRouter)
@@ -34,6 +36,10 @@ app.use("/", chatbotRouter)
 app.use("/", chatMessageRouter)
 app.use("/", friendRequestRouter)
 app.use("/", userRouter)
+app.use((err: any, _req: Request, res: Response, _next: any) => {
+    console.error("Unhandled Error: ", err);
+    res.status(err.status || 500).json({ message: err.message || "Server Error" })
+})
 
 app.get("/", (req: Request, res: Response) => {
     res.json({ response: "hello world" })
