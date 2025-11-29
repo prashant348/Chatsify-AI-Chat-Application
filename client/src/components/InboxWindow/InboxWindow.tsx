@@ -23,7 +23,7 @@ const InboxWindow = () => {
     const [inboxMessages, setInboxMessages] = useState<InboxMsgType[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [refresh, setRefresh] = useState<boolean>(false)
-    const [ error, setError ] = useState<string>("");
+    const [error, setError] = useState<string>("");
     const setActiveScreen = useActiveScreenStore((state) => state.setActiveScreen)
     const { user } = useUser()
     const { getToken } = useAuth()
@@ -35,19 +35,35 @@ const InboxWindow = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!user?.id) return;
-            const result = await fetchInboxMessages(getToken, user?.id)
-            if (result === "Error" || result === undefined) {
-                setIsLoading(false)
-                setError("Something went wrong!")
-            } else  {
-                setIsLoading(false)
-                setError("")
-                setInboxMessages(result)
-            } 
+            if (!user?.id) {
+                setIsLoading(false);
+                setInboxMessages([]);
+                return;
+            }
+
+            setIsLoading(true);
+            setError(""); // Clear previous errors
+
+            const result = await fetchInboxMessages(getToken, user.id);
+            
+            if (result === "Error") {
+                console.log("error in fetching inbox messages");
+                setIsLoading(false);
+                setError("Something went wrong!");
+                setInboxMessages([]); // Clear messages on error
+            } else if (result instanceof Array) {
+                setIsLoading(false);
+                setInboxMessages(result);
+                setError(""); // Clear error on success
+            } else {
+                // Fallback: should not reach here, but handle it
+                setIsLoading(false);
+                setInboxMessages([]);
+                setError("");
+            }
         }
-        fetchData()
-    }, [inboxMsgRemove, refresh])
+        fetchData();
+    }, [inboxMsgRemove, refresh, user?.id, getToken])
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         touchStartYRef.current = e.touches[0]?.clientY ?? 0
@@ -154,8 +170,31 @@ const InboxWindow = () => {
                         className=""
                     >
                         {isLoading && <div className="h-full w-full flex justify-center items-center"><GeneralLoader /></div>}
-                        {inboxMessages.length === 0 && !isLoading && <div className="h-full w-full flex justify-center items-center">No messages</div>}
-                        {inboxMessages.length !== 0 && !isLoading && inboxMessages.map((msg) => (
+                        
+                        {/* ✅ Fix: Show "No messages" only when not loading, no error, and empty array */}
+                        {!isLoading && !error && inboxMessages.length === 0 && (
+                            <div className="h-full w-full flex justify-center items-center">No messages</div>
+                        )}
+                        
+                        {/* ✅ Fix: Show error only when there's an actual error */}
+                        {!isLoading && error && (
+                            <div className="h-full w-full flex flex-col gap-1 justify-center items-center">
+                                <span className="text-center">
+                                    Unable to fetch Inbox Messages
+                                </span>
+                                <button
+                                    className="bg-[#212121] hover:bg-[#303030] p-2 border border-[#404040] rounded-md cursor-pointer"
+                                    onClick={() => {
+                                        setIsLoading(true);
+                                        setRefresh(!refresh);
+                                    }}>
+                                    Retry
+                                </button>
+                            </div>
+                        )}
+                        
+                        {/* ✅ Fix: Show messages only when not loading, no error, and array has items */}
+                        {!isLoading && !error && inboxMessages.length > 0 && inboxMessages.map((msg) => (
                             <InboxMsgBoxTemplate
                                 key={msg.receivedAt}
                                 receiverId={msg.userId}

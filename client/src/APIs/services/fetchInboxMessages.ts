@@ -34,15 +34,35 @@ interface InboxMsgType {
 // }
 export async function fetchInboxMessages(
     getToken: any,
-    userId: string
-): Promise<InboxMsgType[] | "Error" | undefined> {
+    userId: string | undefined
+): Promise<InboxMsgType[] | "Error"> {
     try {
+        // ✅ Fix: Check if userId exists
+        if (!userId) {
+            console.warn("No userId provided for fetchInboxMessages");
+            return [];
+        }
+
         const token = await getToken?.();
-        if (!userId || token) return;
+        
+        // ✅ Fix: Check if token exists (was checking token instead of !token)
+        if (!token) {
+            console.warn("No token available for fetchInboxMessages");
+            return [];
+        }
+
         const data = await apiGet<{ inbox: InboxMsgType[] }>(`/api/${userId}/inbox`, token)
-        // IF data.inbox TURNS OUT TO BE A null or undefined VALUE THEN RETURN AN EMPTY ARRAY
-        return data.inbox;
+        
+        // ✅ Fix: Handle null/undefined inbox and return empty array
+        if (!data || !data.inbox || !Array.isArray(data.inbox)) {
+            return [];
+        }
+
+        // Reverse array for showing latest data first
+        const reversedInboxMessages = [...data.inbox].reverse();
+        return reversedInboxMessages;
     } catch (e: any) {
-        return "Error"
+        console.error("error in fetching inbox messages: ", e);
+        return "Error";
     } 
 }
