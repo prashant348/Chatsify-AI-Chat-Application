@@ -202,35 +202,73 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
 
   // hit the flask server as soon as the page loads and in do not let the flask server go to sleep by hitting in every 12mins
   useEffect(() => {
-    // instantly hit the flask server as dashboard renders
-    const hitFlaskServer = async () => {
+    const flaskUrl = import.meta.env.VITE_FLASK_SERVER;
+
+    // ✅ Check if Flask URL is set
+    if (!flaskUrl) {
+      console.warn("⚠️ VITE_FLASK_SERVER environment variable is not set!");
+      return;
+    }
+
+    const cleanFlaskUrl = flaskUrl.replace(/\/$/, '');
+
+    // ✅ Function to hit Flask server with retry logic
+    const hitFlaskServer = async (retryCount = 0, maxRetries = 3): Promise<void> => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_FLASK_SERVER}/`, {
+        const fullUrl = `${cleanFlaskUrl}/health`; // Use /health endpoint if available, else use "/"
+
+        const res = await fetch(fullUrl, {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
-          }
-        })
+          },
+          // ✅ Add timeout to prevent hanging
+          signal: AbortSignal.timeout(10000) // 10 second timeout
+        });
 
-        const data = await res.json()
-        console.log(data.message)
-      } catch (e) {
-        console.log("Error in hitting flask server: ", e)
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Non-JSON response");
+        }
+
+        const data = await res.json();
+        console.log("✅ Flask server is awake:", data.message || data.status || "OK");
+
+        // ✅ Success - no need to retry
+        return;
+      } catch (e: any) {
+        // ✅ If server is sleeping, retry with exponential backoff
+        if (retryCount < maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, retryCount), 10000); // 1s, 2s, 4s, max 10s
+          console.log(`⏳ Flask server might be sleeping, retrying in ${delay / 1000}s... (${retryCount + 1}/${maxRetries})`);
+
+          setTimeout(() => {
+            hitFlaskServer(retryCount + 1, maxRetries);
+          }, delay);
+        } else {
+          // ✅ After max retries, silently fail (don't show error to user)
+          console.warn("⚠️ Flask server wake-up failed after retries. It will wake up when user uses chatbot.");
+        }
       }
-    }
+    };
 
-    hitFlaskServer()
+    // ✅ Initial wake-up call (with retries)
+    hitFlaskServer();
 
-    // hit the flask server every 12mins
+    // ✅ Keep Flask server awake - hit every 4 minutes (less than 5 min sleep threshold)
     const interval = setInterval(() => {
-      hitFlaskServer()
-    }, 720000)
+      hitFlaskServer(0, 1); // Only 1 retry for periodic pings
+    }, 4 * 60 * 1000); // 4 minutes = 240000ms
 
     // cleanup
-    return () => clearInterval(interval) 
+    return () => clearInterval(interval);
   }, [])
 
-  
+
   return (
     <>
       <div
@@ -283,7 +321,7 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
                 width: 5,
                 cursor: "e-resize",
                 flexShrink: 0
-                
+
               }}
             />
           )}
