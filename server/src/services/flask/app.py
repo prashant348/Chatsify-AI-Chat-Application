@@ -19,6 +19,10 @@ port = int(os.environ.get("PORT", 5001))
 def home():
     return jsonify({ "message": "flask server running successfully!" }), 200
 
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({ "status": "ok", "service": "flask-server" }), 200
+
 @app.route("/api/generate_response", methods=["POST"])
 def handle_llm(): 
     try:
