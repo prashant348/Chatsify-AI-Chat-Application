@@ -329,8 +329,12 @@ const ResizableSidebar: React.FC<DashboardProps> = ({ defaultWidth = 0.4 * windo
           {/* rightside chat window  */}
           {window.innerWidth > 640 && (
             <div
-              className="chat-window text-white flex justify-center items-center "
-              style={{ flexGrow: 1 }}
+              className="chat-window text-white flex justify-center items-center"
+              style={{ 
+                flexGrow: 1,
+                // MOST IMPORTANT LINE FOR FIXING THE CHAT WINDOW WIDTH OVERFLOW WHEN REACT MARKDOWN AND ITS FEATURE USED FOR THE chatbotWindow
+                overflowX: "hidden" // This is very important line, set its value to "hidden" or "auto" anything but do not comment out because it will break UI and will let the chatbot chatting window width extend which will lead to overflow out of thr right side of the viewport
+               }}
             >
               {activeScreen === "ChatWindow" ? <ChatWindowTemplate /> : ""}
               {activeScreen === "MainScreen" ? <p>Select a chat to start messaging</p> : ""}

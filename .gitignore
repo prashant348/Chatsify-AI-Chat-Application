@@ -39,6 +39,9 @@ server/src/services/flask/__pycache__/
 *pyc
 server/src/services/flask/*pyc
 
+# Ignore bot response file
+response.txt 
+
 # Optional: lockfiles if you don’t want to commit them (choose as per team)
 # package-lock.json
 # yarn.lock

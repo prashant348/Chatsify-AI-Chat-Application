@@ -7,6 +7,11 @@ import GeneralLoader from '../../GeneralLoader'
 import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh'
 import { fetchChatbotChatMessages } from '../../../APIs/services/fetchChatbotChatMessages.service'
 import { useChatbotErrorStore } from '../../../zustand/store/ErrorStore'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import TripleDotLoader from '../../TripleDotLoader'
+
 export default function ChatbotChatsArea() {
 
     const { user } = useUser()
@@ -133,7 +138,7 @@ export default function ChatbotChatsArea() {
     return (
         <div
             ref={mainDivRef}
-            className='h-full flex pb-0 flex-col p-2 w-full overflow-y-auto scrollbar-thin scrollbar-track-[#0f0f0f] scrollbar-thumb-[#212121]'
+            className='h-full flex pb-0 flex-col p-2 w-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-[#0f0f0f] scrollbar-thumb-[#212121]'
             style={{
                 justifyContent: isLoading || error ? "center" : "",
                 alignItems: isLoading || error ? "center" : "",
@@ -150,7 +155,7 @@ export default function ChatbotChatsArea() {
 
                 {isLoading && <GeneralLoader />}
                 {!isLoading
-                    && allChatbotMessages.length === 0  
+                    && allChatbotMessages.length === 0
                     && error
                     &&
                     <div className="h-full w-full flex flex-col gap-1 justify-center items-center">
@@ -171,14 +176,30 @@ export default function ChatbotChatsArea() {
                 }
                 {!isLoading && allChatbotMessages.map((chat, idx) => (
                     <div key={idx} className='flex flex-col gap-2'>
-                        <p className='flex justify-end'>
-                            <span className='bg-blue-500 border border-blue-400 p-2 rounded-lg max-w-[70%]'>{chat.you}</span>
-                        </p>
-                        <p className='flex justify-start '>
-                            <span className='bg-[#303030] border border-[#404040] p-2 rounded-lg max-w-[70%]'>
-                                {chat.bot === "" ? "Thinking..." : chat.bot}
+                        <div className='flex justify-end'>
+                            <span className='bg-blue-500 border border-blue-400 p-2 rounded-lg max-w-[70%]'>
+                                {chat.you}
                             </span>
-                        </p>
+                        </div>
+                        {/* ✅ Use div wrapper with proper constraints */}
+                        <div className='flex justify-start' style={{ minWidth: 0, maxWidth: '100%' }}>
+                            <div
+                                className='bg-[#303030] border border-[#404040] p-2 rounded-lg chatbot-message-container'
+                                style={{
+                                    maxWidth: '70%',
+                                    minWidth: 0
+                                }}
+                            >
+                                {chat.bot === "" ? <TripleDotLoader loaderName='Pondering' /> : (
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                        rehypePlugins={[rehypeHighlight]}
+                                    >
+                                        {chat.bot}
+                                    </ReactMarkdown>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>

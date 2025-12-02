@@ -9,6 +9,7 @@ import { useActiveScreenStore } from "./zustand/store/ActiveScreenStore";
 import { useEffect, useState } from "react";
 import About from "./pages/About";
 import "./App.css"
+import 'highlight.js/styles/github-dark.css';
 
 const App = () => {
   const { activeScreen } = useActiveScreenStore();
