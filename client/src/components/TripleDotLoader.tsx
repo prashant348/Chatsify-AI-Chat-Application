@@ -6,7 +6,7 @@ export default function TripleDotLoader({ loaderName }: { loaderName: string }) 
     useEffect(() => {
         const interval = setInterval(() => {
             setDotCount(prevCount => prevCount === 3 ? 0 : prevCount + 1)
-        }, 400)
+        }, 300)
 
         return () => clearInterval(interval)
     }, [])

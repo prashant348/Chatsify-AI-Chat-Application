@@ -1,11 +1,12 @@
 import { useRef } from 'react'
-import GeneralLoader from '../GeneralLoader'
+// import GeneralLoader from '../GeneralLoader'
 import { useGeneralLoaderStore } from '../../zustand/store/GeneralLoader'
 import ChatBoxTemplate from './components/ChatBoxTemplate'
 import { useSearchResultWindowResponseStore } from '../../zustand/store/SearchResultWindowResponse'
 import type { SearchResultWindowPropsType } from '../../types/SearchResultWindow.types'
 import "../../index.css"
 import { useGlobalRefreshStore } from '../../zustand/store/GlobalRefresh'
+import TripleDotLoader from '../TripleDotLoader'
 const SearchResultWindow = ({ users }: SearchResultWindowPropsType) => {
 
   const { isLoading } = useGeneralLoaderStore()
@@ -67,7 +68,7 @@ const SearchResultWindow = ({ users }: SearchResultWindowPropsType) => {
       >
 
         {isLoading &&
-          <div className='h-[70px] w-full'><GeneralLoader /></div>}
+          <div className='h-[70px] w-full flex justify-center'><TripleDotLoader loaderName='Searching' /></div>}
         {!isLoading
           && users.length === 0
           && <p className='w-full h-full flex justify-center items-center'>

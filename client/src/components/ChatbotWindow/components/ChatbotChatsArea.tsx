@@ -177,7 +177,7 @@ export default function ChatbotChatsArea() {
                 {!isLoading && allChatbotMessages.map((chat, idx) => (
                     <div key={idx} className='flex flex-col gap-2'>
                         <div className='flex justify-end'>
-                            <span className='bg-blue-500 border border-blue-400 p-2 rounded-lg max-w-[70%]'>
+                            <span className='bg-blue-500 border border-blue-400 p-2 rounded-lg max-w-[80%]'>
                                 {chat.you}
                             </span>
                         </div>
@@ -186,8 +186,13 @@ export default function ChatbotChatsArea() {
                             <div
                                 className='bg-[#303030] border border-[#404040] p-2 rounded-lg chatbot-message-container'
                                 style={{
-                                    maxWidth: '70%',
-                                    minWidth: 0
+                                    maxWidth: '80%',
+                                    minWidth: 0,
+                                    // overflowWrap: "break-word",
+                                    wordBreak: "break-word",
+                                    whiteSpace:"pre-wrap",
+                                    boxSizing: "border-box",
+                                    textWrap: "wrap",
                                 }}
                             >
                                 {chat.bot === "" ? <TripleDotLoader loaderName='Pondering' /> : (

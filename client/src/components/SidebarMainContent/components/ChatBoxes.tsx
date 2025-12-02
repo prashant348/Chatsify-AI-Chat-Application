@@ -1,11 +1,12 @@
 import ChatBoxTemplate from "./ChatBoxTemplate"
 import { useRef } from "react"
-import GeneralLoader from "../../GeneralLoader"
+// import GeneralLoader from "../../GeneralLoader"
 import { useAuth } from "@clerk/clerk-react"
 import { useUser } from "@clerk/clerk-react"
 // import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh"
 import { fetchFriends } from "../../../APIs/services/fetchFriends.service"
 import { useQuery } from "@tanstack/react-query"
+import TripleDotLoader from "../../TripleDotLoader"
 
 interface Message {
   msg: string
@@ -127,8 +128,12 @@ const ChatBoxes = () => {
       <div
         ref={msgsContentRef}
         className=" w-full"
+        style={{
+          display: isFetching || isLoadingQuery ? "flex": "",
+          justifyContent: isFetching || isLoadingQuery ? "center": ""
+        }}
       >
-        {isFetching && <GeneralLoader />}
+        {isFetching && <TripleDotLoader loaderName='Loading' />}
         {/* {isLoadingQuery && <GeneralLoader />} */}
         {!isLoadingQuery && friendsArrayQuery.length === 0 && !queryError && <p className="h-full w-full flex justify-center items-center">No friends</p>}
         {/* {queryError && <p className="h-full w-full flex justify-center items-center">{queryError.message}</p>} */}
