@@ -5,6 +5,7 @@ import SearchResultWindow from '../SearchResultWindow'
 import { useFilteredUsersStore } from '../../zustand/store/FilteredUsers'
 import { BotMessageSquareIcon } from 'lucide-react'
 import { useActiveScreenStore } from '../../zustand/store/ActiveScreenStore'
+import { delay } from '../../libs/delay'
 const SidebarMainContent = () => {
 
   const showSearchResultWindow = useSearchResultWindow(state => state.showSearchResultWindow)
@@ -17,7 +18,10 @@ const SidebarMainContent = () => {
       {window.innerWidth <= 640 && !showSearchResultWindow && (
         <button 
         className='fixed z-10 bottom-5 right-5 active:bg-[#212121] bg-[#161616] transition-all 0.3s ease-in-out flex justify-center items-center h-[60px] w-[60px] border border-[#212121] rounded-full'      
-        onClick={() => setActiveScreen("ChatbotWindow")}
+        onClick={async () => {
+          await delay(0.3)
+          setActiveScreen("ChatbotWindow")
+        }}
         style={{
           boxShadow: "0px 0px 8px 0 rgba(8, 8, 8, 0.8)"
         }}

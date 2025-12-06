@@ -8,6 +8,7 @@ import { useUser } from "@clerk/clerk-react"
 import { useChatWindowUserIdStore } from "../../../zustand/store/ChatWindowUserId.ts"
 import { useGlobalRefreshStore } from "../../../zustand/store/GlobalRefresh.ts"
 import { handleDeleteUserChat } from "../../../APIs/handlers/handleDeleteUserChat.handler.ts"
+import { delay } from "../../../libs/delay.ts"
 import "../../../index.css"
 
 import { useFriendStatusStoreBase } from "../../../zustand/store/FriendStatusStore.ts"
@@ -113,8 +114,11 @@ const ChatWindowNavbar = ({ username }: { username: string }) => {
 
                 {window.innerWidth <= 640 && (
                     <button
-                        className="opacity-60 hover:opacity-100 cursor-pointer"
-                        onClick={() => setActiveScreen("MainScreen")}
+                        className="opacity-60 hover:opacity-100 cursor-pointer rounded-full h-9 w-9 flex justify-center items-center active:bg-[#212121] active:opacity-100 transition-all 0.3s ease-in-out"
+                        onClick={async () => {
+                            await delay(0.3)
+                            setActiveScreen("MainScreen")
+                        }}
                     >
                         <ArrowLeft />
                     </button>

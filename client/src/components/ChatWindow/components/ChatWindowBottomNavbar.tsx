@@ -125,7 +125,7 @@ const ChatWindowBottomNavbar = () => {
             </button>
 
             <button
-                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  flex-shrink-0 flex justify-center items-center rounded-full'
+                className='cursor-pointer h-[46px] w-[46px] bg-blue-500  active:bg-blue-400  flex-shrink-0 flex justify-center items-center rounded-full'
                 onClick={() => {
                     if (error === "Retry") return
                     if (!msgInputRef.current?.value.trim()) return

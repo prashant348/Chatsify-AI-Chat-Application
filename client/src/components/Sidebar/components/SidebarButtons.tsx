@@ -2,6 +2,9 @@ import { Users, Bookmark, Moon, UserPlus, Sun, Inbox, Settings2Icon, BotMessageS
 import { useAppThemeStore } from "../../../zustand/store/AppTheme"
 import { useActiveScreenStore } from "../../../zustand/store/ActiveScreenStore"
 import { useSidebarStore } from "../../../zustand/store/SidebarStore"
+import { delay } from "../../../libs/delay"
+
+
 export default function SidebarButtons() {
     const { appTheme, setAppTheme } = useAppThemeStore((state) => state)
     const { setActiveScreen } = useActiveScreenStore((state) => state)
@@ -11,8 +14,9 @@ export default function SidebarButtons() {
         <div>
             <div className="my-profile-box w-full py-[5px] border-b border-b-[#212121]">
                 <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => {
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
                         alert("Feature coming soon!")
                     }}
                 >
@@ -21,8 +25,9 @@ export default function SidebarButtons() {
                 </button>
 
                 <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => {
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
                         alert("Feature coming soon!")
                     }}
                 >
@@ -31,16 +36,20 @@ export default function SidebarButtons() {
                 </button>
 
                 <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => setActiveScreen("FriendRequestsWindow")}
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
+                        setActiveScreen("FriendRequestsWindow")
+                    }}
                 >
                     <UserPlus height={"20px"} />
                     <span className="">Friend Requests</span>
                 </button>
 
                 <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => {
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
                         setShowSidebar(false)
                         setActiveScreen("ChatbotWindow")
                     }}
@@ -50,7 +59,7 @@ export default function SidebarButtons() {
                 </button>
 
                 {/* <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
                     onClick={() => {
                         setShowSidebar(false)
                         setActiveScreen("TextToSpeechWindow")
@@ -61,8 +70,11 @@ export default function SidebarButtons() {
                 </button> */}
 
                 <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => setActiveScreen("InboxWindow")}
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
+                        setActiveScreen("InboxWindow")
+                    }}
                 >
                     <Inbox height={"20px"} />
                     <span className="">Inbox</span>
@@ -70,8 +82,9 @@ export default function SidebarButtons() {
 
 
                 <button
-                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => {
+                    className="w-full h-[40px] flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
                         alert("Feature coming soon!")
                     }}
                 >
@@ -80,8 +93,9 @@ export default function SidebarButtons() {
                 </button>
 
                 <button
-                    className="w-full h-[40px] flex items-center px-6 text-sm hover:bg-[#212121] cursor-pointer"
-                    onClick={() => {
+                    className="w-full h-[40px] flex items-center px-6 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.3s ease-in-out"
+                    onClick={async () => {
+                        await delay(0.3)
                         alert("Feature coming soon!")
                         setAppTheme(appTheme === "dark" ? "light" : "dark")
                     }}

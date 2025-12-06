@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react"
 import SidebarButtons from "./components/SidebarButtons"
 import { UserIcon, InfoIcon, HelpCircleIcon, SquareArrowOutUpRight } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { delay } from "../../libs/delay"
 const Sidebar = () => {
     const [isUserProfileOpen, setIsUserProfileOpen] = useState<boolean>(false)
     const { user } = useUser()
@@ -112,8 +113,11 @@ const Sidebar = () => {
 
                             <div className="my-profile-box h-[40px] w-full">
                                 <button
-                                    className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                                    onClick={() => navigate("/about")}
+                                    className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.2s ease-in-out"
+                                    onClick={async () => {
+                                        await delay(0.3)
+                                        navigate("/about")
+                                    }}
                                 >
 
                                     <InfoIcon height={"20px"} className="flex-shrink-0" />
@@ -130,8 +134,11 @@ const Sidebar = () => {
                             </div>
                             <div className="my-profile-box h-[40px] w-full">
                                 <button
-                                    className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer"
-                                    onClick={() => alert("Feature coming soon!")}
+                                    className="w-full h-full flex items-center px-6 gap-4 text-sm hover:bg-[#212121] cursor-pointer active:bg-[#212121] transition-all 0.2s ease-in-out"
+                                    onClick={async () => {
+                                        await delay(0.3)
+                                        alert("Feature coming soon!")
+                                    }}
                                 >
                                     <HelpCircleIcon height={"20px"} />
                                     <span className="">Help</span>

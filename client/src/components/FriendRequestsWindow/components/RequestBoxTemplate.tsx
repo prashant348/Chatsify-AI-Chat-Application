@@ -50,7 +50,7 @@ export default function RequestBoxTemplate({
       <div className="h-full flex items-center gap-3">
 
         <button
-          className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all duration-200 hover:bg-[#2b2b2b] rounded-full"
+          className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all 0.3s hover:bg-[#2b2b2b] rounded-full"
           onClick={async () => {
             const result = await handleRejectFriendRequest(getToken, senderId, user?.id)
             if (result === "Success") {
@@ -65,7 +65,7 @@ export default function RequestBoxTemplate({
         </button>
  
         <button
-          className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all duration-200 hover:bg-[#2b2b2b] rounded-full"
+          className="cursor-pointer h-[36px] w-[36px] flex justify-center items-center transition-all 0.3s hover:bg-[#2b2b2b] rounded-full"
           onClick={async () => {
             const result = await handleAcceptFriendRequest(getToken, senderUsername, senderAvatar, senderId)
             if (result === "Success") {

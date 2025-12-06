@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useGlobalRefreshStore } from '../../../zustand/store/GlobalRefresh'
 import { useUser } from '@clerk/clerk-react'
 import { handleDeleteChatbotChat } from '../../../APIs/handlers/handleDeleteChatbotChat.handler'
+import { delay } from '../../../libs/delay'
 
 const MoreButtonModal = ({ onClose }: { onClose: () => void }) => {
 
@@ -84,12 +85,14 @@ export default function ChatbotWindowNavbar() {
 
     return (
         <div className='navbar h-[60px] w-full bg-[#0f0f0f] border-b border-b-[#212121] sm:border-none px-3 flex justify-between items-center'>
-            <div className='flex gap-3'>
+            <div className='flex gap-2 items-center'>
                 <button
-                    className='cursor-pointer flex sm:hidden'
-                    onClick={() => {
+                    className='cursor-pointer rounded-full opacity-60 h-9 w-9 flex justify-center items-center sm:hidden active:bg-[#212121] active:opacity-100 transition-all 0.3s ease-in-out'
+                    onClick={async () => {
+                        await delay(0.3)
                         setActiveScreen("MainScreen")
-                    }}>
+                    }}
+                >
                     <ArrowLeft />
                 </button>
                 <BotMessageSquare />

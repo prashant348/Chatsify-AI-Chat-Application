@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
     <div ref={navbarRef} className='h-[60px] flex shrink-0'>
       <div className='w-[60px] shrink-0 flex justify-center items-center'>
         <button
-          className='hambtn hover:bg-[#212121] rounded-full p-2 cursor-pointer'
+          className='hambtn hover:bg-[#212121] active:bg-[#212121] transition-all 0.2s ease-in-out rounded-full p-2 cursor-pointer'
           onClick={handleHambtnClick}
           onMouseDown={(e) => {
             e.preventDefault()
@@ -92,6 +92,7 @@ const Navbar: React.FC = () => {
 
           style={{
             border: showSearchResultWindow ? "1px solid #363636" : "",
+            // border: showSearchResultWindow ?"1px solid #1a73e8" : "",
             paddingLeft: showSearchResultWindow ? "15px" : "",
           }}
 
